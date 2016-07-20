@@ -11,7 +11,6 @@ import com.shedule.zyx.myshedule.config.AppModule;
 import com.shedule.zyx.myshedule.config.DaggerAppComponent;
 
 public class ScheduleApplication extends Application {
-
     private static AppComponent component;
 
     public static AppComponent getComponent() {
