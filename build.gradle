@@ -1,19 +1,32 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
+    ext.kotlin_version = '1.0.3'
     repositories {
         jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.2'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath "io.realm:realm-gradle-plugin:1.0.0"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
+
 allprojects {
+
+    ext {
+        targetSDKVersion = 23
+        minSDKVersion = 16
+        buildToolVersion = "23.0.3"
+        supportLibraryVersion = "23.2.0"
+        playServicesVersion = "8.4.0"
+        ankoVersion = "0.9"
+        betaDistributionNotifications = false
+    }
+
     repositories {
+        mavenCentral()
         jcenter()
     }
 }

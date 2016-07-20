@@ -1,0 +1,19 @@
+/*
+ * Gets current branch name and commits count for it
+ */
+println "configuring $project"
+
+ext.getVersionCodeFromGit = { ->
+    def currentBranch = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', "rev-parse", "--abbrev-ref", "HEAD"
+        standardOutput = currentBranch
+    }
+
+    def codeVersion = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', "rev-list", "--count", currentBranch.toString().trim()
+        standardOutput = codeVersion
+    }
+    return codeVersion.toString().toInteger()
+}

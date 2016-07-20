@@ -1,0 +1,11 @@
+package com.shedule.zyx.myshedule.config;
+
+import javax.inject.Singleton;
+
+import dagger.Component;
+
+@Singleton
+@Component(modules = {
+        AppModule.class
+})
+public interface AppComponent {}
