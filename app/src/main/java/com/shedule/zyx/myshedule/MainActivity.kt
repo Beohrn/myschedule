@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-
+    
     setSupportActionBar(main_toolbar)
     setupDataForViewPager(main_viewpager)
     main_tabs.setupWithViewPager(main_viewpager)
@@ -23,5 +23,9 @@ class MainActivity : AppCompatActivity() {
     adapter.addFragment(ScheduleFragment(), "Monday")
     adapter.addFragment(ScheduleFragment(), "Monday")
     viewPager.adapter = adapter
+
+    ///svwdskvbs
+
+    //
   }
 }
