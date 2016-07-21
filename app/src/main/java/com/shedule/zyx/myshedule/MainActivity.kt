@@ -25,5 +25,7 @@ class MainActivity : AppCompatActivity() {
     viewPager.adapter = adapter
 
     ///svwdskvbs
+
+    //
   }
 }
