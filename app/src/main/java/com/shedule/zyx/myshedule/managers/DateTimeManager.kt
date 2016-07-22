@@ -22,8 +22,6 @@ class DateTimeManager private constructor() {
             "${DateTime().monthOfYear().asText} " +
             "${DateTime().year} года"
 
-
-
     fun getCurrentYear() : Int = LocalDate.now().year
 
     fun getCurrentMonthOfYearInNumber() : Int = LocalDate.now().monthOfYear
