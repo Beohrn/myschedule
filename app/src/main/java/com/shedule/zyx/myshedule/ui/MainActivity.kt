@@ -6,19 +6,24 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.adapters.ViewPagerAdapter
+import com.shedule.zyx.myshedule.interfaces.ChangeStateFragmentListener
+import com.shedule.zyx.myshedule.interfaces.DataChangeListener
 import com.shedule.zyx.myshedule.managers.DateManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_navigation.*
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, ChangeStateFragmentListener {
 
   @Inject
   lateinit var dataManager: DateManager
+
+  val listenerList = arrayListOf<DataChangeListener>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -33,13 +38,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         R.string.navigation_drawer_open, R.string.navigation_drawer_close).syncState()
   }
 
+  override fun addListener(listener: DataChangeListener) {
+    Log.d("listener", "add")
+    listenerList.add(listener)
+  }
+
+  override fun removeListener(listener: DataChangeListener) {
+    Log.d("listener", "remove")
+    listenerList.remove(listener)
+  }
+
   private fun setupDataForViewPager(viewPager: ViewPager) {
     val adapter = ViewPagerAdapter(supportFragmentManager)
-
-    //todo implement this uses great solution for adapter current implementation is not cool
-    adapter.addFragment(ScheduleFragment(), "Monday")
-    adapter.addFragment(ScheduleFragment(), "Monday")
-    adapter.addFragment(ScheduleFragment(), "Monday")
     viewPager.adapter = adapter
   }
 
@@ -60,6 +70,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     //todo implement this
     when (item?.itemId) {
+      R.id.nav_camera -> listenerList.forEach { /* do something */ }
     }
 
     drawer_layout?.closeDrawer(GravityCompat.START)
