@@ -4,28 +4,26 @@ import org.joda.time.DateTime
 import org.joda.time.LocalDate
 import org.joda.time.LocalTime
 
-class DateManager(localDate : LocalDate, localTime : LocalTime,
-                  dateTime : DateTime) {
+class DateManager(val localDate: LocalDate, val localTime: LocalTime, val dateTime: DateTime) {
 
-    fun getCurrentDate() : String = "${DateTime().dayOfWeek().asText} " +
-            "${DateTime().dayOfMonth}-e " +
-            "${DateTime().monthOfYear().asText} " +
-            "${DateTime().year} года"
+  fun getCurrentDate(): String = "${dateTime.dayOfWeek().asText} " +
+      "${dateTime.dayOfMonth}-e " +
+      "${dateTime.monthOfYear().asText} " +
+      "${dateTime.year} года"
 
-    fun getCurrentYear() : Int = LocalDate.now().year
+  fun getCurrentYear() = localDate.year
 
-    fun getCurrentMonthOfYear() : Int = LocalDate.now().monthOfYear
+  fun getCurrentMonthOfYear() = localDate.monthOfYear
 
-    fun getCurrentMonthNameOfYear() : String = DateTime().monthOfYear().asText
+  fun getCurrentMonthNameOfYear() = dateTime.monthOfYear().asText
 
-    fun getCurrentDayOfMonth() : Int = LocalDate.now().dayOfMonth
+  fun getCurrentDayOfMonth() = localDate.dayOfMonth
 
-    fun getCurrentDayOfWeek() : String = DateTime().dayOfWeek().asText
+  fun getCurrentDayOfWeek() = dateTime.dayOfWeek().asText
 
-    fun getCurrentTime() : LocalTime = LocalTime.now()
+  fun getCurrentTime() = localTime
 
-    fun getCurrentHourOfDay() : Int = LocalTime.now().hourOfDay
+  fun getCurrentHourOfDay() = localTime.hourOfDay
 
-    fun getCurrentMinutes() : Int = LocalTime.now().minuteOfHour
-
+  fun getCurrentMinutes() = localTime.minuteOfHour
 }

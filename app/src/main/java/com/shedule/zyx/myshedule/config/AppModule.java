@@ -57,10 +57,26 @@ public class AppModule {
 
     @Singleton
     @Provides
-    public DateManager provideDateManager(LocalDate localDate,
-                                          LocalTime localTime,
-                                          DateTime dateTime) {
+    public DateManager provideDateManager(LocalDate localDate, LocalTime localTime, DateTime dateTime) {
         return new DateManager(localDate, localTime, dateTime);
+    }
+
+    @Singleton
+    @Provides
+    public LocalDate provideLocalData() {
+        return LocalDate.now();
+    }
+
+    @Singleton
+    @Provides
+    public LocalTime provideLocalTime() {
+        return LocalTime.now();
+    }
+
+    @Singleton
+    @Provides
+    public DateTime provideDataTime() {
+        return new DateTime();
     }
 
 }
