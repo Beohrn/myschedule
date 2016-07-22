@@ -13,6 +13,7 @@ import com.shedule.zyx.myshedule.adapters.ViewPagerAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_navigation.*
 
+
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,11 +24,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     setupDataForViewPager(main_viewpager)
     main_tabs.setupWithViewPager(main_viewpager)
 
-    val toggle = ActionBarDrawerToggle(
-        this, drawer_layout, main_toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-    drawer_layout?.setDrawerListener(toggle)
-    toggle.syncState()
     nav_view?.setNavigationItemSelectedListener(this)
+    ActionBarDrawerToggle(this, drawer_layout, main_toolbar,
+        R.string.navigation_drawer_open, R.string.navigation_drawer_close).syncState()
   }
 
   private fun setupDataForViewPager(viewPager: ViewPager) {
