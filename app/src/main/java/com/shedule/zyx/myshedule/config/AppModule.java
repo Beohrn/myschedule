@@ -4,6 +4,11 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.shedule.zyx.myshedule.managers.DateManager;
+
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 import javax.inject.Singleton;
 
@@ -49,4 +54,13 @@ public class AppModule {
         return new GsonBuilder()
                 .create();
     }
+
+    @Singleton
+    @Provides
+    public DateManager provideDateManager(LocalDate localDate,
+                                          LocalTime localTime,
+                                          DateTime dateTime) {
+        return new DateManager(localDate, localTime, dateTime);
+    }
+
 }
