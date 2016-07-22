@@ -4,7 +4,8 @@ import org.joda.time.DateTime
 import org.joda.time.LocalDate
 import org.joda.time.LocalTime
 
-class DateManager {
+class DateManager(localDate : LocalDate, localTime : LocalTime,
+                  dateTime : DateTime) {
 
     fun getCurrentDate() : String = "${DateTime().dayOfWeek().asText} " +
             "${DateTime().dayOfMonth}-e " +
