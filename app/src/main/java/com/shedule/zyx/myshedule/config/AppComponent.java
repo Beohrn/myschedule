@@ -1,5 +1,7 @@
 package com.shedule.zyx.myshedule.config;
 
+import com.shedule.zyx.myshedule.ui.MainActivity;
+
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -8,4 +10,6 @@ import dagger.Component;
 @Component(modules = {
         AppModule.class
 })
-public interface AppComponent {}
+public interface AppComponent {
+    void inject(MainActivity mainActivity);
+}

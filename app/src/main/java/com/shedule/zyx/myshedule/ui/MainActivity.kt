@@ -10,11 +10,15 @@ import android.view.Menu
 import android.view.MenuItem
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.adapters.ViewPagerAdapter
+import com.shedule.zyx.myshedule.managers.DateManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_navigation.*
-
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+  @Inject
+  lateinit var dataManager: DateManager
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
