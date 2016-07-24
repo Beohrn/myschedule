@@ -6,9 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.shedule.zyx.myshedule.managers.DateManager;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
+import java.util.Calendar;
 
 import javax.inject.Singleton;
 
@@ -57,26 +55,13 @@ public class AppModule {
 
     @Singleton
     @Provides
-    public DateManager provideDateManager(LocalDate localDate, LocalTime localTime, DateTime dateTime) {
-        return new DateManager(localDate, localTime, dateTime);
+    public DateManager provideDateManager(Calendar calendar) {
+        return new DateManager(calendar);
     }
 
     @Singleton
     @Provides
-    public LocalDate provideLocalData() {
-        return LocalDate.now();
+    public Calendar provideCalendar() {
+        return Calendar.getInstance();
     }
-
-    @Singleton
-    @Provides
-    public LocalTime provideLocalTime() {
-        return LocalTime.now();
-    }
-
-    @Singleton
-    @Provides
-    public DateTime provideDataTime() {
-        return new DateTime();
-    }
-
 }
