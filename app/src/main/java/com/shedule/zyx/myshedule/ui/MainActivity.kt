@@ -44,7 +44,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         R.string.navigation_drawer_open, R.string.navigation_drawer_close).syncState()
 
     dateManager.updateCalendar()
-    main_viewpager.currentItem = dateManager.getDayOfWeek()
+    main_viewpager.currentItem = dateManager.getPositionByDate()
+    main_toolbar.post { title = dateManager.getDayFromPosition(dateManager.getPositionByDate()) }
 
     main_viewpager.onPageChangeListener {
       onPageSelected {
@@ -88,7 +89,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
     dateManager.updateCalendar(year, monthOfYear, dayOfMonth)
-    main_viewpager.currentItem = dateManager.getDayOfWeek(year, monthOfYear, dayOfMonth)
+    main_viewpager.currentItem = dateManager.getPositionByDate(year, monthOfYear, dayOfMonth)
     main_toolbar.title = "${dateManager.getChoiceDay()} ${dateManager.getMonthName(monthOfYear)}"
   }
 
