@@ -1,5 +1,6 @@
 package com.shedule.zyx.myshedule.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
@@ -43,13 +44,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     ActionBarDrawerToggle(this, drawer_layout, main_toolbar,
         R.string.navigation_drawer_open, R.string.navigation_drawer_close).syncState()
 
-    dateManager.updateCalendar()
-    main_viewpager.currentItem = dateManager.getPositionByDate()
-    main_toolbar.post { title = dateManager.getDayFromPosition(dateManager.getPositionByDate()) }
+    main_viewpager.currentItem = dateManager.getPositionByCalendar()
+    main_toolbar.post { title = dateManager.getDayByPosition(dateManager.getPositionByCalendar()) }
 
     main_viewpager.onPageChangeListener {
+
       onPageSelected {
-        main_toolbar.title = dateManager.getDayFromPosition(it)
+        main_toolbar.title = dateManager.getDayByPosition(it)
       }
     }
   }
@@ -89,16 +90,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
     dateManager.updateCalendar(year, monthOfYear, dayOfMonth)
-    main_viewpager.currentItem = dateManager.getPositionByDate(year, monthOfYear, dayOfMonth)
-    main_toolbar.title = "${dateManager.getChoiceDay()} ${dateManager.getMonthName(monthOfYear)}"
+    main_viewpager.currentItem = dateManager.getPositionByCalendar(year, monthOfYear, dayOfMonth)
+    main_toolbar.title = dateManager.getDayByPosition(main_viewpager.currentItem)
   }
 
   private fun openDataPicker() {
-    val now = dateManager.calendar
+    val now = dateManager.resetCalendar()
     val picker = DatePickerDialog.newInstance(
         this@MainActivity, now.get(Calendar.YEAR), now.get(Calendar.MONTH),
         now.get(Calendar.DAY_OF_MONTH))
-    picker.accentColor = R.color.colorAccent
+    picker.accentColor = Color.RED //R.color.colorAccent
     picker.show(fragmentManager, "")
   }
 
