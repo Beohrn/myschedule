@@ -92,6 +92,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     dateManager.updateCalendar(year, monthOfYear, dayOfMonth)
     main_viewpager.currentItem = dateManager.getPositionByCalendar(year, monthOfYear, dayOfMonth)
     main_toolbar.title = dateManager.getDayByPosition(main_viewpager.currentItem)
+    listenerList.forEach { it.updateData("$year $monthOfYear $dayOfMonth") }
   }
 
   private fun openDataPicker() {
