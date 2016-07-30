@@ -47,7 +47,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     main_toolbar.post { title = dateManager.getDayByPosition(dateManager.getPositionByCalendar()) }
 
     main_viewpager.onPageChangeListener {
-
       onPageSelected {
         main_toolbar.title = dateManager.getDayByPosition(it)
       }
