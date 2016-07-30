@@ -10,6 +10,8 @@ import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.interfaces.ChangeStateFragmentListener
 import com.shedule.zyx.myshedule.interfaces.DataChangeListener
 import kotlinx.android.synthetic.main.shedule_fragment_layout.*
+import org.jetbrains.anko.onClick
+import org.jetbrains.anko.support.v4.startActivity
 
 /**
  * Created by bogdan on 20.07.16.
@@ -21,8 +23,16 @@ class ScheduleFragment : Fragment(), DataChangeListener {
     return inflater!!.inflate(R.layout.shedule_fragment_layout, container, false)
   }
 
+  override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+
+    add_schedule_btn.onClick {
+      startActivity<ScheduleInformationActivity>()
+    }
+  }
+
   override fun updateData(string: String) {
-    text.text = string
+
   }
 
   override fun onDestroyView() {

@@ -107,8 +107,6 @@ dependencies {
 
     compile 'com.jaedongchicken:ytplayer:1.2.0'
 
-    compile 'at.blogc:expandabletextview:1.0.3'
-
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.makeramen:roundedimageview:2.2.1'

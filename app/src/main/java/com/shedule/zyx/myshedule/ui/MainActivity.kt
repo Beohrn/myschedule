@@ -1,6 +1,5 @@
 package com.shedule.zyx.myshedule.ui
 
-import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
@@ -100,7 +99,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     val picker = DatePickerDialog.newInstance(
         this@MainActivity, now.get(Calendar.YEAR), now.get(Calendar.MONTH),
         now.get(Calendar.DAY_OF_MONTH))
-    picker.accentColor = Color.RED //R.color.colorAccent
+    picker.accentColor = R.color.colorAccent
     picker.show(fragmentManager, "")
   }
 
