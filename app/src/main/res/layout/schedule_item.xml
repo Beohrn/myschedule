@@ -9,10 +9,10 @@
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="30dp"
         android:background="@color/colorPrimary"
         app:cardElevation="5dp">
 
@@ -25,16 +25,35 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center|right"
-                    android:id="@+id/edit"
+                    android:orientation="horizontal"
+                    android:paddingLeft="20dp"
                     android:paddingRight="20dp"
-                    android:paddingTop="10dp"
-                    android:text="12:40 - 12:50"
-                    android:textColor="@color/red"
-                    android:textStyle="bold"/>
+                    android:weightSum="1">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.9"
+                        android:gravity="center|right"
+                        android:paddingRight="20dp"
+                        android:paddingTop="10dp"
+                        android:text="12:40 - 12:50"
+                        android:textColor="@color/red"
+                        android:textStyle="bold"/>
+
+                    <ImageView
+                        android:id="@+id/edit"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.1"
+                        android:paddingTop="10dp"
+                        android:src="@drawable/edit_pencel"/>
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -42,7 +61,7 @@
                     android:orientation="vertical"
                     android:paddingLeft="20dp"
                     android:paddingRight="20dp"
-                    android:paddingTop="20dp">
+                    android:paddingTop="10dp">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -63,7 +82,7 @@
                             android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/boy"/>
+                            android:src="@drawable/boy_test_xml"/>
 
                         <TextView
                             android:layout_width="match_parent"
@@ -196,7 +215,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/view"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         app:cardBackgroundColor="@color/title_frame"
         app:cardElevation="7dp">
 
