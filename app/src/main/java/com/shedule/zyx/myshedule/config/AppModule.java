@@ -4,12 +4,14 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.shedule.zyx.myshedule.managers.BluetoothManager;
 import com.shedule.zyx.myshedule.managers.DateManager;
 
 import java.util.Calendar;
 
 import javax.inject.Singleton;
 
+import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import app.voter.xyz.config.AppPreferences;
 import dagger.Module;
 import dagger.Provides;
@@ -63,5 +65,17 @@ public class AppModule {
     @Provides
     public Calendar provideCalendar() {
         return Calendar.getInstance();
+    }
+
+    @Singleton
+    @Provides
+    public BluetoothManager provideBluetoothManager(BluetoothSPP bt) {
+        return new BluetoothManager(bt);
+    }
+
+    @Singleton
+    @Provides
+    public BluetoothSPP provideBluetoothSPP(Context context) {
+        return new BluetoothSPP(context);
     }
 }
