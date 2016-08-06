@@ -9,17 +9,23 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.adapters.ViewPagerAdapter
 import com.shedule.zyx.myshedule.interfaces.ChangeStateFragmentListener
 import com.shedule.zyx.myshedule.interfaces.DataChangeListener
+import com.shedule.zyx.myshedule.managers.BluetoothManager
 import com.shedule.zyx.myshedule.managers.DateManager
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_navigation.*
 import kotlinx.android.synthetic.main.content_navigation.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.listView
+import org.jetbrains.anko.onItemClick
 import org.jetbrains.anko.support.v4.onPageChangeListener
+import org.jetbrains.anko.verticalLayout
 import java.util.*
 import javax.inject.Inject
 
@@ -28,6 +34,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   @Inject
   lateinit var dateManager: DateManager
+
+  @Inject
+  lateinit var bluetoothManager: BluetoothManager
 
   val listenerList = arrayListOf<DataChangeListener>()
 
@@ -108,10 +117,31 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     //todo implement this
     when (item?.itemId) {
-      R.id.nav_camera -> listenerList.forEach { /* do something */ }
+      R.id.nav_camera -> //listenerList.forEach { /* do something */ }
+      showDialog()
+
     }
 
     drawer_layout?.closeDrawer(GravityCompat.START)
     return true
+  }
+
+  fun showDialog() {
+    alert {
+      customView {
+        verticalLayout {
+          listView {
+            adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1,
+                    bluetoothManager.getDevices())
+          }.onItemClick { adapterView, view, i, l ->
+            bluetoothManager.connect(i)
+          }
+        }
+      }
+      positiveButton("Send") {
+        bluetoothManager.send("TEXT")
+      }
+    }.show()
+
   }
 }

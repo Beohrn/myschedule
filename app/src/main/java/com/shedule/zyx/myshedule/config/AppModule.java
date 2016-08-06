@@ -69,8 +69,8 @@ public class AppModule {
 
     @Singleton
     @Provides
-    public BluetoothManager provideBluetoothManager(BluetoothSPP bt) {
-        return new BluetoothManager(bt);
+    public BluetoothManager provideBluetoothManager(BluetoothSPP bt, Context context) {
+        return new BluetoothManager(bt, context);
     }
 
     @Singleton
