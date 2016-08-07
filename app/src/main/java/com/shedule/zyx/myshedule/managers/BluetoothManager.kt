@@ -10,54 +10,21 @@ import android.util.Log
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothState
 import org.jetbrains.anko.newTask
-import org.jetbrains.anko.toast
 import java.util.*
 
 /**
  * Created by Alexander on 03.08.2016.
  */
-class BluetoothManager constructor(var bt: BluetoothSPP, var context: Context) :
-        BluetoothSPP.OnDataReceivedListener,
-        BluetoothSPP.BluetoothConnectionListener,
-        BluetoothSPP.BluetoothStateListener {
+class BluetoothManager constructor(var bt: BluetoothSPP, var context: Context){
 
-
-    private val TAG = "BluetoothManager"
+    private val TAG = BluetoothManager::class.java.simpleName
     val btAdapter: BluetoothAdapter
-
-    override fun onServiceStateChanged(state: Int) {
-
-    }
-
-    override fun onDeviceDisconnected() {
-        Log.d(TAG, "Device disconnected")
-    }
-
-    override fun onDeviceConnected(name: String?, address: String?) {
-        Log.d(TAG, "Connected to $name -> $address")
-        context.toast("Connected to $name -> $address")
-//        send("TEXT")
-
-    }
-
-    override fun onDeviceConnectionFailed() {
-        Log.wtf(TAG, "Connection failed")
-    }
-
-
-    override fun onDataReceived(data: ByteArray?, message: String?) {
-        context.toast("$message")
-        Log.d(TAG, message)
-    }
 
     init {
         btAdapter = BluetoothAdapter.getDefaultAdapter()
-//        bt.setupService()
-//        bt.startService(BluetoothState.DEVICE_ANDROID)
     }
 
     private fun bondedDevices(): ArrayList<BluetoothDevice> {
-//        setupService()
         val result = ArrayList<BluetoothDevice>()
         btAdapter.bondedDevices.forEach {
             result.add(it)
@@ -76,27 +43,50 @@ class BluetoothManager constructor(var bt: BluetoothSPP, var context: Context) :
 
     fun connect(index: Int) {
         val address = bondedDevices()[index].address
-        setupService()
-        bt.connect(address)
-
-        bt.setBluetoothConnectionListener(this)
+        if (serviceAvailable()) {
+            bt.connect(address)
+//            bt.setBluetoothConnectionListener(this)
+        }
     }
 
     fun send(message: String) {
         bt.send(message, true)
-        bt.setOnDataReceivedListener(this)
+//        bt.setOnDataReceivedListener(this)
+    }
+
+    fun setConnectionListener(listener: BTConnectionManager) {
+        bt.setBluetoothConnectionListener(listener)
+    }
+
+    fun setReceiveListener(listener: ReceiveManager) {
+        bt.setOnDataReceivedListener(listener)
+    }
+
+    fun serviceAvailable(): Boolean {
+        if (bt.isServiceAvailable)
+            return true
+        else
+            return false
+//        return if (bt.isServiceAvailable) true else false
     }
 
     fun setupService() {
-        if (!bt.isServiceAvailable) {
-            bt.setupService()
-            bt.startService(BluetoothState.DEVICE_ANDROID)
-        }
+
+        bt.setupService()
+        bt.startService(BluetoothState.DEVICE_ANDROID)
+
     }
 
     fun stopService() {
         if (bt.isServiceAvailable)
             bt.stopService()
+    }
+
+    fun bluetoothEnabled() : Boolean {
+        if (btAdapter.isEnabled)
+            return true
+        else
+            return false
     }
 
     fun onBluetooth() {
@@ -128,7 +118,7 @@ class BluetoothManager constructor(var bt: BluetoothSPP, var context: Context) :
         override fun onReceive(context: Context?, intent: Intent?) {
             val action = intent!!.action
             if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
-                //discovery starts, we can show progress dialog or perform other tasks
+
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 context!!.unregisterReceiver(this)
             } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {

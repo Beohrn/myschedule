@@ -7,6 +7,7 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
@@ -15,8 +16,10 @@ import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.adapters.ViewPagerAdapter
 import com.shedule.zyx.myshedule.interfaces.ChangeStateFragmentListener
 import com.shedule.zyx.myshedule.interfaces.DataChangeListener
+import com.shedule.zyx.myshedule.managers.BTConnectionManager
 import com.shedule.zyx.myshedule.managers.BluetoothManager
 import com.shedule.zyx.myshedule.managers.DateManager
+import com.shedule.zyx.myshedule.managers.ReceiveManager
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_navigation.*
@@ -37,6 +40,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   @Inject
   lateinit var bluetoothManager: BluetoothManager
+
+  @Inject
+  lateinit var receiveManager: ReceiveManager
+
+  @Inject
+  lateinit var connectionManager: BTConnectionManager
 
   val listenerList = arrayListOf<DataChangeListener>()
 
@@ -60,6 +69,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       onPageSelected {
         main_toolbar.title = dateManager.getDayByPosition(it)
       }
+    }
+  }
+
+  override fun onWindowFocusChanged(hasFocus: Boolean) {
+    super.onWindowFocusChanged(hasFocus)
+//    Log.i("TAG", "$hasFocus")
+
+    if (hasFocus) {
+      if (bluetoothManager.bluetoothEnabled())
+        if (!bluetoothManager.serviceAvailable()) {
+          bluetoothManager.setupService()
+          Log.d("BluetoothManager", "service enabled (onStart)")
+          bluetoothManager.setConnectionListener(connectionManager)
+        }
     }
   }
 
@@ -124,6 +147,33 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     drawer_layout?.closeDrawer(GravityCompat.START)
     return true
+  }
+
+  override fun onStart() {
+    super.onStart()
+    if (bluetoothManager.bluetoothEnabled())
+      if (!bluetoothManager.serviceAvailable()) {
+        bluetoothManager.setupService()
+        Log.d("BluetoothManager", "service enabled (onStart)")
+        bluetoothManager.setConnectionListener(connectionManager)
+      }
+
+    Log.i("TAG", "onStart")
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    if (bluetoothManager.bluetoothEnabled())
+      if (bluetoothManager.serviceAvailable()) {
+        bluetoothManager.stopService()
+        Log.d("BluetoothManager", "service disabled (onStop)")
+      }
+
+  }
+
+  override fun onStop() {
+    super.onStop()
+    Log.i("TAG", "onStop")
   }
 
   fun showDialog() {
