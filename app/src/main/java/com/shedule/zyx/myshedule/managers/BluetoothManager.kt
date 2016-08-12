@@ -20,6 +20,9 @@ class BluetoothManager constructor(var bt: BluetoothSPP, var context: Context){
     private val TAG = BluetoothManager::class.java.simpleName
     val btAdapter: BluetoothAdapter
 
+    val ACTION_ENABLE = BluetoothAdapter.ACTION_REQUEST_ENABLE
+    val REQUEST_ENABLE = BluetoothState.REQUEST_ENABLE_BT
+
     init {
         btAdapter = BluetoothAdapter.getDefaultAdapter()
     }
@@ -45,13 +48,11 @@ class BluetoothManager constructor(var bt: BluetoothSPP, var context: Context){
         val address = bondedDevices()[index].address
         if (serviceAvailable()) {
             bt.connect(address)
-//            bt.setBluetoothConnectionListener(this)
         }
     }
 
     fun send(message: String) {
         bt.send(message, true)
-//        bt.setOnDataReceivedListener(this)
     }
 
     fun setConnectionListener(listener: BTConnectionManager) {
@@ -67,7 +68,6 @@ class BluetoothManager constructor(var bt: BluetoothSPP, var context: Context){
             return true
         else
             return false
-//        return if (bt.isServiceAvailable) true else false
     }
 
     fun setupService() {
@@ -89,15 +89,15 @@ class BluetoothManager constructor(var bt: BluetoothSPP, var context: Context){
             return false
     }
 
-    fun onBluetooth() {
-        if (!btAdapter.isEnabled)
-            btAdapter.enable()
-    }
-
-    fun offBluetooth() {
-        if (btAdapter.isEnabled)
-            btAdapter.disable()
-    }
+//    fun onBluetooth() {
+//        if (!btAdapter.isEnabled)
+//            btAdapter.enable()
+//    }
+//
+//    fun offBluetooth() {
+//        if (btAdapter.isEnabled)
+//            btAdapter.disable()
+//    }
 
     fun nearbyDevices() {
         if (btAdapter.scanMode != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
@@ -111,7 +111,6 @@ class BluetoothManager constructor(var bt: BluetoothSPP, var context: Context){
         context.registerReceiver(receiver, filter)
         btAdapter.startDiscovery()
 
-//        context.unregisterReceiver(receiver)
     }
 
     private val receiver = object : BroadcastReceiver() {

@@ -1,5 +1,6 @@
 package com.shedule.zyx.myshedule.ui
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -11,6 +12,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
+import app.akexorcist.bluetotohspp.library.BluetoothState
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.adapters.ViewPagerAdapter
@@ -69,20 +71,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       onPageSelected {
         main_toolbar.title = dateManager.getDayByPosition(it)
       }
-    }
-  }
-
-  override fun onWindowFocusChanged(hasFocus: Boolean) {
-    super.onWindowFocusChanged(hasFocus)
-//    Log.i("TAG", "$hasFocus")
-
-    if (hasFocus) {
-      if (bluetoothManager.bluetoothEnabled())
-        if (!bluetoothManager.serviceAvailable()) {
-          bluetoothManager.setupService()
-          Log.d("BluetoothManager", "service enabled (onStart)")
-          bluetoothManager.setConnectionListener(connectionManager)
-        }
     }
   }
 
@@ -151,23 +139,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   override fun onStart() {
     super.onStart()
-    if (bluetoothManager.bluetoothEnabled())
-      if (!bluetoothManager.serviceAvailable()) {
-        bluetoothManager.setupService()
-        Log.d("BluetoothManager", "service enabled (onStart)")
-        bluetoothManager.setConnectionListener(connectionManager)
-      }
-
+    bluetoothInit()
     Log.i("TAG", "onStart")
+  }
+
+  override fun onWindowFocusChanged(hasFocus: Boolean) {
+    super.onWindowFocusChanged(hasFocus)
+
+    if (hasFocus)
+      bluetoothInit()
+
   }
 
   override fun onDestroy() {
     super.onDestroy()
-    if (bluetoothManager.bluetoothEnabled())
-      if (bluetoothManager.serviceAvailable()) {
-        bluetoothManager.stopService()
-        Log.d("BluetoothManager", "service disabled (onStop)")
-      }
+    bluetoothDestroy()
 
   }
 
@@ -176,22 +162,54 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     Log.i("TAG", "onStop")
   }
 
+  private fun bluetoothInit() {
+    if (bluetoothManager.bluetoothEnabled())
+      if (!bluetoothManager.serviceAvailable()) {
+        bluetoothManager.setupService()
+        bluetoothManager.setConnectionListener(connectionManager)
+        bluetoothManager.setReceiveListener(receiveManager)
+      }
+  }
+
+  private fun bluetoothDestroy() {
+    if (bluetoothManager.bluetoothEnabled())
+      if (bluetoothManager.serviceAvailable()) {
+        bluetoothManager.stopService()
+      }
+  }
+
   fun showDialog() {
-    alert {
-      customView {
-        verticalLayout {
-          listView {
-            adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1,
-                    bluetoothManager.getDevices())
-          }.onItemClick { adapterView, view, i, l ->
-            bluetoothManager.connect(i)
+    if (bluetoothManager.bluetoothEnabled()) {
+      alert("List of devices") {
+        customView {
+          verticalLayout {
+            listView {
+              adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1,
+                      bluetoothManager.getDevices())
+            }.onItemClick { adapterView, view, i, l ->
+              bluetoothManager.connect(i)
+            }
+
+            positiveButton("Send") {
+              bluetoothManager.send("TEXT")
+            }
           }
         }
-      }
-      positiveButton("Send") {
-        bluetoothManager.send("TEXT")
-      }
-    }.show()
 
+      }.show()
+    } else {
+      startActivityForResult(Intent(bluetoothManager.ACTION_ENABLE),
+              bluetoothManager.REQUEST_ENABLE)
+    }
+
+  }
+
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    super.onActivityResult(requestCode, resultCode, data)
+
+    if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {
+      bluetoothInit()
+      showDialog()
+    }
   }
 }
