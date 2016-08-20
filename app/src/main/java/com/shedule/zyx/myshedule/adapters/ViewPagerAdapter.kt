@@ -3,15 +3,17 @@ package com.shedule.zyx.myshedule.adapters
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import com.shedule.zyx.myshedule.ui.ScheduleFragment
+import com.shedule.zyx.myshedule.ui.fragments.ScheduleFragment
 
 class ViewPagerAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager) {
 
   //todo use resource, not string variable
   val listTitles = listOf("Понедельник", "Вторник", "Среда", "Четверг", "Пятница")
+  //todo i dont know how improve, i dont have good solution, hardCode,fragment know about year position in viewpager
+  val positions = listOf(0, 1, 2, 3, 4)
 
   override fun getItem(position: Int): Fragment {
-    return ScheduleFragment()
+    return ScheduleFragment().newInstance(positions[position])
   }
 
   override fun getCount(): Int {

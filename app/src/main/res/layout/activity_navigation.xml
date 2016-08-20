@@ -9,7 +9,7 @@
     android:animationCache="true"
     android:fitsSystemWindows="true"
     app:insetForeground="#4000"
-    tools:context=".ui.MainActivity"
+    tools:context=".ui.activities.MainActivity"
     tools:openDrawer="start">
 
     <include

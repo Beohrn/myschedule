@@ -1,4 +1,4 @@
-package com.shedule.zyx.myshedule.ui
+package com.shedule.zyx.myshedule.ui.activities
 
 import android.graphics.Color
 import android.os.Bundle
@@ -31,6 +31,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   val listenerList = arrayListOf<DataChangeListener>()
 
+  companion object {
+    val CREATE_SCHEDULE_REQUEST_CODE = 942
+  }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_navigation)
@@ -43,6 +47,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     nav_view?.setNavigationItemSelectedListener(this)
     ActionBarDrawerToggle(this, drawer_layout, main_toolbar,
         R.string.navigation_drawer_open, R.string.navigation_drawer_close).syncState()
+
 
     main_viewpager.currentItem = dateManager.getPositionByCalendar()
     main_toolbar.post { title = dateManager.getDayByPosition(dateManager.getPositionByCalendar()) }
@@ -91,7 +96,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     dateManager.updateCalendar(year, monthOfYear, dayOfMonth)
     main_viewpager.currentItem = dateManager.getPositionByCalendar(year, monthOfYear, dayOfMonth)
     main_toolbar.title = dateManager.getDayByPosition(main_viewpager.currentItem)
-    listenerList.forEach { it.updateData("$year $monthOfYear $dayOfMonth") }
+    listenerList.forEach { it.updateData() }
   }
 
   private fun openDataPicker() {
