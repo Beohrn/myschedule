@@ -2,26 +2,29 @@ package com.shedule.zyx.myshedule.managers
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.util.Log
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothState
+import com.shedule.zyx.myshedule.interfaces.FoundDeviceReceiverCallback
+import com.shedule.zyx.myshedule.receivers.FoundDeviceReceiver
 import org.jetbrains.anko.newTask
 import java.util.*
 
 /**
  * Created by Alexander on 03.08.2016.
  */
-class BluetoothManager constructor(var bt: BluetoothSPP, var context: Context){
+class BluetoothManager constructor(var bt: BluetoothSPP, var context: Context): FoundDeviceReceiverCallback {
 
     private val TAG = BluetoothManager::class.java.simpleName
     val btAdapter: BluetoothAdapter
 
     val ACTION_ENABLE = BluetoothAdapter.ACTION_REQUEST_ENABLE
     val REQUEST_ENABLE = BluetoothState.REQUEST_ENABLE_BT
+
+    val deviceReceiver = FoundDeviceReceiver(this)
+
+    var listOfNearbyDevices = ArrayList<BluetoothDevice>()
 
     init {
         btAdapter = BluetoothAdapter.getDefaultAdapter()
@@ -32,20 +35,26 @@ class BluetoothManager constructor(var bt: BluetoothSPP, var context: Context){
         btAdapter.bondedDevices.forEach {
             result.add(it)
         }
+
         return result
     }
 
     fun getDevices(): ArrayList<String> {
-        val names = ArrayList<String>()
+        val pairedDevices = ArrayList<String>()
         bondedDevices().forEach {
-            names.add(it.name)
+            pairedDevices.add(it.name)
         }
 
-        return names
+        return pairedDevices
     }
 
-    fun connect(index: Int) {
-        val address = bondedDevices()[index].address
+    fun connect(index: Int, belong: Boolean) {
+        var address: String
+        if (belong)
+            address = bondedDevices()[index].address
+        else
+            address = listOfNearbyDevices[index].address
+
         if (serviceAvailable()) {
             bt.connect(address)
         }
@@ -71,10 +80,11 @@ class BluetoothManager constructor(var bt: BluetoothSPP, var context: Context){
     }
 
     fun setupService() {
-
         bt.setupService()
         bt.startService(BluetoothState.DEVICE_ANDROID)
 
+        if (btAdapter.scanMode != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE)
+            makeDiscoverable()
     }
 
     fun stopService() {
@@ -82,50 +92,52 @@ class BluetoothManager constructor(var bt: BluetoothSPP, var context: Context){
             bt.stopService()
     }
 
-    fun bluetoothEnabled() : Boolean {
+    fun bluetoothEnabled(): Boolean {
         if (btAdapter.isEnabled)
             return true
         else
             return false
     }
 
-//    fun onBluetooth() {
-//        if (!btAdapter.isEnabled)
-//            btAdapter.enable()
-//    }
-//
-//    fun offBluetooth() {
-//        if (btAdapter.isEnabled)
-//            btAdapter.disable()
-//    }
-
-    fun nearbyDevices() {
-        if (btAdapter.scanMode != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
-            makeDiscoverable()
+    fun getNearbyDevices(): ArrayList<BluetoothDevice> {
+        val list = ArrayList<BluetoothDevice>()
+        listOfNearbyDevices.forEach {
+            list.add(it)
         }
+        return list
+    }
 
-        val filter = IntentFilter()
-        filter.addAction(BluetoothDevice.ACTION_FOUND)
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
-        context.registerReceiver(receiver, filter)
+
+    override fun onDeviceFound(device: BluetoothDevice) {
+        listOfNearbyDevices.add(device)
+    }
+
+    private fun nearbyDevices() {
+        deviceReceiver.register(context)
         btAdapter.startDiscovery()
-
+//        val filter = IntentFilter()
+//        filter.addAction(BluetoothDevice.ACTION_FOUND)
+//        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
+//        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
+//
+//        context.registerReceiver(broadcastReceiver, filter)
+//
+//        btAdapter.startDiscovery()
     }
 
-    private val receiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val action = intent!!.action
-            if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
-
-            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                context!!.unregisterReceiver(this)
-            } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                val devices = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
-                Log.d("TAG", "${devices.name}")
-            }
-        }
-    }
+//    private val broadcastReceiver = object : BroadcastReceiver() {
+//        override fun onReceive(context: Context?, intent: Intent?) {
+//            val action = intent!!.action
+//            if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
+//            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+//                context!!.unregisterReceiver(this)
+//            } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+//                val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+//                listOfNearbyDevices.add(device)
+//
+//            }
+//        }
+//    }
 
     private fun makeDiscoverable() {
         val discoverable = Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE)
@@ -134,3 +146,5 @@ class BluetoothManager constructor(var bt: BluetoothSPP, var context: Context){
         context.startActivity(discoverable)
     }
 }
+
+

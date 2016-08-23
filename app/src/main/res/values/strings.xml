@@ -7,4 +7,7 @@
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="title_list_of_devices">List of devices</string>
+    <string name="message_list_of_devices">Tap on device to send</string>
 </resources>

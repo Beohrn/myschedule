@@ -11,9 +11,9 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ArrayAdapter
 import app.akexorcist.bluetotohspp.library.BluetoothState
 import com.shedule.zyx.myshedule.R
+import com.shedule.zyx.myshedule.R.layout.activity_navigation
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.adapters.ViewPagerAdapter
 import com.shedule.zyx.myshedule.interfaces.ChangeStateFragmentListener
@@ -26,11 +26,7 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_navigation.*
 import kotlinx.android.synthetic.main.content_navigation.*
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.listView
-import org.jetbrains.anko.onItemClick
 import org.jetbrains.anko.support.v4.onPageChangeListener
-import org.jetbrains.anko.verticalLayout
 import java.util.*
 import javax.inject.Inject
 
@@ -53,7 +49,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_navigation)
+    setContentView(activity_navigation)
     ScheduleApplication.getComponent().inject(this)
 
     setSupportActionBar(main_toolbar)
@@ -125,12 +121,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
   override fun onNavigationItemSelected(item: MenuItem?): Boolean {
-
     //todo implement this
     when (item?.itemId) {
       R.id.nav_camera -> //listenerList.forEach { /* do something */ }
       showDialog()
-
     }
 
     drawer_layout?.closeDrawer(GravityCompat.START)
@@ -145,10 +139,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   override fun onWindowFocusChanged(hasFocus: Boolean) {
     super.onWindowFocusChanged(hasFocus)
-
     if (hasFocus)
       bluetoothInit()
-
   }
 
   override fun onDestroy() {
@@ -180,23 +172,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   fun showDialog() {
     if (bluetoothManager.bluetoothEnabled()) {
-      alert("List of devices") {
-        customView {
-          verticalLayout {
-            listView {
-              adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1,
-                      bluetoothManager.getDevices())
-            }.onItemClick { adapterView, view, i, l ->
-              bluetoothManager.connect(i)
-            }
-
-            positiveButton("Send") {
-              bluetoothManager.send("TEXT")
-            }
-          }
-        }
-
-      }.show()
+      val dialog = BluetoothDialog()
+      dialog.show(supportFragmentManager, "dialog")
     } else {
       startActivityForResult(Intent(bluetoothManager.ACTION_ENABLE),
               bluetoothManager.REQUEST_ENABLE)
@@ -206,7 +183,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
-
     if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {
       bluetoothInit()
       showDialog()

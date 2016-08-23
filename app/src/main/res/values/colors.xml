@@ -15,5 +15,8 @@
 
     <color name="background_schedule_fragment">#e8e8e8</color>
     <color name="title_frame">#4db6ac</color>
+
+    <color name="indigo">#536dfe</color>
+    <color name="pink">#e91e63</color>
 </resources>
 
