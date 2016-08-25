@@ -1,8 +1,6 @@
 package com.shedule.zyx.myshedule.widget
 
 import android.animation.Animator
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
@@ -17,7 +15,6 @@ import org.jetbrains.anko.onClick
  */
 class ScheduleItemView : FrameLayout {
   lateinit var mAnimator: ValueAnimator
-  var s = false
 
   constructor(context: Context?) : super(context) {
     init(context)
@@ -35,31 +32,10 @@ class ScheduleItemView : FrameLayout {
     inflate(context, R.layout.schedule_item_layout, this)
 
     onClick {
-      if (!s) {
-//        val anim1 = ObjectAnimator.ofFloat(this, "scaleX", 0.97f)
-//        val anim2 = ObjectAnimator.ofFloat(this, "scaleY", 0.95f)
-        val anim = ObjectAnimator.ofFloat(this, "translationZ", 0f, 200f)
-
-        val set = AnimatorSet().setDuration(300)
-        set.play(anim)
-        set.start()
-
-        s = true
-        if (expand_container.visibility === View.GONE) expand() else collapse()
-      } else {
-//        val anim1 = ObjectAnimator.ofFloat(this, "scaleX", 1f)
-//        val anim2 = ObjectAnimator.ofFloat(this, "scaleY", 1f)
-        val anim = ObjectAnimator.ofFloat(this, "translationZ", 200f, 0f)
-
-        val set = AnimatorSet().setDuration(200)
-        set.play(anim)
-        set.start()
-        s = false
-        if (expand_container.visibility === View.GONE) expand() else collapse()
-      }
+      if (expand_container.visibility === View.GONE) expand() else collapse()
     }
 
-    expand_container.post {
+    expand_container.post {x
       mAnimator = slideAnimator(0, expand_container.height)
       expand_container.visibility = View.GONE
     }
@@ -96,7 +72,6 @@ class ScheduleItemView : FrameLayout {
     val animator = ValueAnimator.ofInt(start, end)
 
     animator.addUpdateListener { valueAnimator ->
-
       val layoutParams = expand_container.layoutParams
       layoutParams.height = valueAnimator.animatedValue as Int
       expand_container.layoutParams = layoutParams

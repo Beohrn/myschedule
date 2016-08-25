@@ -13,9 +13,9 @@ import com.shedule.zyx.myshedule.widget.ScheduleItemView
 /**
  * Created by bogdan on 31.07.16.
  */
-class ScheduleItemsAdapter(val context: Activity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ScheduleRecycleAdapter(val context: Activity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-  var models = arrayListOf(ScheduleAdapterModel(ADD_NEW_SCHEDULE_TYPE))
+  var models = arrayListOf<ScheduleAdapterModel>()
 
   override fun getItemViewType(position: Int): Int {
     return when (models[position].type) {
@@ -39,7 +39,7 @@ class ScheduleItemsAdapter(val context: Activity) : RecyclerView.Adapter<Recycle
   inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {}
 
   fun setDatas(strings: List<String>) {
-    models.add(ScheduleAdapterModel(SCHEDULE_TYPE))
+      models.add(models.size - 1, ScheduleAdapterModel(SCHEDULE_TYPE))
     this.notifyDataSetChanged()
   }
 }

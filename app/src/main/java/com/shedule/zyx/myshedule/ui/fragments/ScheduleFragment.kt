@@ -2,17 +2,17 @@ package com.shedule.zyx.myshedule.ui.fragments
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.ScheduleApplication
-import com.shedule.zyx.myshedule.adapters.ScheduleListAdapter
+import com.shedule.zyx.myshedule.adapters.ScheduleRecycleAdapter
 import com.shedule.zyx.myshedule.interfaces.ChangeStateFragmentListener
 import com.shedule.zyx.myshedule.interfaces.DataChangeListener
 import com.shedule.zyx.myshedule.managers.DateManager
 import kotlinx.android.synthetic.main.shedule_fragment_layout.*
-import org.jetbrains.anko.onClick
 import javax.inject.Inject
 
 /**
@@ -46,13 +46,8 @@ class ScheduleFragment : Fragment(), DataChangeListener {
     super.onViewCreated(view, savedInstanceState)
 
     position = arguments.getInt("position", 0)
-
-    val s = ScheduleListAdapter(activity)
-    list.adapter = s
-
-    add_schedule_btn.onClick {
-      s.setDatas(listOf(""))
-    }
+    recycle_list.layoutManager = LinearLayoutManager(activity)
+    recycle_list.adapter = ScheduleRecycleAdapter(activity)
   }
 
   override fun updateData() {

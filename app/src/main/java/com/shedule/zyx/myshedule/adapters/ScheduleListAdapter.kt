@@ -11,22 +11,12 @@ import com.shedule.zyx.myshedule.widget.ScheduleItemView
 /**
  * Created by bogdan on 07.08.16.
  */
+// todo need to think about use listview or recycleview
 class ScheduleListAdapter(val context: Context) : BaseAdapter() {
   var models = arrayListOf(ScheduleAdapterModel(ScheduleAdapterModel.ADD_NEW_SCHEDULE_TYPE))
 
-  override fun getItemViewType(position: Int): Int {
-    return when (models[position].type) {
-      SCHEDULE_TYPE -> SCHEDULE_TYPE
-      else -> ScheduleAdapterModel.ADD_NEW_SCHEDULE_TYPE
-    }
-  }
-
   override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-    if (getItemViewType(position) == SCHEDULE_TYPE) {
-      return ScheduleItemView(context)
-    } else {
-      return ScheduleItemView(context)
-    }
+    return ScheduleItemView(context)
   }
 
   override fun getItem(position: Int) = models[position]

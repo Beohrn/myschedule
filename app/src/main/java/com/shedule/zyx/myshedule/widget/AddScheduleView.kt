@@ -1,8 +1,8 @@
 package com.shedule.zyx.myshedule.widget
 
 import android.content.Context
-import android.support.v7.widget.CardView
 import android.util.AttributeSet
+import android.widget.FrameLayout
 import com.shedule.zyx.myshedule.R
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.toast
@@ -10,7 +10,7 @@ import org.jetbrains.anko.toast
 /**
  * Created by bogdan on 31.07.16.
  */
-class AddScheduleView : CardView {
+class AddScheduleView : FrameLayout {
 
   constructor(context: Context?) : super(context) {
     init(context)
