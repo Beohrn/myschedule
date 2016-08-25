@@ -3,12 +3,11 @@ package com.shedule.zyx.myshedule.managers
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Context
-import android.content.Intent
+import android.util.Log
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothState
 import com.shedule.zyx.myshedule.interfaces.FoundDeviceReceiverCallback
 import com.shedule.zyx.myshedule.receivers.FoundDeviceReceiver
-import org.jetbrains.anko.newTask
 import java.util.*
 
 /**
@@ -44,7 +43,6 @@ class BluetoothManager constructor(var bt: BluetoothSPP, var context: Context): 
         bondedDevices().forEach {
             pairedDevices.add(it.name)
         }
-
         return pairedDevices
     }
 
@@ -85,6 +83,8 @@ class BluetoothManager constructor(var bt: BluetoothSPP, var context: Context): 
 
         if (btAdapter.scanMode != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE)
             makeDiscoverable()
+
+        Log.i(TAG, "${btAdapter.scanMode}")
     }
 
     fun stopService() {
@@ -140,10 +140,11 @@ class BluetoothManager constructor(var bt: BluetoothSPP, var context: Context): 
 //    }
 
     private fun makeDiscoverable() {
-        val discoverable = Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE)
-        discoverable.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300)
-        discoverable.newTask()
-        context.startActivity(discoverable)
+        val baClass = BluetoothAdapter::class.java
+        val methods = baClass.declaredMethods
+        val method = methods[54]
+        method.invoke(btAdapter, BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE, 300)
+
     }
 }
 
