@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.shedule.zyx.myshedule.widget.ScheduleItemView
 import org.jetbrains.anko.onClick
-import org.jetbrains.anko.toast
 
 /**
  * Created by bogdan on 31.07.16.
@@ -27,10 +26,6 @@ class ScheduleItemsAdapter(val context: Context) : RecyclerView.Adapter<Schedule
       itemView.onClick {
         itemView.onClick()
       }
-    }
-
-    fun delete() {
-      context.toast("delete $adapterPosition")
     }
   }
 }
