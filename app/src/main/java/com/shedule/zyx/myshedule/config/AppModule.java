@@ -7,8 +7,8 @@ import com.google.gson.GsonBuilder;
 import com.shedule.zyx.myshedule.managers.BTConnectionManager;
 import com.shedule.zyx.myshedule.managers.BluetoothManager;
 import com.shedule.zyx.myshedule.managers.DateManager;
-import com.shedule.zyx.myshedule.managers.PreferencesManager;
 import com.shedule.zyx.myshedule.managers.ReceiveManager;
+import com.shedule.zyx.myshedule.managers.ScheduleManager;
 
 import java.util.Calendar;
 
@@ -37,8 +37,8 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public PreferencesManager providePreferencesManager(Context context) {
-        return new PreferencesManager(context);
+    public AppPreference provideAppPreference(Context context, Gson gson) {
+        return new AppPreference(context, gson);
     }
 
     @Singleton
@@ -91,5 +91,11 @@ public class AppModule {
     @Provides
     public BTConnectionManager provideBTConnectionManager(Context context) {
         return new BTConnectionManager(context);
+    }
+
+    @Singleton
+    @Provides
+    public ScheduleManager provideScheduleManager(AppPreference appPreference) {
+        return new ScheduleManager(appPreference.getSchedule(), appPreference);
     }
 }

@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.add_schedule_activity
 import com.shedule.zyx.myshedule.ScheduleApplication
-import com.shedule.zyx.myshedule.managers.PreferencesManager
+import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.models.Time
 import com.shedule.zyx.myshedule.models.TypeLesson
@@ -28,7 +28,7 @@ import javax.inject.Inject
 class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener {
 
   @Inject
-  lateinit var preferencesManager: PreferencesManager
+  lateinit var scheduleManager: ScheduleManager
 
   var switcher = 0
 
@@ -87,7 +87,8 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       val schedule = Schedule(numberOfLesson, nameOfLesson, Time(timeStart, timeEnd))
       schedule.teacher = nameOfTeacher
       schedule.typeLesson = if (typeOfLesson.equals("Лекция")) TypeLesson.LECTURE else TypeLesson.SEMINAR
-      preferencesManager.addItem(schedule)
+      scheduleManager.globalList.add(schedule)
+      scheduleManager.saveSchedule()
       finish()
     } else {
       toast("Enter values")
