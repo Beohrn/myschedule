@@ -15,48 +15,49 @@ import javax.inject.Inject
  */
 class PreferencesManager(context: Context) {
 
-    private val TAG = PreferencesManager::class.java.simpleName
-    private val NAME = "schedule_preference"
-    private val KEY = "schedule"
-    private val settings: SharedPreferences
-    private val editor: SharedPreferences.Editor
+  private val TAG = PreferencesManager::class.java.simpleName
+  private val NAME = "schedule_preference"
+  private val KEY = "schedule"
+  private val settings: SharedPreferences
+  private val editor: SharedPreferences.Editor
 
-    @Inject
-    lateinit var gson: Gson
+  @Inject
+  lateinit var gson: Gson
 
-    init {
-        settings = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
-        editor = settings.edit()
-        ScheduleApplication.getComponent().inject(this)
+  init {
+    settings = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
+    editor = settings.edit()
+    ScheduleApplication.getComponent().inject(this)
+  }
+
+  fun saveSchedule(list: List<Schedule>) = editor.putString(KEY, gson.toJson(list)).apply()
+
+  fun getSchedule(): ArrayList<Schedule> {
+    val result: ArrayList<Schedule>
+    if (settings.contains(KEY)) {
+      val json = settings.getString(KEY, null)
+      Log.i(TAG, "$json")
+      val type = object : TypeToken<ArrayList<Schedule>>() {}.type
+      result = gson.fromJson(json, type)
+    } else {
+      result = ArrayList<Schedule>()
+      return result
     }
 
-    fun saveSchedule(list: List<Schedule>) = editor.putString(KEY, gson.toJson(list)).apply()
+    return result
+  }
 
-    fun getSchedule(): ArrayList<Schedule> {
-        val result: ArrayList<Schedule>
-        if (settings.contains(KEY)) {
-            val json = settings.getString(KEY, null)
-            Log.i(TAG, "$json")
-            val type = object : TypeToken<ArrayList<Schedule>>(){}.type
-            result = gson.fromJson(json,type)
-        } else {
-            result = ArrayList<Schedule>()
-            return result
-        }
+  fun addItem(schedule: Schedule) {
+    val schedules = getSchedule()
+    schedules.add(schedule)
+    saveSchedule(schedules)
 
-        return result
-    }
+  }
 
-    fun addItem(schedule: Schedule) {
-        val schedules = getSchedule()
-        schedules.add(schedule)
-        saveSchedule(schedules)
-    }
-
-    fun removeItem(index: Int) {
-        val res = getSchedule()
-        res.removeAt(index)
-        saveSchedule(res)
-    }
+  fun removeItem(index: Int) {
+    val res = getSchedule()
+    res.removeAt(index)
+    saveSchedule(res)
+  }
 
 }

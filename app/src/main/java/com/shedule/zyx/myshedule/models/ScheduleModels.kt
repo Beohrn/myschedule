@@ -7,11 +7,8 @@ package com.shedule.zyx.myshedule.models
 class Schedule(val number: String, val name: String, val time: Time) {
 
   var teacher: String? = ""
-
   var location: Location? = null
-
   var typeLesson: TypeLesson? = null
-
   var periodOfLesson: String? = ""
 
 
@@ -30,3 +27,4 @@ data class Teacher(val name: String)
 enum class TypeLesson {
   SEMINAR, LECTURE
 }
+

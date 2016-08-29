@@ -8,6 +8,23 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_main2">Main2Activity</string>
 
-    <string name="title_list_of_devices">List of devices</string>
-    <string name="message_list_of_devices">Tap on device to send</string>
+    <string name="name_of_lesson">Название предмета</string>
+    <string name="number_of_lesson">№</string>
+    <string name="add_schedule_toolbar_title">Add Schedule</string>
+
+    <string-array name="type_of_lesson">
+        <item>Практика</item>
+        <item>Лекция</item>
+    </string-array>
+
+    <string-array name="number_of_lesson">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <string name="start_time_hint"><u>Начало</u></string>
+    <string name="end_time_hint"><u>Конец</u></string>
 </resources>

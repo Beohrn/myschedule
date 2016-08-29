@@ -1,4 +1,4 @@
-package com.shedule.zyx.myshedule.ui
+package com.shedule.zyx.myshedule.ui.fragments
 
 import android.app.Dialog
 import android.os.Bundle
