@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activities.ScheduleInformationActivity"/>
+        <activity android:name=".ui.activities.AddScheduleActivity"/>
     </application>
 
 </manifest>
