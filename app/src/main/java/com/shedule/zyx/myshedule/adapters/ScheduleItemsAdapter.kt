@@ -2,9 +2,9 @@ package com.shedule.zyx.myshedule.adapters
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
-import android.view.View
 import android.view.ViewGroup
 import com.shedule.zyx.myshedule.widget.ScheduleItemView
+import org.jetbrains.anko.onClick
 
 /**
  * Created by bogdan on 31.07.16.
@@ -18,11 +18,14 @@ class ScheduleItemsAdapter(val context: Context) : RecyclerView.Adapter<Schedule
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
   }
 
-  override fun getItemCount() = 2
+  override fun getItemCount() = 30
 
-  inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+  inner class ViewHolder(itemView: ScheduleItemView) : RecyclerView.ViewHolder(itemView) {
 
-    init { /* onClick */
+    init {
+      itemView.onClick {
+        itemView.onClick()
+      }
     }
   }
 }

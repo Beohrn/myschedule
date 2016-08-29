@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <ScrollView
+            android:id="@+id/scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+        </ScrollView>
+
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/silver_lite">
+
+        <EditText
+            android:id="@+id/add_task"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/silver_lite"
+            android:hint="add sub task"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:paddingLeft="20dp"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@null"
+            android:textSize="14sp"/>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/add_photo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:alpha="0.5"
+            android:src="@drawable/add_photo"/>
+
+        <ImageView
+            android:id="@+id/share_schedule"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:alpha="0.5"
+            android:src="@drawable/ic_menu_share"/>
+
+        <ImageView
+            android:id="@+id/add_to_list"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:alpha="0.5"
+            android:src="@drawable/add_to_list"/>
+
+        <ImageView
+            android:id="@+id/edit_schedule"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:alpha="0.5"
+            android:src="@drawable/edit"/>
+
+        <ImageView
+            android:id="@+id/delete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:alpha="0.5"
+            android:src="@drawable/delete"/>
+
+    </LinearLayout>
+
+</LinearLayout>
