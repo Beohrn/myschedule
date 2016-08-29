@@ -51,7 +51,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="0.1"
                         android:paddingTop="10dp"
-                        android:src="@drawable/edit_pencel"/>
+                        android:src="@drawable/edit"/>
 
                 </LinearLayout>
 

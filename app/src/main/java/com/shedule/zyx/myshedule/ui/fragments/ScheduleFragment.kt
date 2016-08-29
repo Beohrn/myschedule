@@ -1,5 +1,6 @@
 package com.shedule.zyx.myshedule.ui.fragments
 
+import android.graphics.Paint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -18,6 +19,7 @@ import kotlinx.android.synthetic.main.shedule_fragment_layout.*
  */
 class ScheduleFragment : Fragment(), DataChangeListener {
   lateinit var adapter: ScheduleItemsAdapter
+  val p = Paint()
 
   override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
     (activity as ChangeStateFragmentListener).let { Log.d("listener", "add to list"); it.addListener(this) }
