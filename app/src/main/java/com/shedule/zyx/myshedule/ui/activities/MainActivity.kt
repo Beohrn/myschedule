@@ -27,6 +27,7 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_navigation.*
 import kotlinx.android.synthetic.main.content_navigation.*
+import org.jetbrains.anko.onClick
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.support.v4.onPageChangeListener
 import java.util.*
@@ -69,6 +70,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       onPageSelected {
         main_toolbar.title = dateManager.getDayByPosition(it)
       }
+    }
+
+    add_schedule_button.onClick {
+//      dateManager.getScheduleByDate(Date(15, 11, 2016), Date(12, 0, 2017))
+
     }
   }
 
