@@ -1,4 +1,4 @@
-package com.shedule.zyx.myshedule.ui
+package com.shedule.zyx.myshedule.ui.activities
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -12,7 +12,5 @@ class ScheduleInformationActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.schedule_item)
-
   }
-
 }

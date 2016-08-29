@@ -1,4 +1,4 @@
-package com.shedule.zyx.myshedule.ui
+package com.shedule.zyx.myshedule.ui.activities
 
 import android.content.Intent
 import android.graphics.Color
@@ -22,6 +22,7 @@ import com.shedule.zyx.myshedule.managers.BTConnectionManager
 import com.shedule.zyx.myshedule.managers.BluetoothManager
 import com.shedule.zyx.myshedule.managers.DateManager
 import com.shedule.zyx.myshedule.managers.ReceiveManager
+import com.shedule.zyx.myshedule.ui.BluetoothDialog
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_navigation.*
