@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <Spinner
+        android:id="@+id/number_of_lesson"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"/>
+
+    <EditText
+        android:id="@+id/name_of_lesson"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/number_of_lesson"
+        android:layout_marginLeft="34dp"
+        android:layout_marginStart="34dp"
+        android:layout_toEndOf="@+id/number_of_lesson"
+        android:layout_toRightOf="@+id/number_of_lesson"
+        android:hint="@string/name_of_lesson"
+        android:textCursorDrawable="@null"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/edit_text_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/number_of_lesson"
+        android:layout_alignStart="@+id/number_of_lesson"
+        android:layout_below="@+id/number_of_lesson"
+        android:layout_marginTop="30dp"
+        android:text="Время:"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/start_time_of_lesson"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/name_of_lesson"
+        android:layout_alignStart="@+id/name_of_lesson"
+        android:layout_below="@+id/name_of_lesson"
+        android:layout_marginTop="25dp"
+        android:hint="@string/start_time_hint"
+        android:textColorHint="@color/indigo"
+        android:textAlignment="center"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/hyphen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/start_time_of_lesson"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@+id/start_time_of_lesson"
+        android:layout_toRightOf="@+id/start_time_of_lesson"
+        android:text=" - "
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/end_time_of_lesson"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/start_time_of_lesson"
+        android:layout_marginLeft="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@+id/hyphen"
+        android:layout_toRightOf="@+id/hyphen"
+        android:hint="@string/end_time_hint"
+        android:textColorHint="@color/indigo"
+
+        android:textAlignment="center"
+        android:textSize="18sp"/>
+
+    <EditText
+        android:id="@+id/name_of_teacher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/edit_text_time"
+        android:layout_alignStart="@+id/edit_text_time"
+        android:layout_below="@+id/start_time_of_lesson"
+        android:layout_marginTop="15dp"
+        android:hint="Имя преподвателя"
+        android:textCursorDrawable="@null"
+        android:textColor="@color/black"/>
+
+    <Spinner
+        android:id="@+id/type_of_lesson"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_alignBottom="@+id/name_of_teacher"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/name_of_teacher"
+        android:layout_toRightOf="@+id/name_of_teacher"/>
+
+    <EditText
+        android:id="@+id/classroom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/name_of_teacher"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:ems="7"
+        android:maxLength="10"
+        android:singleLine="true"
+        android:hint="Аудитория"
+        android:textCursorDrawable="@null"
+        android:textColor="@color/black"/>
+
+    <EditText
+        android:id="@+id/housing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/name_of_teacher"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/classroom"
+        android:ems="7"
+        android:singleLine="true"
+        android:maxLength="10"
+        android:hint="Корпус"
+        android:inputType="numberDecimal"
+        android:textCursorDrawable="@null"
+        android:textColor="@color/black"/>
+
+</RelativeLayout>

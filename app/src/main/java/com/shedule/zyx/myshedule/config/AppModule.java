@@ -8,13 +8,13 @@ import com.shedule.zyx.myshedule.managers.BTConnectionManager;
 import com.shedule.zyx.myshedule.managers.BluetoothManager;
 import com.shedule.zyx.myshedule.managers.DateManager;
 import com.shedule.zyx.myshedule.managers.ReceiveManager;
+import com.shedule.zyx.myshedule.managers.ScheduleManager;
 
 import java.util.Calendar;
 
 import javax.inject.Singleton;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
-import app.voter.xyz.config.AppPreferences;
 import dagger.Module;
 import dagger.Provides;
 import io.realm.Realm;
@@ -37,8 +37,8 @@ public class AppModule {
 
     @Provides
     @Singleton
-    AppPreferences providePrefs() {
-        return new AppPreferences(context);
+    public AppPreference provideAppPreference(Context context, Gson gson) {
+        return new AppPreference(context, gson);
     }
 
     @Singleton
@@ -91,5 +91,11 @@ public class AppModule {
     @Provides
     public BTConnectionManager provideBTConnectionManager(Context context) {
         return new BTConnectionManager(context);
+    }
+
+    @Singleton
+    @Provides
+    public ScheduleManager provideScheduleManager(AppPreference appPreference) {
+        return new ScheduleManager(appPreference.getSchedule(), appPreference);
     }
 }
