@@ -26,6 +26,7 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_navigation.*
 import kotlinx.android.synthetic.main.content_navigation.*
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.support.v4.onPageChangeListener
 import java.util.*
 import javax.inject.Inject
@@ -125,6 +126,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     when (item?.itemId) {
       R.id.nav_camera -> //listenerList.forEach { /* do something */ }
       showDialog()
+      R.id.nav_gallery -> startActivity<AddScheduleActivity>()
+
     }
 
     drawer_layout?.closeDrawer(GravityCompat.START)

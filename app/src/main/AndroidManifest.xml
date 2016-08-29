@@ -31,6 +31,7 @@
         </activity>
 
         <activity android:name=".ui.ScheduleInformationActivity"/>
+        <activity android:name=".ui.AddScheduleActivity" />
     </application>
 
 </manifest>

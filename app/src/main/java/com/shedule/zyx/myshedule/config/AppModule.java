@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.shedule.zyx.myshedule.managers.BTConnectionManager;
 import com.shedule.zyx.myshedule.managers.BluetoothManager;
 import com.shedule.zyx.myshedule.managers.DateManager;
+import com.shedule.zyx.myshedule.managers.PreferencesManager;
 import com.shedule.zyx.myshedule.managers.ReceiveManager;
 
 import java.util.Calendar;
@@ -14,7 +15,6 @@ import java.util.Calendar;
 import javax.inject.Singleton;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
-import app.voter.xyz.config.AppPreferences;
 import dagger.Module;
 import dagger.Provides;
 import io.realm.Realm;
@@ -37,8 +37,8 @@ public class AppModule {
 
     @Provides
     @Singleton
-    AppPreferences providePrefs() {
-        return new AppPreferences(context);
+    public PreferencesManager providePreferencesManager(Context context) {
+        return new PreferencesManager(context);
     }
 
     @Singleton
