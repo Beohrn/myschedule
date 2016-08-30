@@ -18,13 +18,15 @@
     </string-array>
 
     <string-array name="number_of_lesson">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
+        <item>1 пара</item>
+        <item>2 пара</item>
+        <item>3 пара</item>
+        <item>4 пара</item>
+        <item>5 пара</item>
+        <item>6 пара</item>
+        <item>7 пара</item>
     </string-array>
 
-    <string name="start_time_hint"><u>Начало</u></string>
-    <string name="end_time_hint"><u>Конец</u></string>
+    <string name="start_time_hint">Начало</string>
+    <string name="end_time_hint">Конец</string>
 </resources>
