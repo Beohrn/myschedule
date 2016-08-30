@@ -18,10 +18,7 @@ import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.adapters.ViewPagerAdapter
 import com.shedule.zyx.myshedule.interfaces.ChangeStateFragmentListener
 import com.shedule.zyx.myshedule.interfaces.DataChangeListener
-import com.shedule.zyx.myshedule.managers.BTConnectionManager
-import com.shedule.zyx.myshedule.managers.BluetoothManager
-import com.shedule.zyx.myshedule.managers.DateManager
-import com.shedule.zyx.myshedule.managers.ReceiveManager
+import com.shedule.zyx.myshedule.managers.*
 import com.shedule.zyx.myshedule.ui.fragments.BluetoothDialog
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import kotlinx.android.synthetic.main.activity_navigation.*
@@ -47,6 +44,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   @Inject
   lateinit var connectionManager: BTConnectionManager
+
+  @Inject
+  lateinit var scheduleManager: ScheduleManager
 
   val listenerList = arrayListOf<DataChangeListener>()
 
@@ -170,6 +170,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   override fun onStop() {
     super.onStop()
+//    scheduleManager.saveSchedule()
     Log.i("TAG", "onStop")
   }
 

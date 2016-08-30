@@ -4,23 +4,18 @@ package com.shedule.zyx.myshedule.models
  * Created by alexkowlew on 26.08.2016.
  */
 
-class Schedule(val number: String, val name: String, val time: Time, val date: Date) {
+class Schedule(val numberLesson: Int = 1, val nameLesson: String, val beginTime: Time, val endTime: Time) {
 
   var teacher: String? = ""
   var location: Location? = null
   var typeLesson: TypeLesson? = null
-  var periodOfLesson: String? = ""
+  var beginPeriod: Date? = null
+  var endPeriod: Date? = null
 }
 
-data class Time(val begin: String, val end: String) {
-  override fun toString() = "$begin - $end"
-}
+data class Time(val hour: Int, val minute: Int)
 
-data class Location(val classroom: String, val housing: String) {
-  override fun toString() = "$classroom - $housing"
-}
-
-data class Teacher(val name: String)
+data class Location(val classroom: String, val housing: String)
 
 enum class TypeLesson {
   SEMINAR, LECTURE
