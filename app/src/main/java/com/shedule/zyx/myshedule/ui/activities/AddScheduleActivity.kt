@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
+import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.add_schedule_activity
 import com.shedule.zyx.myshedule.ScheduleApplication
@@ -15,6 +18,7 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import kotlinx.android.synthetic.main.add_item_view.*
 import kotlinx.android.synthetic.main.add_schedule_activity.*
 import org.jetbrains.anko.alert
+import org.jetbrains.anko.find
 import org.jetbrains.anko.include
 import org.jetbrains.anko.onClick
 import java.util.*
@@ -30,6 +34,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
 
   var switcher = 0
 
+  var listOfDates = arrayListOf<CalendarDay>()
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(add_schedule_activity)
@@ -49,6 +54,16 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       }.show()
     }
 
+    //TODO very nice view
+//    val bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
+//    start_period_of_lesson.onClick {
+//      bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+//
+//      calendarView.selectionMode = MaterialCalendarView.SELECTION_MODE_MULTIPLE
+//      val days = calendarView.selectedDates
+//
+//    }
+
 //    start_time_of_lesson.onClick {
 //      showDialog()
 //    }
@@ -66,6 +81,25 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
 //        addIntoPreference(); return true
         return true
       }
+      R.id.additional_calendar -> {
+        alert {
+          customView {
+            include<View>(R.layout.calendar_layout) {
+
+              val calendarView = find<MaterialCalendarView>(R.id.calendarView)
+              calendarView.selectionMode = MaterialCalendarView.SELECTION_MODE_MULTIPLE
+
+              find<TextView>(R.id.clear_dates).onClick { calendarView.clearSelection() }
+              find<TextView>(R.id.cancel_dates).onClick { dismiss() }
+              find<TextView>(R.id.approve_dates).onClick {
+                listOfDates.addAll(calendarView.selectedDates)
+                dismiss()
+              }
+            }
+          }
+        }.show()
+        return true
+      }
       else -> return super.onOptionsItemSelected(item)
     }
   }
@@ -74,7 +108,6 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     menuInflater.inflate(R.menu.add_schedule_item_menu, menu)
     return super.onCreateOptionsMenu(menu)
   }
-
 
 
 //  private fun addIntoPreference() {

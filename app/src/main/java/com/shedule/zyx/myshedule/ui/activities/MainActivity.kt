@@ -124,7 +124,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     k.set(2016, 9, 16)
     val d = Calendar.getInstance()
     d.set(2016, 9, 21)
-
     picker.highlightedDays = arrayOf<Calendar>(s, k, d)
     picker.show(fragmentManager, "")
   }
