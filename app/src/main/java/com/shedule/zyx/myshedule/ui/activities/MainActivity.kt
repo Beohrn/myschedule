@@ -117,16 +117,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     val picker = DatePickerDialog.newInstance(
         this@MainActivity, now.get(Calendar.YEAR), now.get(Calendar.MONTH),
         now.get(Calendar.DAY_OF_MONTH))
-    picker.accentColor = Color.RED
+    picker.accentColor = Color.GRAY
+    val s = Calendar.getInstance()
+    s.set(2016, 9, 14)
+    val k = Calendar.getInstance()
+    k.set(2016, 9, 16)
+    val d = Calendar.getInstance()
+    d.set(2016, 9, 21)
+
+    picker.highlightedDays = arrayOf<Calendar>(s, k, d)
     picker.show(fragmentManager, "")
   }
+
+
 
 
   override fun onNavigationItemSelected(item: MenuItem?): Boolean {
     //todo implement this
     when (item?.itemId) {
       R.id.nav_camera -> //listenerList.forEach { /* do something */ }
-      showDialog()
+        showDialog()
       R.id.nav_gallery -> startActivity<AddScheduleActivity>()
 
     }
@@ -180,7 +190,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       dialog.show(supportFragmentManager, "dialog")
     } else {
       startActivityForResult(Intent(bluetoothManager.ACTION_ENABLE),
-              bluetoothManager.REQUEST_ENABLE)
+          bluetoothManager.REQUEST_ENABLE)
     }
 
   }

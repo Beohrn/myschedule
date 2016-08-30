@@ -75,6 +75,8 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     return super.onCreateOptionsMenu(menu)
   }
 
+
+
 //  private fun addIntoPreference() {
 //    val numberOfLesson = number_of_lesson.selectedItem.toString()
 //    val nameOfLesson = name_of_lesson.text.toString()
