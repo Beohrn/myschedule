@@ -1,10 +1,11 @@
 package com.shedule.zyx.myshedule.managers
 
+import com.shedule.zyx.myshedule.models.Date
 import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DateManager(var calendar: Calendar) {
+class DateManager(var calendar: Calendar, val scheduleManager: ScheduleManager) {
   var dates = arrayListOf<Pair<Int, String>>()
 
   fun getPositionByCalendar(year: Int, month: Int, day: Int): Int {
@@ -57,5 +58,41 @@ class DateManager(var calendar: Calendar) {
   fun resetCalendar() = calendar.apply { Calendar.getInstance() }
 
   private fun getMonthName(month: Int) = DateFormatSymbols().months[month]
+
+  fun getScheduleByDate(startDate: Date, endDate: Date) : List<Int> {
+
+    val weeks = getWeeksBetween(startDate, endDate)
+    calendar.set(startDate.year, startDate.monthOfYear, startDate.dayOfMonth)
+    val temp = calendar
+
+    val result = arrayListOf<Int>()
+      for (i in 1..weeks+1) {
+        result.add(temp.get(Calendar.DAY_OF_MONTH))
+        temp.add(Calendar.WEEK_OF_MONTH, 1)
+      }
+    return result
+  }
+
+  private fun getWeeksBetween(startDate: Date, endDate: Date): Int {
+    var weeks = 0
+    val start = resetCalendar(startDate).time
+    val end = resetCalendar(endDate).time
+
+    val cal = GregorianCalendar()
+    cal.time = start
+
+    while (cal.time.before(end)) {
+      cal.add(Calendar.WEEK_OF_YEAR, 1)
+      weeks++
+    }
+
+    return weeks
+  }
+
+  private fun resetCalendar(date: Date): Calendar {
+    val calendar = GregorianCalendar()
+    calendar.set(date.year, date.monthOfYear, date.dayOfMonth)
+    return calendar
+  }
 
 }
