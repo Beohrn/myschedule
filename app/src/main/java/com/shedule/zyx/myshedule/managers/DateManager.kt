@@ -59,17 +59,45 @@ class DateManager(var calendar: Calendar, val scheduleManager: ScheduleManager) 
 
   private fun getMonthName(month: Int) = DateFormatSymbols().months[month]
 
-  fun getScheduleByDate(startDate: Date, endDate: Date) : List<Int> {
+  fun getScheduleByDate(startDate: Date, endDate: Date, currentDayOfWeek: Int): ArrayList<Date> {
+    val result = arrayListOf<Date>()
+    var weeksCount = getWeeksBetween(startDate, endDate)
 
-    val weeks = getWeeksBetween(startDate, endDate)
-    calendar.set(startDate.year, startDate.monthOfYear, startDate.dayOfMonth)
-    val temp = calendar
+    val startCalendar = GregorianCalendar()
+    startCalendar.set(startDate.year, startDate.monthOfYear, startDate.dayOfMonth)
 
-    val result = arrayListOf<Int>()
-      for (i in 1..weeks+1) {
-        result.add(temp.get(Calendar.DAY_OF_MONTH))
-        temp.add(Calendar.WEEK_OF_MONTH, 1)
-      }
+    val endCalendar = GregorianCalendar()
+    endCalendar.set(endDate.year, endDate.monthOfYear, endDate.dayOfMonth)
+    val endDayOfWeek = endCalendar.get(Calendar.DAY_OF_WEEK)
+    val startDayOfWeek = startCalendar.get(Calendar.DAY_OF_WEEK)
+
+    var difference = 0
+
+    if (currentDayOfWeek > startDayOfWeek) {
+      difference = currentDayOfWeek - startDayOfWeek
+
+    } else if (currentDayOfWeek < startDayOfWeek) {
+      difference = currentDayOfWeek - startDayOfWeek
+      startCalendar.add(Calendar.WEEK_OF_MONTH, 1)
+    }
+
+    if (endDayOfWeek == currentDayOfWeek && currentDayOfWeek == startDayOfWeek) {
+      weeksCount++
+    }
+
+    for (i in 1..weeksCount) {
+      val startDayOfMonth = startCalendar.get(Calendar.DAY_OF_MONTH)
+      val day = startDayOfMonth + difference
+
+      if (endDate.monthOfYear < startCalendar.get(Calendar.MONTH))
+        break
+      else if (endDate.monthOfYear == startCalendar.get(Calendar.MONTH))
+        if (endDate.dayOfMonth < day)
+          break
+
+      result.add(Date(day, startCalendar.get(Calendar.MONTH), startCalendar.get(Calendar.YEAR)))
+      startCalendar.add(Calendar.WEEK_OF_MONTH, 1)
+    }
     return result
   }
 

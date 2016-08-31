@@ -1,7 +1,10 @@
 package com.shedule.zyx.myshedule.ui.activities
 
+import android.app.Activity
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.support.design.widget.BottomSheetBehavior
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -12,19 +15,17 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.add_schedule_activity
 import com.shedule.zyx.myshedule.ScheduleApplication
+import com.shedule.zyx.myshedule.managers.DateManager
 import com.shedule.zyx.myshedule.managers.ScheduleManager
+import com.shedule.zyx.myshedule.models.*
 import com.shedule.zyx.myshedule.models.Date
-import com.shedule.zyx.myshedule.models.Schedule
-import com.shedule.zyx.myshedule.models.Time
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import kotlinx.android.synthetic.main.add_item_view.*
 import kotlinx.android.synthetic.main.add_schedule_activity.*
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.find
-import org.jetbrains.anko.include
-import org.jetbrains.anko.onClick
+import kotlinx.android.synthetic.main.number_layout.*
+import org.jetbrains.anko.*
 import java.util.*
 import javax.inject.Inject
 
@@ -36,30 +37,30 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   @Inject
   lateinit var scheduleManager: ScheduleManager
 
+  @Inject
+  lateinit var dateManager: DateManager
+
   var switcher = 0
   var startPeriod: Date? = null
   var endPeriod: Date? = null
   var startTime: Time? = null
   var endTime: Time? = null
+  var category: Category? = null
+
+
   var listOfDates = arrayListOf<CalendarDay>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(add_schedule_activity)
     ScheduleApplication.getComponent().inject(this)
-
     setSupportActionBar(add_schedule_toolbar)
     add_schedule_toolbar.title = applicationContext.getString(R.string.add_schedule_toolbar_title)
     add_schedule_toolbar.setTitleTextColor(Color.WHITE)
 
     number_of_lesson.onClick {
-      alert("Выбери номер и тип пары") {
-        customView {
-          include<View>(R.layout.number_layout) {
-
-          }
-        }
-      }.show()
+      val bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
+      bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     start_period_of_lesson.onClick { showDateDialog() }
@@ -75,12 +76,37 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       switcher = 1
       showTimeDialog()
     }
+
+    exam.onTouch { view, motionEvent -> setColor(Category.EXAM, resources.getColor(R.color.mark_red)); false }
+    course_work.onClick { setColor(Category.COURSE_WORK, resources.getColor(R.color.mark_orange))}
+    standings.onClick { setColor(Category.STANDINGS, resources.getColor(R.color.mark_yellow)) }
+    home_exam.onClick { setColor(Category.HOME_EXAM, resources.getColor(R.color.dark_cyan)) }
+
+    spinner_number_of_lesson.onItemSelectedListener {
+      onItemSelected { adapterView, view, i, l ->
+        number_of_lesson.text = "${i + 1}"
+      }
+    }
+
+    categoriesColors()
+  }
+
+  private fun setColor(cat: Category, color: Int) {
+    (number_of_lesson.background as GradientDrawable).setColor(color)
+    category = cat
+  }
+
+  fun categoriesColors() {
+    (exam.background as GradientDrawable).setColor(resources.getColor(R.color.mark_red))
+    (course_work.background as GradientDrawable).setColor(resources.getColor(R.color.mark_orange))
+    (standings.background as GradientDrawable).setColor(resources.getColor(R.color.mark_yellow))
+    (home_exam.background as GradientDrawable).setColor(resources.getColor(R.color.dark_cyan))
   }
 
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {
     when (item?.itemId) {
       R.id.add_item -> {
-        addIntoPreference(); return true
+        parseDataForSchedule(); return true
       }
       R.id.additional_calendar -> {
         alert {
@@ -96,8 +122,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
               }
             }
           }
-        }.show()
-        return true
+        }.show(); return true
       }
       else -> return super.onOptionsItemSelected(item)
     }
@@ -108,13 +133,29 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     return super.onCreateOptionsMenu(menu)
   }
 
+  private fun parseDataForSchedule() {
+    startPeriod?.let { start ->
+      endPeriod?.let { end ->
+        val schedule = Schedule(number_of_lesson.text.toString(),
+            if (name_of_lesson.text.toString().isEmpty()) "" else name_of_lesson.text.toString(),
+            start, end)
 
-  private fun addIntoPreference() {
-    val nameOfLesson = name_of_lesson.text.toString()
-    val schedule = Schedule(1, nameOfLesson, startTime!!, endTime!!)
-    scheduleManager.globalList.add(schedule)
-    finish()
+        schedule.location = Location(classroom.text.toString(), housing.text.toString())
+        schedule.startTime = startTime
+        schedule.endTime = endTime
+        schedule.teacher = name_of_teacher.text.toString()
+        schedule.typeLesson = if (spinner_type_of_lesson.selectedItem.toString().equals("Практика")) TypeLesson.SEMINAR else TypeLesson.LECTURE
+        schedule.category = category
+        schedule.dates.addAll(dateManager.getScheduleByDate(schedule.startPeriod, schedule.endPeriod,
+            intent.getIntExtra("current_day_of_week", 0)).map { it })
+        scheduleManager.globalList.add(schedule)
+        setResult(Activity.RESULT_OK)
+        finish()
+      }
+//      toast("Упс! Введите окончание периода предмета ")
+    }
 
+//    toast("Упс! Введите начало периода предмета")
   }
 
   private fun showTimeDialog() {
@@ -158,7 +199,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
 
   override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
     val day = if (dayOfMonth < 10) "0$dayOfMonth" else "$dayOfMonth"
-    val month = if (monthOfYear < 10) "0$monthOfYear" else "$monthOfYear"
+    val month = if (monthOfYear < 10) "0${monthOfYear + 1}" else "${monthOfYear + 1}"
     val date = "$day.$month.$year"
     when (switcher) {
       1 -> {

@@ -19,5 +19,14 @@
 
     <color name="indigo">#536dfe</color>
     <color name="pink">#e91e63</color>
+
+    <!--colors for types-->
+    <color name="dark_cyan">#00b669</color>
+    <color name="mark_yellow">#f6ef00</color>
+    <color name="mark_orange">#f99631</color>
+    <color name="mark_red">#e82f2d</color>
+
+    <color name="snow">#fafafa</color>
+
 </resources>
 

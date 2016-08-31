@@ -17,4 +17,9 @@
         <attr name="levelColor" format="color"/>
         <attr name="levelText" format="string"/>
     </declare-styleable>
+
+    <declare-styleable name="MarkView">
+        <attr name="color_mark" format="color"/>
+        <attr name="text" format="string"  />
+    </declare-styleable>
 </resources>

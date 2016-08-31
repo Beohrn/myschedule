@@ -144,6 +144,7 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:hint="Имя преподвателя"
+            android:singleLine="true"
             android:textColor="@color/silver_black"
             android:textSize="17sp"/>
 
@@ -167,8 +168,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-
+                android:id="@+id/housing"
                 android:hint="Корпус"
+                android:maxLength="4"
+                android:singleLine="true"
                 android:inputType="numberDecimal"
                 android:textColor="@color/silver_black"
                 android:textSize="17sp"/>
@@ -186,6 +189,9 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:hint="Аудитория"
+                android:maxLength="6"
+                android:singleLine="true"
+                android:id="@+id/classroom"
                 android:textColor="@color/silver_black"
                 android:textSize="17sp"/>
 
