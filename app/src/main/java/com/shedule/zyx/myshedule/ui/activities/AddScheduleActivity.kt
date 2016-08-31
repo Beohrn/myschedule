@@ -47,7 +47,6 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   var endTime: Time? = null
   var category: Category? = null
 
-
   var listOfDates = arrayListOf<Date>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -161,9 +160,11 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
         else
           schedule.dates.addAll(listOfDates.map { it })
 
-        scheduleManager.globalList.add(schedule)
-        setResult(Activity.RESULT_OK)
-        finish()
+        schedule.dates.let {
+          scheduleManager.globalList.add(schedule)
+          setResult(Activity.RESULT_OK)
+          finish()
+        }
       }
 //      toast("Упс! Введите окончание периода предмета ")
     }
