@@ -11,7 +11,7 @@ class ViewPagerAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager)
   val listTitles = listOf("Понедельник", "Вторник", "Среда", "Четверг", "Пятница")
 
   override fun getItem(position: Int): Fragment {
-    return ScheduleFragment()
+    return ScheduleFragment().newInstance(position)
   }
 
   override fun getCount(): Int {

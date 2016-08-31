@@ -4,7 +4,7 @@ import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DateManager(var calendar: Calendar, val scheduleManager: ScheduleManager) {
+class DateManager(var calendar: Calendar) {
   var dates = arrayListOf<Pair<Int, String>>()
 
   fun getPositionByCalendar(year: Int, month: Int, day: Int): Int {
@@ -40,7 +40,8 @@ class DateManager(var calendar: Calendar, val scheduleManager: ScheduleManager) 
 
     for (i in calendarTemp.get(Calendar.DAY_OF_WEEK)..6) {
       dates.add(Pair(calendarTemp.get(Calendar.DAY_OF_WEEK) - 2,
-          "${SimpleDateFormat("dd").format(calendarTemp.time)} ${calendarTemp.get(Calendar.MONTH)}"))
+          "${SimpleDateFormat("d").format(calendarTemp.time)}-${calendarTemp.get(Calendar.MONTH)}-" +
+              "${calendarTemp.get(Calendar.YEAR)}"))
       calendarTemp.add(Calendar.DAY_OF_YEAR, 1)
     }
 
@@ -49,12 +50,13 @@ class DateManager(var calendar: Calendar, val scheduleManager: ScheduleManager) 
     for (i in 1..calendarTemp.get(Calendar.DAY_OF_WEEK)) {
       calendarTemp.add(Calendar.DAY_OF_YEAR, -1)
       dates.add(Pair(calendarTemp.get(Calendar.DAY_OF_WEEK) - 2,
-          "${SimpleDateFormat("dd").format(calendarTemp.time)} ${calendarTemp.get(Calendar.MONTH)}"))
+          "${SimpleDateFormat("d").format(calendarTemp.time)}-${calendarTemp.get(Calendar.MONTH)}-" +
+              "${calendarTemp.get(Calendar.YEAR)}"))
     }
     return dates
   }
 
   fun resetCalendar() = calendar.apply { Calendar.getInstance() }
 
-  private fun getMonthName(month: Int) = DateFormatSymbols().months[month]
+  fun getMonthName(month: Int) = DateFormatSymbols().months[month]
 }

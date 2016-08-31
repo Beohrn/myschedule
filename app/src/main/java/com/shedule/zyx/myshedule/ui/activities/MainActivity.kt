@@ -65,11 +65,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         R.string.navigation_drawer_open, R.string.navigation_drawer_close).syncState()
 
     main_viewpager.currentItem = dateManager.getPositionByCalendar()
-    main_toolbar.post { title = dateManager.getDayByPosition(dateManager.getPositionByCalendar()) }
+    main_toolbar.post { title = convertDateString(dateManager.getDayByPosition(main_viewpager.currentItem)) }
 
     main_viewpager.onPageChangeListener {
       onPageSelected {
-        main_toolbar.title = dateManager.getDayByPosition(it)
+        main_toolbar.title = convertDateString(dateManager.getDayByPosition(it))
       }
     }
 
@@ -78,13 +78,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
   }
 
+  private fun convertDateString(dateString: String): String {
+    val day = dateString.split("-")[0]
+    val month = dateManager.getMonthName(dateString.split("-")[1].toInt())
+    return "$day $month"
+  }
+
   override fun addListener(listener: DataChangeListener) {
-    listener.updateData("${main_viewpager.currentItem + 2}")
     listenerList.add(listener)
   }
 
   override fun removeListener(listener: DataChangeListener) {
-    listener.updateData("${main_viewpager.currentItem + 2}")
     listenerList.remove(listener)
   }
 
@@ -116,8 +120,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
     dateManager.updateCalendar(year, monthOfYear, dayOfMonth)
     main_viewpager.currentItem = dateManager.getPositionByCalendar(year, monthOfYear, dayOfMonth)
-    main_toolbar.title = dateManager.getDayByPosition(main_viewpager.currentItem)
-    listenerList.forEach { it.updateData("$year $monthOfYear $dayOfMonth") }
+    main_toolbar.title = convertDateString(dateManager.getDayByPosition(main_viewpager.currentItem))
+    listenerList.map { it.updateData() }
   }
 
   private fun openDataPicker() {
@@ -131,7 +135,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   override fun onNavigationItemSelected(item: MenuItem?): Boolean {
     //todo implement this
-    when (item?.itemId) { R.id.nav_camera -> showDialog() }
+    when (item?.itemId) { R.id.nav_camera -> showDialog()
+    }
     drawer_layout?.closeDrawer(GravityCompat.START)
     return true
   }

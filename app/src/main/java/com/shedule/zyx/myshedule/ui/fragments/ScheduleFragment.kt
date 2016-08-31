@@ -1,6 +1,5 @@
 package com.shedule.zyx.myshedule.ui.fragments
 
-import android.graphics.Paint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DefaultItemAnimator
@@ -14,6 +13,7 @@ import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.adapters.ScheduleItemsAdapter
 import com.shedule.zyx.myshedule.interfaces.ChangeStateFragmentListener
 import com.shedule.zyx.myshedule.interfaces.DataChangeListener
+import com.shedule.zyx.myshedule.managers.DateManager
 import com.shedule.zyx.myshedule.managers.ScheduleManager
 import kotlinx.android.synthetic.main.shedule_fragment_layout.*
 import javax.inject.Inject
@@ -26,11 +26,26 @@ class ScheduleFragment : Fragment(), DataChangeListener {
   @Inject
   lateinit var scheduleManager: ScheduleManager
 
+  @Inject
+  lateinit var dateManager: DateManager
+
+  val ARGUMENT_PAGE_NUMBER = "arg_page_number"
+
   lateinit var adapter: ScheduleItemsAdapter
-  val p = Paint()
+
+  var position = -1
+
+  fun newInstance(page: Int): ScheduleFragment {
+    val pageFragment = ScheduleFragment()
+    val arguments = Bundle()
+    arguments.putInt(ARGUMENT_PAGE_NUMBER, page)
+    pageFragment.arguments = arguments
+    return pageFragment
+  }
 
   override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
     ScheduleApplication.getComponent().inject(this)
+    position = arguments.getInt(ARGUMENT_PAGE_NUMBER)
     (activity as ChangeStateFragmentListener).let { Log.d("listener", "add to list"); it.addListener(this) }
     return inflater!!.inflate(R.layout.shedule_fragment_layout, container, false)
   }
@@ -43,14 +58,12 @@ class ScheduleFragment : Fragment(), DataChangeListener {
 
     adapter = ScheduleItemsAdapter(context, scheduleManager.globalList)
     list_schedules.adapter = adapter
-//    add_schedule_btn.onClick {
-//      startActivity<ScheduleInformationActivity>()
-//    }
+
+    Log.d("1111", dateManager.getDayByPosition(position))
   }
 
-  override fun updateData(string: String) {
-    Log.i("TDADFA", string)
-
+  override fun updateData() {
+    Log.i("TDADFA", dateManager.getDayByPosition(position))
   }
 
   override fun onDestroyView() {
