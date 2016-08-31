@@ -46,12 +46,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="7dp"
         android:layout_marginEnd="7dp"
-        android:paddingTop="10dp"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="5dp"
         android:gravity="center"
         android:orientation="horizontal"
+        android:paddingTop="10dp"
         android:weightSum="1">
 
         <TextView
@@ -91,10 +91,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:gravity="center"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
         android:orientation="horizontal"
         android:weightSum="1">
 
@@ -164,15 +164,15 @@
             android:layout_weight="0.5">
 
             <EditText
+                android:id="@+id/housing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:id="@+id/housing"
                 android:hint="Корпус"
+                android:inputType="numberDecimal"
                 android:maxLength="4"
                 android:singleLine="true"
-                android:inputType="numberDecimal"
                 android:textColor="@color/silver_black"
                 android:textSize="17sp"/>
 
@@ -184,6 +184,7 @@
             android:layout_weight="0.5">
 
             <EditText
+                android:id="@+id/classroom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
@@ -191,12 +192,57 @@
                 android:hint="Аудитория"
                 android:maxLength="6"
                 android:singleLine="true"
-                android:id="@+id/classroom"
                 android:textColor="@color/silver_black"
                 android:textSize="17sp"/>
 
-
         </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="5dp"
+        android:weightSum="1">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:paddingLeft="30dp"
+            android:paddingTop="20dp"
+            android:text="Выберите тип расписания"
+            android:textSize="17sp"/>
+
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:orientation="horizontal"
+            android:paddingLeft="30dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:weightSum="1">
+
+            <RadioButton
+                android:id="@+id/fixed_schedule"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:text="Фиксированое"
+                android:textSize="17sp"/>
+
+            <RadioButton
+                android:id="@+id/unfixed_schedule"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_weight="0.5"
+                android:text="Мигалки"
+                android:textSize="17sp"/>
+
+        </RadioGroup>
 
     </LinearLayout>
 

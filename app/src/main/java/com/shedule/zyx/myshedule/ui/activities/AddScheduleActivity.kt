@@ -48,7 +48,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   var category: Category? = null
 
 
-  var listOfDates = arrayListOf<CalendarDay>()
+  var listOfDates = arrayListOf<Date>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -78,7 +78,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     }
     category = Category.HOME_EXAM
     exam.onTouch { view, motionEvent -> setColor(Category.EXAM, resources.getColor(R.color.mark_red)); false }
-    course_work.onClick { setColor(Category.COURSE_WORK, resources.getColor(R.color.mark_orange))}
+    course_work.onClick { setColor(Category.COURSE_WORK, resources.getColor(R.color.mark_orange)) }
     standings.onClick { setColor(Category.STANDINGS, resources.getColor(R.color.mark_yellow)) }
     home_exam.onClick { setColor(Category.HOME_EXAM, resources.getColor(R.color.dark_cyan)) }
 
@@ -87,6 +87,8 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
         number_of_lesson.text = "${i + 1}"
       }
     }
+
+    fixed_schedule.isChecked = true
 
     categoriesColors()
   }
@@ -113,11 +115,17 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
           customView {
             include<View>(R.layout.calendar_layout) {
               val calendarView = find<MaterialCalendarView>(R.id.calendarView)
+
               calendarView.selectionMode = MaterialCalendarView.SELECTION_MODE_MULTIPLE
+              calendarView.state().edit()
+                  .setMinimumDate(startPeriod?.let { CalendarDay(it.year, it.monthOfYear, it.dayOfMonth) })
+                  .setMaximumDate(endPeriod?.let { CalendarDay(it.year, it.monthOfYear, it.dayOfMonth) })
+                  .commit()
+
               find<TextView>(R.id.clear_dates).onClick { calendarView.clearSelection() }
               find<TextView>(R.id.cancel_dates).onClick { dismiss() }
               find<TextView>(R.id.approve_dates).onClick {
-                listOfDates.addAll(calendarView.selectedDates)
+                listOfDates.addAll(calendarView.selectedDates.map { Date(it.day, it.month, it.year) })
                 dismiss()
               }
             }
@@ -146,8 +154,13 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
         schedule.teacher = name_of_teacher.text.toString()
         schedule.typeLesson = if (spinner_type_of_lesson.selectedItem.toString().equals("Практика")) TypeLesson.SEMINAR else TypeLesson.LECTURE
         schedule.category = category
-        schedule.dates.addAll(dateManager.getScheduleByDate(schedule.startPeriod, schedule.endPeriod,
-            intent.getIntExtra("current_day_of_week", 0)).map { it })
+
+        if (!unfixed_schedule.isChecked)
+          schedule.dates.addAll(dateManager.getScheduleByDate(schedule.startPeriod, schedule.endPeriod,
+              intent.getIntExtra("current_day_of_week", 0)).map { it })
+        else
+          schedule.dates.addAll(listOfDates.map { it })
+
         scheduleManager.globalList.add(schedule)
         setResult(Activity.RESULT_OK)
         finish()
