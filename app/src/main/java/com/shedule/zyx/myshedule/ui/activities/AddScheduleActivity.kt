@@ -76,7 +76,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       switcher = 1
       showTimeDialog()
     }
-
+    category = Category.HOME_EXAM
     exam.onTouch { view, motionEvent -> setColor(Category.EXAM, resources.getColor(R.color.mark_red)); false }
     course_work.onClick { setColor(Category.COURSE_WORK, resources.getColor(R.color.mark_orange))}
     standings.onClick { setColor(Category.STANDINGS, resources.getColor(R.color.mark_yellow)) }

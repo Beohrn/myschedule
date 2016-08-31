@@ -1,20 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:orientation="vertical"
-    android:padding="10dp">
+    android:orientation="vertical">
+
+    <!--todo fix don't stretch view-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+    </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingLeft="10dp">
+        android:layout_margin="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp">
 
         <TextView
-            android:id="@+id/image"
+            android:id="@+id/view_number_of_lesson"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
@@ -32,17 +46,20 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/view_title_of_lesson"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Организация вычеслительныз проуцесов "
+                android:text="LOL"
                 android:textColor="@color/black"
                 android:textStyle="bold"/>
 
             <TextView
+                android:id="@+id/view_name_of_teacher"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="Симоненко А. К."/>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -52,6 +69,7 @@
                 android:weightSum="1">
 
                 <TextView
+                    android:id="@+id/view_location"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.2"
@@ -63,6 +81,7 @@
 
 
                 <TextView
+                    android:id="@+id/view_type_of_lesson"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.5"
@@ -73,6 +92,7 @@
 
 
                 <TextView
+                    android:id="@+id/view_time_of_lesson"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.3"
@@ -87,4 +107,11 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:alpha="0.3"
+        android:paddingTop="10dp"
+        android:background="@color/black"/>
 </LinearLayout>

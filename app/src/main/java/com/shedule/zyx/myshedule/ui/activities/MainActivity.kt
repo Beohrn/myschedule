@@ -79,10 +79,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   }
 
   override fun addListener(listener: DataChangeListener) {
+    listener.updateData("${main_viewpager.currentItem + 2}")
     listenerList.add(listener)
   }
 
   override fun removeListener(listener: DataChangeListener) {
+    listener.updateData("${main_viewpager.currentItem + 2}")
     listenerList.remove(listener)
   }
 
@@ -149,11 +151,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   override fun onDestroy() {
     super.onDestroy()
     bluetoothDestroy()
-    scheduleManager.saveSchedule()
   }
 
   override fun onStop() {
     super.onStop()
+    scheduleManager.saveSchedule()
     Log.i("TAG", "onStop")
   }
 
@@ -189,7 +191,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       bluetoothInit()
       showDialog()
     } else if (requestCode == Activity.RESULT_OK) {
-      //TODO
     }
   }
 }

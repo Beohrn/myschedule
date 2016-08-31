@@ -8,7 +8,6 @@ import java.util.*
 
 class Schedule(val numberLesson: String, val nameLesson: String, val startPeriod: Date, val endPeriod: Date) {
 
-
   var teacher: String? = ""
   var location: Location? = null
   var typeLesson: TypeLesson? = null
