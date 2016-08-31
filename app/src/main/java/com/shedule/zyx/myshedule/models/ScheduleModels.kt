@@ -14,7 +14,7 @@ class Schedule(val numberLesson: String, val nameLesson: String, val startPeriod
   var startTime: Time? = null
   var endTime: Time? = null
   var category: Category? = null
-  var dates = ArrayList<Date>()
+  var dates = ArrayList<String>()
 }
 
 data class Time(val hour: Int, val minute: Int)

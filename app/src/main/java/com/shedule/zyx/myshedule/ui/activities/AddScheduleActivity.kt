@@ -78,7 +78,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     }
     category = Category.HOME_EXAM
     exam.onTouch { view, motionEvent -> setColor(Category.EXAM, resources.getColor(R.color.mark_red)); false }
-    course_work.onClick { setColor(Category.COURSE_WORK, resources.getColor(R.color.mark_orange))}
+    course_work.onClick { setColor(Category.COURSE_WORK, resources.getColor(R.color.mark_orange)) }
     standings.onClick { setColor(Category.STANDINGS, resources.getColor(R.color.mark_yellow)) }
     home_exam.onClick { setColor(Category.HOME_EXAM, resources.getColor(R.color.dark_cyan)) }
 
@@ -146,7 +146,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
         schedule.teacher = name_of_teacher.text.toString()
         schedule.typeLesson = if (spinner_type_of_lesson.selectedItem.toString().equals("Практика")) TypeLesson.SEMINAR else TypeLesson.LECTURE
         schedule.category = category
-        schedule.dates.addAll(dateManager.getScheduleByDate(schedule.startPeriod, schedule.endPeriod,
+        schedule.dates.addAll(scheduleManager.getScheduleByDate(schedule.startPeriod, schedule.endPeriod,
             intent.getIntExtra("current_day_of_week", 0)).map { it })
         scheduleManager.globalList.add(schedule)
         setResult(Activity.RESULT_OK)
