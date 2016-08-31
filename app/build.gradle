@@ -119,6 +119,8 @@ dependencies {
 
     compile 'com.akexorcist:bluetoothspp:1.0.0'
 
+    compile 'com.prolificinteractive:material-calendarview:1.4.0'
+
 }
 
 

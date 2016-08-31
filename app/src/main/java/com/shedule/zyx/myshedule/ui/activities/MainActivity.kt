@@ -1,5 +1,6 @@
 package com.shedule.zyx.myshedule.ui.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -18,17 +19,14 @@ import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.adapters.ViewPagerAdapter
 import com.shedule.zyx.myshedule.interfaces.ChangeStateFragmentListener
 import com.shedule.zyx.myshedule.interfaces.DataChangeListener
-import com.shedule.zyx.myshedule.managers.BTConnectionManager
-import com.shedule.zyx.myshedule.managers.BluetoothManager
-import com.shedule.zyx.myshedule.managers.DateManager
-import com.shedule.zyx.myshedule.managers.ReceiveManager
+import com.shedule.zyx.myshedule.managers.*
 import com.shedule.zyx.myshedule.ui.fragments.BluetoothDialog
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_navigation.*
 import kotlinx.android.synthetic.main.content_navigation.*
 import org.jetbrains.anko.onClick
-import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.startActivityForResult
 import org.jetbrains.anko.support.v4.onPageChangeListener
 import java.util.*
 import javax.inject.Inject
@@ -47,6 +45,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   @Inject
   lateinit var connectionManager: BTConnectionManager
+
+  @Inject
+  lateinit var scheduleManager: ScheduleManager
 
   val listenerList = arrayListOf<DataChangeListener>()
 
@@ -73,16 +74,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     add_schedule_button.onClick {
-//      dateManager.getScheduleByDate(Date(15, 11, 2016), Date(12, 0, 2017))
-
+      startActivityForResult<AddScheduleActivity>(5555, Pair("current_day_of_week", main_viewpager.currentItem + 2))
     }
   }
 
   override fun addListener(listener: DataChangeListener) {
+    listener.updateData("${main_viewpager.currentItem + 2}")
     listenerList.add(listener)
   }
 
   override fun removeListener(listener: DataChangeListener) {
+    listener.updateData("${main_viewpager.currentItem + 2}")
     listenerList.remove(listener)
   }
 
@@ -124,29 +126,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         this@MainActivity, now.get(Calendar.YEAR), now.get(Calendar.MONTH),
         now.get(Calendar.DAY_OF_MONTH))
     picker.accentColor = Color.GRAY
-    val s = Calendar.getInstance()
-    s.set(2016, 9, 14)
-    val k = Calendar.getInstance()
-    k.set(2016, 9, 16)
-    val d = Calendar.getInstance()
-    d.set(2016, 9, 21)
-
-    picker.highlightedDays = arrayOf<Calendar>(s, k, d)
     picker.show(fragmentManager, "")
   }
 
-
-
-
   override fun onNavigationItemSelected(item: MenuItem?): Boolean {
     //todo implement this
-    when (item?.itemId) {
-      R.id.nav_camera -> //listenerList.forEach { /* do something */ }
-        showDialog()
-      R.id.nav_gallery -> startActivity<AddScheduleActivity>()
-
-    }
-
+    when (item?.itemId) { R.id.nav_camera -> showDialog() }
     drawer_layout?.closeDrawer(GravityCompat.START)
     return true
   }
@@ -166,11 +151,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   override fun onDestroy() {
     super.onDestroy()
     bluetoothDestroy()
-
   }
 
   override fun onStop() {
     super.onStop()
+    scheduleManager.saveSchedule()
     Log.i("TAG", "onStop")
   }
 
@@ -198,7 +183,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       startActivityForResult(Intent(bluetoothManager.ACTION_ENABLE),
           bluetoothManager.REQUEST_ENABLE)
     }
-
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -206,6 +190,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {
       bluetoothInit()
       showDialog()
+    } else if (requestCode == Activity.RESULT_OK) {
     }
   }
 }

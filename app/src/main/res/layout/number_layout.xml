@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:paddingBottom="10dp"
+              android:paddingTop="5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -10,7 +12,26 @@
         android:orientation="horizontal"
         android:weightSum="1">
 
+        <TextView
+            style="@style/HeaderStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:text="Выберите номер и тип пары"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp"
+        android:weightSum="1">
+
         <Spinner
+            android:id="@+id/spinner_number_of_lesson"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
@@ -19,6 +40,7 @@
             android:entries="@array/number_of_lesson"/>
 
         <Spinner
+            android:id="@+id/spinner_type_of_lesson"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
@@ -31,66 +53,96 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="40dp"
+        android:layout_marginStart="40dp"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp">
+        android:orientation="vertical"
+        android:paddingBottom="7dp"
+        android:paddingTop="7dp">
 
-        <TextView
-            android:id="@+id/red"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+        <EditText
+            android:id="@+id/exam"
+            android:focusableInTouchMode="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:background="@drawable/circle_image"
-            android:gravity="center"
-            android:textColor="@color/white"/>
+            android:background="@drawable/category_image"
+            android:gravity="left|center_vertical"
+            android:minHeight="35dp"
+            android:paddingLeft="20dp"
+            android:singleLine="true"
+            android:text="Экзамен"
+            android:textColor="@color/white"
+            android:textCursorDrawable="@null"
+            android:textSize="20sp"/>
 
-        <TextView
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+        <EditText
+            android:id="@+id/course_work"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:background="@drawable/circle_image"
-            android:gravity="center"
-            android:textColor="@color/white"/>
+            android:background="@drawable/category_image"
+            android:gravity="left|center_vertical"
+            android:minHeight="30dp"
+            android:paddingLeft="20dp"
+            android:singleLine="true"
+            android:text="Курсовая"
+            android:textColor="@color/white"
+            android:textCursorDrawable="@null"
+            android:textSize="20sp"/>
 
-        <TextView
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+        <EditText
+            android:id="@+id/standings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:background="@drawable/circle_image"
-            android:gravity="center"
-            android:textColor="@color/white"/>
+            android:background="@drawable/category_image"
+            android:gravity="left|center_vertical"
+            android:minHeight="30dp"
+            android:paddingLeft="20dp"
+            android:singleLine="true"
+            android:text="Зачёт"
+            android:textColor="@color/white"
+            android:textCursorDrawable="@null"
+            android:textSize="20sp"/>
 
-        <TextView
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+        <EditText
+            android:id="@+id/home_exam"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:background="@drawable/circle_image"
-            android:gravity="center"
-            android:textColor="@color/white"/>
+            android:background="@drawable/category_image"
+            android:gravity="left|center_vertical"
+            android:minHeight="30dp"
+            android:paddingLeft="20dp"
+            android:singleLine="true"
+            android:text="Самостоятельная работа"
+            android:textColor="@color/white"
+            android:textCursorDrawable="@null"
+            android:textSize="20sp"/>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="right">
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:gravity="right">-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:text="Выйти"
-            android:padding="12dp"
-            android:textSize="18sp"
-            android:layout_height="match_parent"/>
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:text="Выйти"-->
+    <!--android:padding="12dp"-->
+    <!--android:textSize="18sp"-->
+    <!--android:layout_height="match_parent"/>-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:text="Добавить"
-            android:padding="12dp"
-            android:textSize="18sp"
-            android:layout_height="match_parent"/>
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:text="Добавить"-->
+    <!--android:padding="12dp"-->
+    <!--android:textSize="18sp"-->
+    <!--android:layout_height="match_parent"/>-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
 </LinearLayout>

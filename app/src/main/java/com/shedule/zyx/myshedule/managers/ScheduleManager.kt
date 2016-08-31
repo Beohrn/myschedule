@@ -13,5 +13,6 @@ class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPrefere
     prefs.saveSchedule(globalList)
   }
 
+  fun getTeachers() = globalList.map { it.teacher }.filterNotNull().map { it }
 }
 

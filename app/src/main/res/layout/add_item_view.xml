@@ -46,27 +46,26 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:layout_marginTop="5dp"
+        android:layout_marginStart="7dp"
+        android:layout_marginEnd="7dp"
+        android:paddingTop="10dp"
+        android:gravity="center"
         android:orientation="horizontal"
         android:weightSum="1">
 
-        <android.support.design.widget.TextInputLayout
+        <TextView
+            android:id="@+id/start_period_of_lesson"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
+            android:gravity="center"
+            android:hint="Начало занятий"
+            android:inputType="numberDecimal"
             android:paddingLeft="30dp"
-            android:paddingRight="10dp">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Начало занятий"
-                android:inputType="numberDecimal"
-                android:textColor="@color/silver_black"
-                android:textSize="17sp"/>
-
-        </android.support.design.widget.TextInputLayout>
+            android:paddingRight="10dp"
+            android:textColor="@color/silver_black"
+            android:textSize="17sp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -74,48 +73,43 @@
             android:text=" - "
             android:textSize="18sp"/>
 
-        <android.support.design.widget.TextInputLayout
+        <TextView
+            android:id="@+id/end_period_of_lesson"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
+            android:gravity="center"
+            android:hint="Конец занятий"
+            android:inputType="numberDecimal"
             android:paddingLeft="10dp"
-            android:paddingRight="30dp">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Конец занятий"
-                android:inputType="numberDecimal"
-                android:textColor="@color/silver_black"
-                android:textSize="17sp"/>
-
-        </android.support.design.widget.TextInputLayout>
+            android:paddingRight="30dp"
+            android:textColor="@color/silver_black"
+            android:textSize="17sp"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:gravity="center"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
         android:orientation="horizontal"
         android:weightSum="1">
 
-        <android.support.design.widget.TextInputLayout
+        <TextView
+            android:id="@+id/start_time_of_lesson"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
+            android:gravity="center"
+            android:hint="Начало пары"
+            android:inputType="numberDecimal"
             android:paddingLeft="30dp"
-            android:paddingRight="10dp">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Начало пары"
-                android:inputType="numberDecimal"
-                android:textColor="@color/silver_black"
-                android:textSize="17sp"/>
-
-        </android.support.design.widget.TextInputLayout>
+            android:paddingRight="10dp"
+            android:textColor="@color/silver_black"
+            android:textSize="17sp"/>
 
         <TextView
             android:id="@+id/hyphen"
@@ -124,22 +118,18 @@
             android:text=" - "
             android:textSize="18sp"/>
 
-        <android.support.design.widget.TextInputLayout
+        <TextView
+            android:id="@+id/end_time_of_lesson"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
+            android:gravity="center"
+            android:hint="Конец пары"
+            android:inputType="numberDecimal"
             android:paddingLeft="10dp"
-            android:paddingRight="30dp">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Конец пары"
-                android:inputType="numberDecimal"
-                android:textColor="@color/silver_black"
-                android:textSize="17sp"/>
-
-        </android.support.design.widget.TextInputLayout>
+            android:paddingRight="30dp"
+            android:textColor="@color/silver_black"
+            android:textSize="17sp"/>
 
     </LinearLayout>
 
@@ -154,6 +144,7 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:hint="Имя преподвателя"
+            android:singleLine="true"
             android:textColor="@color/silver_black"
             android:textSize="17sp"/>
 
@@ -177,8 +168,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-
+                android:id="@+id/housing"
                 android:hint="Корпус"
+                android:maxLength="4"
+                android:singleLine="true"
                 android:inputType="numberDecimal"
                 android:textColor="@color/silver_black"
                 android:textSize="17sp"/>
@@ -196,6 +189,9 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:hint="Аудитория"
+                android:maxLength="6"
+                android:singleLine="true"
+                android:id="@+id/classroom"
                 android:textColor="@color/silver_black"
                 android:textSize="17sp"/>
 

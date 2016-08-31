@@ -3,9 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/additional_calendar"
+        android:icon="@drawable/ic_date_range_white_24px"
+        android:title="Additional calendar"
+        app:showAsAction="always"
+        android:orderInCategory="100"/>
+
+    <item
         android:id="@+id/add_item"
         android:icon="@drawable/ic_done_white_24px"
-        android:title="ADD"
+        android:title="Approve"
         app:showAsAction="always"
         android:orderInCategory="100"/>
 
