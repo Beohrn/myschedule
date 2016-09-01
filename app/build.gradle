@@ -121,6 +121,8 @@ dependencies {
 
     compile 'com.prolificinteractive:material-calendarview:1.4.0'
 
+    compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar'
+
 }
 
 

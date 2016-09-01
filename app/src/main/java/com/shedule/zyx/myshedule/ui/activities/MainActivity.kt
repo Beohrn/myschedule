@@ -1,5 +1,6 @@
 package com.shedule.zyx.myshedule.ui.activities
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
@@ -12,15 +13,18 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import app.akexorcist.bluetotohspp.library.BluetoothState
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.activity_navigation
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.adapters.ViewPagerAdapter
 import com.shedule.zyx.myshedule.interfaces.ChangeStateFragmentListener
 import com.shedule.zyx.myshedule.interfaces.DataChangeListener
-import com.shedule.zyx.myshedule.managers.*
+import com.shedule.zyx.myshedule.managers.BluetoothManager
+import com.shedule.zyx.myshedule.managers.DateManager
+import com.shedule.zyx.myshedule.managers.ReceiveManager
+import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.ui.fragments.BluetoothDialog
+import com.tbruyelle.rxpermissions.RxPermissions
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_navigation.*
@@ -42,9 +46,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   @Inject
   lateinit var receiveManager: ReceiveManager
-
-  @Inject
-  lateinit var connectionManager: BTConnectionManager
 
   @Inject
   lateinit var scheduleManager: ScheduleManager
@@ -143,6 +144,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   override fun onStart() {
     super.onStart()
+    checkPermissions()
     bluetoothInit()
     Log.i("TAG", "onStart")
   }
@@ -164,11 +166,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     Log.i("TAG", "onStop")
   }
 
+  private fun checkPermissions() {
+    RxPermissions.getInstance(this)
+        .request(Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION)
+        .subscribe()
+  }
+
   private fun bluetoothInit() {
     if (bluetoothManager.bluetoothEnabled())
       if (!bluetoothManager.serviceAvailable()) {
         bluetoothManager.setupService()
-        bluetoothManager.setConnectionListener(connectionManager)
         bluetoothManager.setReceiveListener(receiveManager)
       }
   }
@@ -185,17 +193,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       val dialog = BluetoothDialog()
       dialog.show(supportFragmentManager, "dialog")
     } else {
-      startActivityForResult(Intent(bluetoothManager.ACTION_ENABLE),
-          bluetoothManager.REQUEST_ENABLE)
+      bluetoothManager.autoConnect()
+      bluetoothInit()
+      showDialog()
     }
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {
-      bluetoothInit()
-      showDialog()
-    } else if (requestCode == Activity.RESULT_OK) {
+    if (requestCode == Activity.RESULT_OK) {
+
     }
   }
 }
