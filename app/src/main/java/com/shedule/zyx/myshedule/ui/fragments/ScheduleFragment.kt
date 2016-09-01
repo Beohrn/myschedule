@@ -15,6 +15,7 @@ import com.shedule.zyx.myshedule.interfaces.ChangeStateFragmentListener
 import com.shedule.zyx.myshedule.interfaces.DataChangeListener
 import com.shedule.zyx.myshedule.managers.DateManager
 import com.shedule.zyx.myshedule.managers.ScheduleManager
+import com.shedule.zyx.myshedule.models.Schedule
 import kotlinx.android.synthetic.main.shedule_fragment_layout.*
 import javax.inject.Inject
 
@@ -34,6 +35,7 @@ class ScheduleFragment : Fragment(), DataChangeListener {
   lateinit var adapter: ScheduleItemsAdapter
 
   var position = -1
+  var listSchedulers = arrayListOf<Schedule>()
 
   fun newInstance(page: Int): ScheduleFragment {
     val pageFragment = ScheduleFragment()
@@ -46,6 +48,10 @@ class ScheduleFragment : Fragment(), DataChangeListener {
   override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
     ScheduleApplication.getComponent().inject(this)
     position = arguments.getInt(ARGUMENT_PAGE_NUMBER)
+
+    listSchedulers.clear()
+    listSchedulers.addAll(scheduleManager.getScheduleByDay(dateManager.getDayByPosition(position)))
+
     (activity as ChangeStateFragmentListener).let { Log.d("listener", "add to list"); it.addListener(this) }
     return inflater!!.inflate(R.layout.shedule_fragment_layout, container, false)
   }
@@ -56,7 +62,7 @@ class ScheduleFragment : Fragment(), DataChangeListener {
     list_schedules.layoutManager = LinearLayoutManager(activity)
     list_schedules.itemAnimator = DefaultItemAnimator()
 
-    adapter = ScheduleItemsAdapter(context, scheduleManager.globalList)
+    adapter = ScheduleItemsAdapter(context, listSchedulers)
     list_schedules.adapter = adapter
 
     Log.d("1111", dateManager.getDayByPosition(position))

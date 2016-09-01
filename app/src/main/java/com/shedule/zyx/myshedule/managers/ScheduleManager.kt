@@ -14,6 +14,11 @@ class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPrefere
     prefs.saveSchedule(globalList)
   }
 
+  fun getScheduleByDay(day: String) = globalList.map { schedule ->
+    schedule.dates.filter { it.equals(day) }.map { schedule }
+  }
+      .flatMap { it -> it.map { it } }
+
   fun getScheduleByDate(startDate: Date, endDate: Date, currentDayOfWeek: Int): ArrayList<String> {
     val result = arrayListOf<String>()
     var weeksCount = getWeeksBetween(startDate, endDate)
