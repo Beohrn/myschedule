@@ -59,8 +59,8 @@ public class AppModule {
 
     @Singleton
     @Provides
-    public DateManager provideDateManager(Calendar calendar, ScheduleManager scheduleManager) {
-        return new DateManager(calendar, scheduleManager);
+    public DateManager provideDateManager(Calendar calendar) {
+        return new DateManager(calendar);
     }
 
     @Singleton

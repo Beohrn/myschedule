@@ -47,7 +47,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   var endTime: Time? = null
   var category: Category? = null
 
-  var listOfDates = arrayListOf<Date>()
+  var listOfDates = arrayListOf<String>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -124,7 +124,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
               find<TextView>(R.id.clear_dates).onClick { calendarView.clearSelection() }
               find<TextView>(R.id.cancel_dates).onClick { dismiss() }
               find<TextView>(R.id.approve_dates).onClick {
-                listOfDates.addAll(calendarView.selectedDates.map { Date(it.day, it.month, it.year) })
+                listOfDates.addAll(calendarView.selectedDates.map { "$it.day-${it.month}-${it.year}" })
                 dismiss()
               }
             }
@@ -155,7 +155,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
         schedule.category = category
 
         if (!unfixed_schedule.isChecked)
-          schedule.dates.addAll(dateManager.getScheduleByDate(schedule.startPeriod, schedule.endPeriod,
+          schedule.dates.addAll(scheduleManager.getScheduleByDate(schedule.startPeriod, schedule.endPeriod,
               intent.getIntExtra("current_day_of_week", 0)).map { it })
         else
           schedule.dates.addAll(listOfDates.map { it })
