@@ -1,8 +1,11 @@
 package com.shedule.zyx.myshedule.utils
 
 import android.content.Context
+import com.google.gson.Gson
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.models.Category
+import com.shedule.zyx.myshedule.models.Schedule
+import java.util.*
 
 /**
  * Created by alexkowlew on 31.08.2016.
@@ -17,5 +20,6 @@ class Utils {
       Category.HOME_EXAM -> context.resources.getColor(R.color.dark_cyan)
     }
 
+    fun toJson(list: ArrayList<Schedule>) = Gson().toJson(list)
   }
 }
