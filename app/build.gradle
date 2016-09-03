@@ -123,6 +123,8 @@ dependencies {
 
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar'
 
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+
 }
 
 

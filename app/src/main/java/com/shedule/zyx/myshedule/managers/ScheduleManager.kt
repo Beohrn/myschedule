@@ -19,7 +19,7 @@ class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPrefere
   }
       .flatMap { it -> it.map { it } }
 
-  fun getScheduleByDate(startDate: Date, endDate: Date, currentDayOfWeek: Int): ArrayList<String> {
+  fun getScheduleByDate(startDate: Date, endDate: Date, currentDayOfWeek: Int, striping: Boolean): ArrayList<String> {
     val result = arrayListOf<String>()
     var weeksCount = getWeeksBetween(startDate, endDate)
 
@@ -45,6 +45,11 @@ class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPrefere
       weeksCount++
     }
 
+    var range = 1
+    if (!striping) {
+      range++
+    }
+
     for (i in 1..weeksCount) {
       val startDayOfMonth = startCalendar.get(Calendar.DAY_OF_MONTH)
       val day = startDayOfMonth + difference
@@ -56,7 +61,7 @@ class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPrefere
           break
 
       result.add("$day-${startCalendar.get(Calendar.MONTH)}-${startCalendar.get(Calendar.YEAR)}")
-      startCalendar.add(Calendar.WEEK_OF_MONTH, 1)
+      startCalendar.add(Calendar.WEEK_OF_MONTH, range)
     }
     return result
   }

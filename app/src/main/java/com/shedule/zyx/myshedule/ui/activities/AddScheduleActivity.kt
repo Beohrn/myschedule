@@ -46,6 +46,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   var startTime: Time? = null
   var endTime: Time? = null
   var category: Category? = null
+  var isSceduleTyped = true
 
   var listOfDates = arrayListOf<String>()
 
@@ -124,7 +125,8 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
               find<TextView>(R.id.clear_dates).onClick { calendarView.clearSelection() }
               find<TextView>(R.id.cancel_dates).onClick { dismiss() }
               find<TextView>(R.id.approve_dates).onClick {
-                listOfDates.addAll(calendarView.selectedDates.map { "$it.day-${it.month}-${it.year}" })
+                listOfDates.addAll(calendarView.selectedDates.map { "${it.day}-${it.month}-${it.year}" })
+                isSceduleTyped = false
                 dismiss()
               }
             }
@@ -154,10 +156,14 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
         schedule.typeLesson = if (spinner_type_of_lesson.selectedItem.toString().equals("Практика")) TypeLesson.SEMINAR else TypeLesson.LECTURE
         schedule.category = category
 
-        if (!unfixed_schedule.isChecked)
-          schedule.dates.addAll(scheduleManager.getScheduleByDate(schedule.startPeriod, schedule.endPeriod,
-              intent.getIntExtra("current_day_of_week", 0)).map { it })
-        else
+        if (isSceduleTyped) {
+          if (!unfixed_schedule.isChecked)
+            schedule.dates.addAll(scheduleManager.getScheduleByDate(schedule.startPeriod, schedule.endPeriod,
+                intent.getIntExtra("current_day_of_week", 0), true).map { it })
+          else
+            schedule.dates.addAll(scheduleManager.getScheduleByDate(schedule.startPeriod, schedule.endPeriod,
+                intent.getIntExtra("current_day_of_week", 0), false).map { it })
+        } else
           schedule.dates.addAll(listOfDates.map { it })
 
         schedule.dates.let {
@@ -213,7 +219,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
 
   override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
     val day = if (dayOfMonth < 10) "0$dayOfMonth" else "$dayOfMonth"
-    val month = if (monthOfYear < 10) "0${monthOfYear + 1}" else "${monthOfYear + 1}"
+    val month = if (monthOfYear < 9) "0${monthOfYear + 1}" else "${monthOfYear + 1}"
     val date = "$day.$month.$year"
     when (switcher) {
       1 -> {
