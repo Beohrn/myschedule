@@ -6,9 +6,12 @@ import android.support.multidex.MultiDex;
 
 import com.facebook.FacebookSdk;
 import com.facebook.stetho.Stetho;
+import com.firebase.tubesock.Base64;
 import com.shedule.zyx.myshedule.config.AppComponent;
 import com.shedule.zyx.myshedule.config.AppModule;
 import com.shedule.zyx.myshedule.config.DaggerAppComponent;
+
+import java.nio.charset.StandardCharsets;
 
 public class ScheduleApplication extends Application {
     private static AppComponent component;

@@ -34,6 +34,9 @@
 
         <activity android:name=".ui.activities.AddScheduleActivity"
             android:theme="@style/AddSchedule"/>
+
+        <activity android:name="app.voter.xyz.comments.DiscussionActivity"
+                  android:theme="@style/AddSchedule"/>
     </application>
 
 </manifest>

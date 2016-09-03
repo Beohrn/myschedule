@@ -1,7 +1,10 @@
 package com.shedule.zyx.myshedule.config;
 
 import android.content.Context;
+import android.provider.Settings;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.shedule.zyx.myshedule.managers.BTConnectionManager;
@@ -91,6 +94,19 @@ public class AppModule {
     @Provides
     public BTConnectionManager provideBTConnectionManager(Context context) {
         return new BTConnectionManager(context);
+    }
+
+    @Provides
+    @Singleton
+    public String provideDeviceToken() {
+        return Settings.Secure.getString(context.getApplicationContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+    }
+
+    @Singleton
+    @Provides
+    DatabaseReference provideDatabaseReference() {
+        return FirebaseDatabase.getInstance().getReference();
     }
 
     @Singleton

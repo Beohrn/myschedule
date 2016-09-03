@@ -19,6 +19,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:3.0.0'
     }
 }
 
@@ -46,12 +47,16 @@ android {
         multiDexEnabled true
     }
 
+
     buildTypes {
+
+        releas {
+            minifyEnabled false
+        }
 
         debug {
             minifyEnabled false
             signingConfig signingConfigs.debug
-            applicationIdSuffix ".dev"
         }
     }
 
@@ -107,7 +112,6 @@ dependencies {
 
     compile 'com.jaedongchicken:ytplayer:1.2.0'
 
-    compile 'com.facebook.android:facebook-android-sdk:4.7.0'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.makeramen:roundedimageview:2.2.1'
 
@@ -121,7 +125,13 @@ dependencies {
 
     compile 'com.prolificinteractive:material-calendarview:1.4.0'
 
+    compile 'com.google.firebase:firebase-core:9.4.0'
+    compile 'com.google.firebase:firebase-messaging:9.4.0'
+    compile 'com.firebase:firebase-client-android:2.3.1'
+    compile 'com.firebaseui:firebase-ui:0.5.1'
+    compile "com.google.firebase:firebase-database:9.4.0"
+    compile 'com.firebaseui:firebase-ui-database:0.5.1'
 }
 
-
+apply plugin: 'com.google.gms.google-services'
 
