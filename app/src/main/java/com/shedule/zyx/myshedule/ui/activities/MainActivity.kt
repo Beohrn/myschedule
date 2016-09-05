@@ -89,10 +89,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     nav_view.inflateHeaderView(R.layout.nav_header_navigation).circleView.onClick {
       selector("Выберите, чтобы загрузить фото:", listOf("Камера", "Галерея")) { i ->
-        when(i) {
-          0 -> { startActivityForResult(Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE), CAMERA_REQUEST) }
-          else -> { startActivityForResult(Intent(Intent.ACTION_PICK,
-              android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), GALLERY_REQUEST) }
+        when (i) {
+          0 -> {
+            startActivityForResult(Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE), CAMERA_REQUEST)
+          }
+          else -> {
+            startActivityForResult(Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), GALLERY_REQUEST)
+          }
         }
       }
     }
@@ -155,7 +159,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   override fun onNavigationItemSelected(item: MenuItem?): Boolean {
     //todo implement this
-    when (item?.itemId) { R.id.nav_camera -> showDialog()
+    when (item?.itemId) { R.id.nav_share -> {
+      showDialog()
+      bluetoothManager.schedule = scheduleManager.globalList
+    }
     }
 
 

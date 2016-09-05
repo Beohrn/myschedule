@@ -15,7 +15,6 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.add_schedule_activity
 import com.shedule.zyx.myshedule.ScheduleApplication
-import com.shedule.zyx.myshedule.managers.DateManager
 import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.models.*
 import com.shedule.zyx.myshedule.models.Date
@@ -37,17 +36,13 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   @Inject
   lateinit var scheduleManager: ScheduleManager
 
-  @Inject
-  lateinit var dateManager: DateManager
-
   var switcher = 0
   var startPeriod: Date? = null
   var endPeriod: Date? = null
   var startTime: Time? = null
   var endTime: Time? = null
   var category: Category? = null
-  var isSceduleTyped = true
-
+  var isScheduleTyped = true
   var listOfDates = arrayListOf<String>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,7 +72,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       showTimeDialog()
     }
     category = Category.HOME_EXAM
-    exam.onTouch { view, motionEvent -> setColor(Category.EXAM, resources.getColor(R.color.mark_red)); false }
+    exam.onClick { setColor(Category.EXAM, resources.getColor(R.color.mark_red)) }
     course_work.onClick { setColor(Category.COURSE_WORK, resources.getColor(R.color.mark_orange)) }
     standings.onClick { setColor(Category.STANDINGS, resources.getColor(R.color.mark_yellow)) }
     home_exam.onClick { setColor(Category.HOME_EXAM, resources.getColor(R.color.dark_cyan)) }
@@ -86,6 +81,11 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       onItemSelected { adapterView, view, i, l ->
         number_of_lesson.text = "${i + 1}"
       }
+    }
+
+    header_bottom_sheet.onClick {
+      val bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
+      bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     fixed_schedule.isChecked = true
@@ -99,10 +99,10 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   }
 
   fun categoriesColors() {
-    (exam.background as GradientDrawable).setColor(resources.getColor(R.color.mark_red))
-    (course_work.background as GradientDrawable).setColor(resources.getColor(R.color.mark_orange))
-    (standings.background as GradientDrawable).setColor(resources.getColor(R.color.mark_yellow))
-    (home_exam.background as GradientDrawable).setColor(resources.getColor(R.color.dark_cyan))
+    exam.setColor(R.color.mark_red)
+    course_work.setColor(R.color.mark_orange)
+    standings.setColor(R.color.mark_yellow)
+    home_exam.setColor(R.color.dark_cyan)
   }
 
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -126,7 +126,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
               find<TextView>(R.id.cancel_dates).onClick { dismiss() }
               find<TextView>(R.id.approve_dates).onClick {
                 listOfDates.addAll(calendarView.selectedDates.map { "${it.day}-${it.month}-${it.year}" })
-                isSceduleTyped = false
+                isScheduleTyped = false
                 dismiss()
               }
             }
@@ -156,7 +156,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
         schedule.typeLesson = if (spinner_type_of_lesson.selectedItem.toString().equals("Практика")) TypeLesson.SEMINAR else TypeLesson.LECTURE
         schedule.category = category
 
-        if (isSceduleTyped) {
+        if (isScheduleTyped) {
           if (!unfixed_schedule.isChecked)
             schedule.dates.addAll(scheduleManager.getScheduleByDate(schedule.startPeriod, schedule.endPeriod,
                 intent.getIntExtra("current_day_of_week", 0), true).map { it })
@@ -171,11 +171,8 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
           setResult(Activity.RESULT_OK)
           finish()
         }
-      }
-//      toast("Упс! Введите окончание периода предмета ")
-    }
-
-//    toast("Упс! Введите начало периода предмета")
+      } ?: toast("Упс! Введите окончание периода предмета ")
+    } ?: toast("Упс! Введите начало периода предмета")
   }
 
   private fun showTimeDialog() {
