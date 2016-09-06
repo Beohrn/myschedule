@@ -36,6 +36,9 @@
         <activity
             android:name=".ui.activities.AddScheduleActivity"
             android:theme="@style/AddSchedule"/>
+
+        <activity android:name=".ui.activities.TeachersActivity"/>
+
     </application>
 
 </manifest>

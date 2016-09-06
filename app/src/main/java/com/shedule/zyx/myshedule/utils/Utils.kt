@@ -21,5 +21,15 @@ class Utils {
     }
 
     fun toJson(list: ArrayList<Schedule>) = Gson().toJson(list)
+
+    fun getColorByAssessment(context: Context, assessment: String) = when (assessment) {
+      "E" -> context.resources.getColor(R.color.assess_E)
+      "D" -> context.resources.getColor(R.color.assess_D)
+      "C" -> context.resources.getColor(R.color.assess_C)
+      "B" -> context.resources.getColor(R.color.assess_B)
+      "A" -> context.resources.getColor(R.color.assess_A)
+      else -> 0
+    }
+
   }
 }

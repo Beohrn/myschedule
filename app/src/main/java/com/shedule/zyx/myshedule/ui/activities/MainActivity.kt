@@ -30,6 +30,7 @@ import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_navigation.*
 import kotlinx.android.synthetic.main.content_navigation.*
 import org.jetbrains.anko.onClick
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
 import org.jetbrains.anko.support.v4.onPageChangeListener
 import java.util.*
@@ -137,6 +138,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   override fun onNavigationItemSelected(item: MenuItem?): Boolean {
     //todo implement this
     when (item?.itemId) { R.id.nav_camera -> showDialog()
+      R.id.nav_manage -> startActivity<TeachersActivity>()
     }
     drawer_layout?.closeDrawer(GravityCompat.START)
     return true

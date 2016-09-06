@@ -28,5 +28,11 @@
 
     <color name="snow">#fafafa</color>
 
+    <color name="assess_E">#5b6c7b</color>
+    <color name="assess_D">#47515b</color>
+    <color name="assess_C">#fec23b</color>
+    <color name="assess_B">#35a4ff</color>
+    <color name="assess_A">#a9ca4b</color>
+
 </resources>
 
