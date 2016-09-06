@@ -231,7 +231,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
                 android:text="Фиксированое"
-                android:textSize="17sp"/>
+                android:textSize="14sp"/>
 
             <RadioButton
                 android:id="@+id/unfixed_schedule"
@@ -240,7 +240,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_weight="0.5"
                 android:text="Мигалки"
-                android:textSize="17sp"/>
+                android:textSize="14sp"/>
 
         </RadioGroup>
 
