@@ -45,6 +45,10 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   var isScheduleTyped = true
   var listOfDates = arrayListOf<String>()
 
+  val FIRST_WEEK = 1
+  val SECOND_WEEK = 2
+  val BOTH_WEEKS = 0
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(add_schedule_activity)
@@ -57,6 +61,8 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       val bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
       bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
+
+    (number_of_lesson.background as GradientDrawable).setColor(resources.getColor(R.color.dark_cyan))
 
     start_period_of_lesson.onClick { showDateDialog() }
 
@@ -88,8 +94,8 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    fixed_schedule.isChecked = true
-
+    first_week.isChecked = true
+    second_week.isChecked = true
     categoriesColors()
   }
 
@@ -158,12 +164,18 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
         schedule.category = category
 
         if (isScheduleTyped) {
-          if (!unfixed_schedule.isChecked)
+          if (second_week.isChecked && first_week.isChecked)
             schedule.dates.addAll(scheduleManager.getScheduleByDate(schedule.startPeriod, schedule.endPeriod,
-                intent.getIntExtra("current_day_of_week", 0), true).map { it })
-          else
+                intent.getIntExtra("current_day_of_week", 0), BOTH_WEEKS).map { it })
+          else if (first_week.isChecked && !second_week.isChecked)
             schedule.dates.addAll(scheduleManager.getScheduleByDate(schedule.startPeriod, schedule.endPeriod,
-                intent.getIntExtra("current_day_of_week", 0), false).map { it })
+                intent.getIntExtra("current_day_of_week", 0), FIRST_WEEK).map { it })
+          else if (!first_week.isChecked && second_week.isChecked)
+            schedule.dates.addAll(scheduleManager.getScheduleByDate(schedule.startPeriod, schedule.endPeriod,
+                intent.getIntExtra("current_day_of_week", 0), SECOND_WEEK).map { it })
+          else  if (!second_week.isChecked && !first_week.isChecked)
+            schedule.dates.addAll(scheduleManager.getScheduleByDate(schedule.startPeriod, schedule.endPeriod,
+                intent.getIntExtra("current_day_of_week", 0), BOTH_WEEKS).map { it })
         } else
           schedule.dates.addAll(listOfDates.map { it })
 
@@ -172,7 +184,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
           setResult(Activity.RESULT_OK)
           finish()
         }
-      } ?: toast("Упс! Введите окончание периода предмета ")
+      } ?: toast("Упс! Введите окончание периода предмета")
     } ?: toast("Упс! Введите начало периода предмета")
   }
 

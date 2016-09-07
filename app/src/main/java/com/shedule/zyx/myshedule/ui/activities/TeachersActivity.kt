@@ -31,11 +31,9 @@ class TeachersActivity: AppCompatActivity() {
     supportActionBar?.setHomeButtonEnabled(true)
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     teachers_toolbar.setNavigationOnClickListener { finish() }
-
     val adapter = TeachersAdapter(this@TeachersActivity, scheduleManager.getTeachers())
     list_of_teachers.layoutManager = LinearLayoutManager(applicationContext)
     list_of_teachers.itemAnimator = DefaultItemAnimator()
     list_of_teachers.adapter = adapter
-
   }
 }

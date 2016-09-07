@@ -36,6 +36,7 @@ import kotlinx.android.synthetic.main.nav_header_navigation.*
 import kotlinx.android.synthetic.main.nav_header_navigation.view.*
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.selector
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
 import org.jetbrains.anko.support.v4.onPageChangeListener
 import java.util.*
@@ -163,6 +164,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       showDialog()
       bluetoothManager.schedule = scheduleManager.globalList
     }
+      R.id.nav_manage -> startActivity<TeachersActivity>()
     }
 
 
