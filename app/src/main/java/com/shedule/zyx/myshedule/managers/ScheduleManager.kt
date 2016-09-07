@@ -34,18 +34,17 @@ class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPrefere
     var difference = 0
     var range = 1
 
-    if (currentDayOfWeek > startDayOfWeek) {
+    if (currentDayOfWeek >= startDayOfWeek) {
       difference = currentDayOfWeek - startDayOfWeek
 
       when (week) {
-        1 -> range++
+        1 -> { range++; weeksCount /= 2 }
         2 -> {
           startCalendar.add(Calendar.WEEK_OF_MONTH, 1)
           range++
           weeksCount /= 2
         }
       }
-
     } else if (currentDayOfWeek < startDayOfWeek) {
       difference = currentDayOfWeek - startDayOfWeek
 

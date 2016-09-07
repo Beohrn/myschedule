@@ -16,6 +16,8 @@ import org.jetbrains.anko.selector
  */
 class TeacherView : FrameLayout, View.OnClickListener {
 
+  var onAssessmentClickListener: OnAssessmentClickListener? = null
+
   constructor(context: Context?) : super(context) {
     init(context)
   }
@@ -41,6 +43,7 @@ class TeacherView : FrameLayout, View.OnClickListener {
   fun setData(teacher: Teacher) {
     tv_name_of_teacher.text = teacher.nameOfTeacher
     tv_name_of_lesson.text = teacher.nameOfLesson
+    setAssessment(teacher.assessment.toString())
   }
 
   fun setAssessment(assessment: String) {
@@ -49,13 +52,16 @@ class TeacherView : FrameLayout, View.OnClickListener {
     tv_assessment_of_teacher.text = assessment
   }
 
+  fun setAssessmentWithListener(assessment: String) {
+    setAssessment(assessment)
+    onAssessmentClickListener?.let {
+      it.onAssessmentClick(assessment, tv_name_of_teacher.text.toString())
+    }
+  }
+
   override fun onClick(v: View?) {
     when (v?.id) {
-      R.id.tv_assessment_of_teacher -> {
-        showAssessments()
-      }
-      R.id.tv_container -> {
-      }
+      R.id.tv_assessment_of_teacher ->  showAssessments()
     }
   }
 
@@ -63,12 +69,16 @@ class TeacherView : FrameLayout, View.OnClickListener {
     context.selector("Как вы оцениваете преподавателя?",
         listOf("Отлично", "Хорошо", "Нормально", "Так себе", "Плохо")) { position ->
       when (position) {
-        0 -> setAssessment("A")
-        1 -> setAssessment("B")
-        2 -> setAssessment("C")
-        3 -> setAssessment("D")
-        4 -> setAssessment("E")
+        0 -> setAssessmentWithListener("A")
+        1 -> setAssessmentWithListener("B")
+        2 -> setAssessmentWithListener("C")
+        3 -> setAssessmentWithListener("D")
+        4 -> setAssessmentWithListener("E")
       }
     }
+  }
+
+  interface OnAssessmentClickListener {
+    fun onAssessmentClick(assessment: String, teacherName: String)
   }
 }
