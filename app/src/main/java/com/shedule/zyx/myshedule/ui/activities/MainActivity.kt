@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     add_schedule_button.onClick {
-      startActivityForResult<AddScheduleActivity>(5555, Pair("current_day_of_week", main_viewpager.currentItem + 2))
+      startActivityForResult<NewAddScheduleActivity>(5555, Pair("current_day_of_week", main_viewpager.currentItem + 2))
     }
 
     nav_view.inflateHeaderView(R.layout.nav_header_navigation).circleView.onClick {

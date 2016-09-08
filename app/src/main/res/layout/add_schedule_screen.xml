@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/silver_lite"
+              android:orientation="vertical"
+              app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/snow"
+        android:orientation="vertical"
+        android:paddingBottom="10dp">
+
+        <com.shedule.zyx.myshedule.widget.CustomEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hint="@string/name_of_lesson"
+            android:layout_marginLeft="20dp"/>
+
+        <com.shedule.zyx.myshedule.widget.CustomEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hint="@string/name_of_teacher"
+            android:layout_marginLeft="20dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp"
+                android:weightSum="1">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_weight="0.3"
+                    android:src="@drawable/housing"/>
+
+                <com.shedule.zyx.myshedule.widget.CustomEditText
+                    android:layout_width="0dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:paddingRight="10dp"
+                    app:hint="Корпус"
+                    app:inputType="numberDecimal"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6"
+                android:weightSum="1"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_weight="0.2"
+                    android:src="@drawable/classroom"/>
+
+                <com.shedule.zyx.myshedule.widget.CustomEditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    app:hint="Аудитория"/>
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+
+        <com.shedule.zyx.myshedule.widget.CustomTextView
+            android:id="@+id/begin_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:time_text="08:30"
+            app:title_text="Начало пары"/>
+
+        <com.shedule.zyx.myshedule.widget.CustomTextView
+            android:id="@+id/end_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:time_text="10:05"
+            app:title_text="Конец пары"/>
+
+        <com.shedule.zyx.myshedule.widget.CustomTextView
+            android:id="@+id/begin_period"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:time_text="01.09.16"
+            app:title_text="@string/start_period_of_lesson"/>
+
+        <com.shedule.zyx.myshedule.widget.CustomTextView
+            android:id="@+id/end_period"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:time_text="31.12.16"
+            app:title_text="@string/end_period_of_lesson"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:alpha="0.3"
+        android:background="@color/black"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:background="@color/snow"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:id="@+id/repeat_dates"
+            android:padding="10dp"
+            android:weightSum="1">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="0.1"
+                android:src="@drawable/repeat"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.9"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:text="Повторение"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:alpha="0.1"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="3dp"
+            android:background="@color/sch_green"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:id="@+id/type_and_number_of_lesson"
+            android:padding="10dp"
+            android:weightSum="1">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="0.1"
+                android:src="@drawable/list"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.9"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:text="Тип и номер пары"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:alpha="0.3"
+        android:background="@color/black"/>
+
+</LinearLayout>

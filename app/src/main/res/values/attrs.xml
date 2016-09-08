@@ -22,4 +22,17 @@
         <attr name="color_mark" format="color"/>
         <attr name="text" format="string"  />
     </declare-styleable>
+
+    <declare-styleable name="CustomEditText">
+        <attr name="hint" format="string"/>
+        <attr name="inputType">
+            <flag name="numberDecimal" value="0x00002002" />
+            <flag name="text" value="0x00000001" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="CustomTextView">
+        <attr name="title_text" format="string"/>
+        <attr name="time_text" format="string"/>
+    </declare-styleable>
 </resources>

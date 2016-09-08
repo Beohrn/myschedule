@@ -28,5 +28,9 @@
 
     <color name="snow">#fafaff</color>
 
+    <color name="sch_green">#4CAF50</color>
+    <color name="sch_dark_green">#247c2b</color>
+
+
 </resources>
 
