@@ -16,8 +16,7 @@ class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPrefere
 
   fun getScheduleByDay(day: String) = globalList.map { schedule ->
     schedule.dates.filter { it.equals(day) }.map { schedule }
-  }
-      .flatMap { it -> it.map { it } }
+  }.flatMap { it -> it.map { it } }
 
   fun getScheduleByDate(startDate: Date, endDate: Date, currentDayOfWeek: Int): ArrayList<String> {
     val result = arrayListOf<String>()
