@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.shedule.zyx.myshedule">
+<manifest package="com.shedule.zyx.myshedule"
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <!-- for api 23!!! -->
     <!-- But it is no enable dynamically -->
@@ -36,6 +36,10 @@
 
         <activity
             android:name=".ui.activities.AddScheduleActivity"
+            android:theme="@style/AddSchedule"/>
+
+        <activity
+            android:name="app.voter.xyz.comments.DiscussionActivity"
             android:theme="@style/AddSchedule"/>
     </application>
 
