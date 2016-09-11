@@ -17,18 +17,7 @@ class Schedule(val numberLesson: String, val nameLesson: String, val startPeriod
   var dates = ArrayList<String>()
 }
 
-data class Time(val hour: Int, val minute: Int) {
-  override fun toString(): String {
-    if (hour < 10 && minute < 10)
-      return "0$hour:0$minute"
-    else if (hour < 10)
-      return "0$hour:$minute"
-    else if (minute < 10)
-      return "$hour:0$minute"
-
-    return "$hour:$minute"
-  }
-}
+data class Time(val hour: Int, val minute: Int)
 
 data class Location(val classroom: String, val housing: String)
 

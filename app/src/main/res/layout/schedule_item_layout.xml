@@ -7,16 +7,16 @@
     android:orientation="vertical">
 
     <!--todo fix don't stretch view-->
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:weightSum="1">-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1">
 
-        <!--<View-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"/>-->
-    <!--</LinearLayout>-->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -84,9 +84,9 @@
                     android:id="@+id/view_type_of_lesson"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.4"
+                    android:layout_weight="0.5"
                     android:gravity="center_vertical"
-                    android:text="практика"
+                    android:text="лабораторная работа"
                     android:textColor="@color/black"
                     android:textSize="10sp"/>
 
@@ -95,9 +95,9 @@
                     android:id="@+id/view_time_of_lesson"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.4"
-                    android:gravity="right"
-                    android:text="Начало - Конец"
+                    android:layout_weight="0.3"
+                    android:gravity="center_vertical"
+                    android:text="10:34 - 12:40"
                     android:textColor="@color/red"
                     android:textSize="12sp"
                     android:textStyle="bold"/>

@@ -1,7 +1,7 @@
 package com.shedule.zyx.myshedule.widget
 
 import android.content.Context
-import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import com.shedule.zyx.myshedule.R
@@ -38,16 +38,14 @@ class MarkView : FrameLayout {
 
   fun init(context: Context?) {
     inflate(context, R.layout.mark_layout, this)
-    (mark_view.background as GradientDrawable).setColor(color)
-    mark_view.text = text
+    val back = red.background as LayerDrawable
+//    back.findDrawableByLayerId(R.id)
+
+    red.text = text
+//    back.setColorFilter(resources.getColor(R.color.dark_cyan), PorterDuff.Mode.MULTIPLY)
   }
 
-  fun setColor(color: Int?) {
-    (mark_view.background as GradientDrawable).setColor(resources.getColor(color ?: R.color.dark_cyan))
-  }
+  fun setColor() {
 
-  fun setTextCategory(text: String?) {
-    mark_view.text = text ?: ""
   }
-
 }

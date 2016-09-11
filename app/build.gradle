@@ -131,11 +131,6 @@ dependencies {
     compile 'com.firebaseui:firebase-ui:0.5.1'
     compile "com.google.firebase:firebase-database:9.4.0"
     compile 'com.firebaseui:firebase-ui-database:0.5.1'
-
-    compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar'
-
-    compile 'de.hdodenhof:circleimageview:2.1.0'
-
 }
 
 apply plugin: 'com.google.gms.google-services'
