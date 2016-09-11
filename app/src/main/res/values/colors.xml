@@ -13,6 +13,7 @@
     <color name="location_point">#2cc8db</color>
     <color name="red">#eb2624</color>
     <color name="bottom_images">#c0c7ca</color>
+    <color name="material_gray">#B5B5B5</color>
 
     <color name="background_schedule_fragment">#e8e8e8</color>
     <color name="title_frame">#4db6ac</color>
