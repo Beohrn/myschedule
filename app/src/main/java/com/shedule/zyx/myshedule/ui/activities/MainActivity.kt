@@ -1,9 +1,13 @@
 package com.shedule.zyx.myshedule.ui.activities
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
+import android.provider.MediaStore
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
@@ -12,22 +16,26 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import app.akexorcist.bluetotohspp.library.BluetoothState
-import app.voter.xyz.comments.DiscussionActivity
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.activity_navigation
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.adapters.ViewPagerAdapter
 import com.shedule.zyx.myshedule.interfaces.ChangeStateFragmentListener
 import com.shedule.zyx.myshedule.interfaces.DataChangeListener
-import com.shedule.zyx.myshedule.managers.*
+import com.shedule.zyx.myshedule.managers.BluetoothManager
+import com.shedule.zyx.myshedule.managers.DateManager
+import com.shedule.zyx.myshedule.managers.ReceiveManager
+import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.ui.fragments.BluetoothDialog
+import com.tbruyelle.rxpermissions.RxPermissions
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_navigation.*
 import kotlinx.android.synthetic.main.content_navigation.*
+import kotlinx.android.synthetic.main.nav_header_navigation.*
+import kotlinx.android.synthetic.main.nav_header_navigation.view.*
 import org.jetbrains.anko.onClick
-import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.selector
 import org.jetbrains.anko.startActivityForResult
 import org.jetbrains.anko.support.v4.onPageChangeListener
 import java.util.*
@@ -46,12 +54,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   lateinit var receiveManager: ReceiveManager
 
   @Inject
-  lateinit var connectionManager: BTConnectionManager
-
-  @Inject
   lateinit var scheduleManager: ScheduleManager
 
   val listenerList = arrayListOf<DataChangeListener>()
+  private val CAMERA_REQUEST = 1888
+  private val GALLERY_REQUEST = 2888
+
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -77,6 +85,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     add_schedule_button.onClick {
       startActivityForResult<AddScheduleActivity>(5555, Pair("current_day_of_week", main_viewpager.currentItem + 2))
+    }
+
+    nav_view.inflateHeaderView(R.layout.nav_header_navigation).circleView.onClick {
+      selector("Выберите, чтобы загрузить фото:", listOf("Камера", "Галерея")) { i ->
+        when (i) {
+          0 -> {
+            startActivityForResult(Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE), CAMERA_REQUEST)
+          }
+          else -> {
+            startActivityForResult(Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), GALLERY_REQUEST)
+          }
+        }
+      }
     }
   }
 
@@ -137,16 +159,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   override fun onNavigationItemSelected(item: MenuItem?): Boolean {
     //todo implement this
-    when (item?.itemId) {
-      R.id.nav_camera -> showDialog()
-      R.id.nav_gallery -> startActivity<DiscussionActivity>()
+    when (item?.itemId) { R.id.nav_share -> {
+      showDialog()
+      bluetoothManager.schedule = scheduleManager.globalList
     }
+    }
+
+
     drawer_layout?.closeDrawer(GravityCompat.START)
     return true
   }
 
   override fun onStart() {
     super.onStart()
+    checkPermissions()
     bluetoothInit()
     Log.i("TAG", "onStart")
   }
@@ -168,11 +194,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     Log.i("TAG", "onStop")
   }
 
+  private fun checkPermissions() {
+    RxPermissions.getInstance(this)
+        .request(Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        .subscribe()
+  }
+
   private fun bluetoothInit() {
     if (bluetoothManager.bluetoothEnabled())
       if (!bluetoothManager.serviceAvailable()) {
         bluetoothManager.setupService()
-        bluetoothManager.setConnectionListener(connectionManager)
         bluetoothManager.setReceiveListener(receiveManager)
       }
   }
@@ -189,17 +223,30 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       val dialog = BluetoothDialog()
       dialog.show(supportFragmentManager, "dialog")
     } else {
-      startActivityForResult(Intent(bluetoothManager.ACTION_ENABLE),
-          bluetoothManager.REQUEST_ENABLE)
+      bluetoothManager.autoConnect()
+      bluetoothInit()
+      showDialog()
     }
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {
-      bluetoothInit()
-      showDialog()
-    } else if (requestCode == Activity.RESULT_OK) {
+    if (requestCode == Activity.RESULT_OK) {
+
+    } else if (requestCode == CAMERA_REQUEST) {
+      val bitmap = data?.extras?.get("data") as? Bitmap
+      bitmap?.let {
+        circleView.setImageBitmap(it)
+      }
+    } else if (requestCode == GALLERY_REQUEST) {
+      val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
+      data?.let {
+        val cursor = contentResolver.query(it.data, filePathColumn, null, null, null)
+        cursor.moveToFirst()
+        val picturePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]))
+        cursor.close()
+        circleView.setImageBitmap(BitmapFactory.decodeFile(picturePath))
+      }
     }
   }
 }

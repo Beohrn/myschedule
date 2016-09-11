@@ -10,7 +10,6 @@ import com.shedule.zyx.myshedule.ui.fragments.ScheduleFragment;
 
 import javax.inject.Singleton;
 
-import app.voter.xyz.comments.DiscussionActivity;
 import dagger.Component;
 
 @Singleton
@@ -24,5 +23,4 @@ public interface AppComponent {
     void inject(AppPreference appPreference);
     void inject(AddScheduleActivity addScheduleActivity);
     void inject(ScheduleFragment scheduleFragment);
-    void inject(DiscussionActivity discussionActivity);
 }
