@@ -7,7 +7,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.shedule.zyx.myshedule.managers.BTConnectionManager;
 import com.shedule.zyx.myshedule.managers.BluetoothManager;
 import com.shedule.zyx.myshedule.managers.DateManager;
 import com.shedule.zyx.myshedule.managers.ReceiveManager;
@@ -75,7 +74,7 @@ public class AppModule {
     @Singleton
     @Provides
     public BluetoothManager provideBluetoothManager(BluetoothSPP bt, Context context) {
-        return new BluetoothManager(bt, context);
+        return new BluetoothManager(context, bt);
     }
 
     @Singleton
@@ -86,14 +85,8 @@ public class AppModule {
 
     @Singleton
     @Provides
-    public ReceiveManager provideReceiveManager(Context context) {
-        return new ReceiveManager(context);
-    }
-
-    @Singleton
-    @Provides
-    public BTConnectionManager provideBTConnectionManager(Context context) {
-        return new BTConnectionManager(context);
+    public ReceiveManager provideReceiveManager(Context context, ScheduleManager scheduleManager, Gson gson) {
+        return new ReceiveManager(context, scheduleManager, gson);
     }
 
     @Provides
