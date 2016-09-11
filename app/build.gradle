@@ -19,6 +19,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:3.0.0'
     }
 }
 
@@ -134,5 +135,5 @@ dependencies {
 
 }
 
-
+apply plugin: 'com.google.gms.google-services'
 
