@@ -11,6 +11,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.google.firebase.database.DatabaseReference
 import com.shedule.zyx.myshedule.R
 import kotlinx.android.synthetic.main.comment_item_layout.view.*
+import kotlinx.android.synthetic.main.schedule_dialog_layout.view.*
 import org.jetbrains.anko.onClick
 
 
