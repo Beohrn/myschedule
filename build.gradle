@@ -18,7 +18,7 @@ allprojects {
         targetSDKVersion = 23
         minSDKVersion = 16
         buildToolVersion = "23.0.3"
-        supportLibraryVersion = "24.0.0"
+        supportLibraryVersion = "24.2.0"
         playServicesVersion = "8.4.0"
         ankoVersion = "0.9"
         betaDistributionNotifications = false
