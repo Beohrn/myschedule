@@ -26,8 +26,17 @@
     <color name="mark_yellow">#f6ef00</color>
     <color name="mark_orange">#f99631</color>
     <color name="mark_red">#e82f2d</color>
+    <color name="nb_dark_cyan">#6500b669</color>
+    <color name="nb_mark_yellow">#5af6ef00</color>
+    <color name="nb_mark_orange">#5ff99631</color>
+    <color name="nb_mark_red">#60e82f2d</color>
+
 
     <color name="snow">#fafaff</color>
+
+    <color name="sch_green">#4CAF50</color>
+    <color name="sch_dark_green">#247c2b</color>
+
 
 </resources>
 
