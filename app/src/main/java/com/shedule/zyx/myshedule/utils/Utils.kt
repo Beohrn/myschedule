@@ -31,5 +31,9 @@ class Utils {
       else -> 0
     }
 
+
+    fun getKeyByName(name: String) = String(Base64.encode(name.toByteArray()))
+
+    fun getNameByKey(key: String) = String(Base64.decode(key))
   }
 }
