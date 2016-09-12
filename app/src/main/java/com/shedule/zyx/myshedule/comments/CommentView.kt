@@ -26,7 +26,7 @@ class CommentView : FrameLayout {
 
       verticalLayout {
         linearLayout {
-          lparams { setPadding(0, dip(16), 0, 0) }
+          lparams { setPadding(0, dip(5), 0, 0) }
 
           verticalLayout {
             textView("") {

@@ -5,8 +5,6 @@ package app.voter.xyz.utils
  */
 class Constants {
   companion object {
-    val MATCHES = "matches"
-    val QUIZ = "quizes"
     val COMMENTS = "comments"
     val REPLIES = "replies"
   }
