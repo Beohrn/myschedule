@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.provider.MediaStore
+import android.support.annotation.NonNull
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
@@ -16,6 +17,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import app.voter.xyz.comments.DiscussionActivity
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.activity_navigation
 import com.shedule.zyx.myshedule.ScheduleApplication
@@ -36,6 +38,7 @@ import kotlinx.android.synthetic.main.nav_header_navigation.*
 import kotlinx.android.synthetic.main.nav_header_navigation.view.*
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.selector
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
 import org.jetbrains.anko.support.v4.onPageChangeListener
 import java.util.*
@@ -157,14 +160,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     picker.show(fragmentManager, "")
   }
 
-  override fun onNavigationItemSelected(item: MenuItem?): Boolean {
+  override fun onNavigationItemSelected(@NonNull item: MenuItem): Boolean {
     //todo implement this
-    when (item?.itemId) { R.id.nav_share -> {
+    when (item.itemId) { R.id.nav_share -> {
       showDialog()
       bluetoothManager.schedule = scheduleManager.globalList
     }
+      R.id.nav_camera -> startActivity<DiscussionActivity>()
     }
-
 
     drawer_layout?.closeDrawer(GravityCompat.START)
     return true

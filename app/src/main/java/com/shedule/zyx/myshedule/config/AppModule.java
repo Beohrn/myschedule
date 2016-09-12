@@ -1,7 +1,10 @@
 package com.shedule.zyx.myshedule.config;
 
 import android.content.Context;
+import android.provider.Settings;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.shedule.zyx.myshedule.managers.BluetoothManager;
@@ -84,6 +87,19 @@ public class AppModule {
     @Provides
     public ReceiveManager provideReceiveManager(Context context, ScheduleManager scheduleManager, Gson gson) {
         return new ReceiveManager(context, scheduleManager, gson);
+    }
+
+    @Provides
+    @Singleton
+    public String provideDeviceToken() {
+        return Settings.Secure.getString(context.getApplicationContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+    }
+
+    @Singleton
+    @Provides
+    DatabaseReference provideDatabaseReference() {
+        return FirebaseDatabase.getInstance().getReference();
     }
 
     @Singleton

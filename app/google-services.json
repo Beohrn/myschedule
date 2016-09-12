@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "515794523373",
+    "firebase_url": "https://schedule-c36b5.firebaseio.com",
+    "project_id": "schedule-c36b5",
+    "storage_bucket": "schedule-c36b5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:515794523373:android:efc9a8937c1c5103",
+        "android_client_info": {
+          "package_name": "com.shedule.zyx.myshedule"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "515794523373-3ufpfmh4vv4ro2uppsq70258kub7tmc2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpWuRDbjQ4sfLkfTIgqaMfKwIY-PyPF1s"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
