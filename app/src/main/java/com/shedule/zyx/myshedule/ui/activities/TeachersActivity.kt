@@ -43,5 +43,10 @@ class TeachersActivity: AppCompatActivity(), TeacherView.OnAssessmentClickListen
   // todo
   override fun onAssessmentClick(assessment: String, teacherName: String) {
     Log.i(TAG, "$assessment - $teacherName")
+
+    scheduleManager.globalList.map {
+      if (it.teacher?.nameOfTeacher.equals(teacherName))
+        it.teacher?.assessment = assessment
+    }
   }
 }

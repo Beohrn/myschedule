@@ -11,7 +11,6 @@ import app.voter.xyz.utils.Constants.Companion.REPLIES
 import com.google.firebase.database.DatabaseReference
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.ScheduleApplication
-import com.shedule.zyx.myshedule.utils.Utils
 import kotlinx.android.synthetic.main.discussion_activity_layout.*
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.onClick
@@ -32,6 +31,9 @@ class DiscussionActivity : AppCompatActivity(), CommentsAdapter.OnCommentClickLi
 
   lateinit var ref: DatabaseReference
   lateinit var layoutManager: LinearLayoutManager
+  companion object {
+    val TEACHER_REQUEST = "teacher_name"
+  }
 
 
   var recycleAdapter: CommentsAdapter? = null

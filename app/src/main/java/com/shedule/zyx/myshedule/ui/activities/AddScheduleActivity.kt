@@ -2,7 +2,6 @@ package com.shedule.zyx.myshedule.ui.activities
 
 import android.app.Activity
 import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v7.app.AppCompatActivity
@@ -21,8 +20,8 @@ import com.shedule.zyx.myshedule.models.Date
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
-import kotlinx.android.synthetic.main.add_item_view.*
 import kotlinx.android.synthetic.main.add_schedule_activity.*
+import kotlinx.android.synthetic.main.add_schedule_screen.*
 import kotlinx.android.synthetic.main.number_layout.*
 import org.jetbrains.anko.*
 import java.util.*
@@ -64,6 +63,9 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       val bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
       bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
+
+
+
     begin_period.onClick { showDateDialog() }
 
     end_period.onClick {
@@ -203,7 +205,8 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
         schedule.location = Location(classroom.getText().toString(), housing.getText().toString())
         schedule.startTime = startTime
         schedule.endTime = endTime
-        schedule.teacher = name_of_teacher.getText().toString()
+        schedule.teacher = Teacher(name_of_teacher.getText().toString(), name_of_lesson.getText().toString())
+        schedule.teacher?.assessment = "E"
         schedule.typeLesson = if (spinner_type_of_lesson.selectedItem.toString().equals("Практика")) TypeLesson.SEMINAR else TypeLesson.LECTURE
         schedule.category = category
         schedule.dates.addAll(listOfDates.map { it })

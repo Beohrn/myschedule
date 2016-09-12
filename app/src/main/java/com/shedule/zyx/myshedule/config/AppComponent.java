@@ -1,15 +1,16 @@
 package com.shedule.zyx.myshedule.config;
 
 
-
 import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity;
 import com.shedule.zyx.myshedule.ui.activities.MainActivity;
+import com.shedule.zyx.myshedule.ui.activities.TeachersActivity;
 import com.shedule.zyx.myshedule.ui.fragments.BondedDevicesFragment;
 import com.shedule.zyx.myshedule.ui.fragments.NearbyDevicesFragment;
 import com.shedule.zyx.myshedule.ui.fragments.ScheduleFragment;
 
 import javax.inject.Singleton;
 
+import app.voter.xyz.comments.DiscussionActivity;
 import dagger.Component;
 
 @Singleton
