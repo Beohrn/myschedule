@@ -16,7 +16,7 @@
     <string name="start_period_of_lesson">Дата начала занятия</string>
     <string name="end_period_of_lesson">Дата окончания занятия</string>
 
-    <string name="add_schedule_toolbar_title">Add Schedule</string>
+    <string name="add_schedule_toolbar_title">Создать занятие</string>
 
     <string-array name="type_of_lesson">
         <item>Практика</item>

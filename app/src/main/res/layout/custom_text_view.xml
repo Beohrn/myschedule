@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/ctv_container"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:orientation="vertical">
@@ -7,9 +8,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
         android:orientation="horizontal"
+        android:background="?attr/selectableItemBackground"
         android:paddingBottom="7dp"
         android:paddingTop="20dp"
         android:weightSum="1">
@@ -19,7 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_weight="0.8"
+            android:layout_weight="0.7"
             android:gravity="left"
             android:text="Начало пары"
             android:textColor="@color/black"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_marginRight="20dp"
-            android:layout_weight="0.2"
+            android:layout_weight="0.3"
             android:orientation="vertical"
             android:weightSum="1">
 
@@ -38,12 +38,12 @@
                 android:id="@+id/time_text"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_gravity="right"
-                android:layout_weight="0.5"
+                android:layout_gravity="center"
+                android:layout_weight="0.7"
                 android:gravity="right"
-                android:text="31.12.16"
+                android:text="31.12.2016"
                 android:textColor="@color/black"
-                android:textSize="16sp"/>
+                android:textSize="15sp"/>
 
             <View
                 android:layout_width="wrap_content"

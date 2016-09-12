@@ -19,7 +19,7 @@ class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPrefere
   }
       .flatMap { it -> it.map { it } }.sortedBy { it.numberLesson.toInt() }
 
-  fun getScheduleByDate(startDate: Date, endDate: Date, currentDayOfWeek: Int, striping: Boolean): ArrayList<String> {
+  fun getScheduleByDate(startDate: Date, endDate: Date, currentDayOfWeek: Int, week: Int): ArrayList<String> {
     val result = arrayListOf<String>()
     var weeksCount = getWeeksBetween(startDate, endDate)
 
@@ -32,29 +32,45 @@ class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPrefere
     val startDayOfWeek = startCalendar.get(Calendar.DAY_OF_WEEK)
 
     var difference = 0
+    var range = 1
 
-    if (currentDayOfWeek > startDayOfWeek) {
+    if (currentDayOfWeek >= startDayOfWeek) {
       difference = currentDayOfWeek - startDayOfWeek
 
+      when (week) {
+        1 -> { range++; weeksCount /= 2 }
+        2 -> {
+          startCalendar.add(Calendar.WEEK_OF_MONTH, 1)
+          range++
+          weeksCount /= 2
+        }
+      }
     } else if (currentDayOfWeek < startDayOfWeek) {
       difference = currentDayOfWeek - startDayOfWeek
-      startCalendar.add(Calendar.WEEK_OF_MONTH, 1)
+
+      when (week) {
+        1 -> {
+          startCalendar.add(Calendar.WEEK_OF_MONTH, 2)
+          range++
+          weeksCount /= 2
+        }
+        2 -> {
+          startCalendar.add(Calendar.WEEK_OF_MONTH, 1)
+          range++
+          weeksCount /= 2
+        }
+        else -> startCalendar.add(Calendar.WEEK_OF_MONTH, 1)
+      }
     }
 
     if (endDayOfWeek == currentDayOfWeek && currentDayOfWeek == startDayOfWeek) {
       weeksCount++
     }
-
-    var range = 1
-    if (!striping) {
-      range++
-    }
-
+    startCalendar.add(Calendar.DAY_OF_MONTH, difference)
     for (i in 1..weeksCount) {
-      val startDayOfMonth = startCalendar.get(Calendar.DAY_OF_MONTH)
-      val day = startDayOfMonth + difference
+      val day = startCalendar.get(Calendar.DAY_OF_MONTH)
 
-      if (endDate.monthOfYear < startCalendar.get(Calendar.MONTH))
+      if (endDate.monthOfYear < startCalendar.get(Calendar.MONTH) || endDate.year < startCalendar.get(Calendar.YEAR))
         break
       else if (endDate.monthOfYear == startCalendar.get(Calendar.MONTH))
         if (endDate.dayOfMonth < day)

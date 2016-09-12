@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.custom_text_view.view.*
  */
 class CustomTextView : FrameLayout {
 
+
   var titleText = ""
   var timeText = ""
 
@@ -22,8 +23,6 @@ class CustomTextView : FrameLayout {
     val ta = context?.obtainStyledAttributes(attrs, R.styleable.CustomTextView, 0, 0)
     titleText = ta?.getString(R.styleable.CustomTextView_title_text) ?: ""
     timeText = ta?.getString(R.styleable.CustomTextView_time_text) ?: ""
-//    hint = ta.getString(R.styleable.CustomEditText_hint)
-//    inputType = ta.getInt(R.styleable.CustomEditText_inputType, 1)
     ta?.recycle()
     init(context)
   }
@@ -41,6 +40,10 @@ class CustomTextView : FrameLayout {
     title_text.text = titleText
     time_text.text = timeText
   }
-//
-//  fun getText() = cv_edit_text.text.toString()
+
+  fun getText() = time_text.text.toString()
+
+  fun setText(text: String) { time_text.text = text }
+
+
 }

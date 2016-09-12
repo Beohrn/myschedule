@@ -33,12 +33,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activities.NewAddScheduleActivity"
-            android:theme="@style/AddScheduleTheme"/>
 
         <activity
             android:name=".ui.activities.AddScheduleActivity"
-            android:theme="@style/AddSchedule"/>
+            android:theme="@style/AddScheduleTheme"/>
     </application>
 
 </manifest>
