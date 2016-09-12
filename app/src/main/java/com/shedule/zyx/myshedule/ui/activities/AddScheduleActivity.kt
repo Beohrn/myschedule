@@ -42,50 +42,52 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   var startTime: Time? = null
   var endTime: Time? = null
   var category: Category? = null
-  var isScheduleTyped = true
   var listOfDates = arrayListOf<String>()
 
   val FIRST_WEEK = 1
   val SECOND_WEEK = 2
   val BOTH_WEEKS = 0
+  var numberOfLesson = 1
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(add_schedule_activity)
     ScheduleApplication.getComponent().inject(this)
     setSupportActionBar(add_schedule_toolbar)
-    add_schedule_toolbar.title = applicationContext.getString(R.string.add_schedule_toolbar_title)
+    supportActionBar?.title = applicationContext.getString(R.string.add_schedule_toolbar_title)
     add_schedule_toolbar.setTitleTextColor(Color.WHITE)
+    supportActionBar?.setHomeButtonEnabled(true)
+    supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    add_schedule_toolbar.setNavigationOnClickListener { finish() }
 
-    number_of_lesson.onClick {
+    type_and_number_of_lesson.onClick {
       val bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
       bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
+    begin_period.onClick { showDateDialog() }
 
-    (number_of_lesson.background as GradientDrawable).setColor(resources.getColor(R.color.dark_cyan))
-
-    start_period_of_lesson.onClick { showDateDialog() }
-
-    end_period_of_lesson.onClick {
+    end_period.onClick {
       showDateDialog()
       switcher = 1
     }
 
-    start_time_of_lesson.onClick { showTimeDialog() }
+    begin_time.onClick { showTimeDialog() }
 
-    end_time_of_lesson.onClick {
+    end_time.onClick {
       switcher = 1
       showTimeDialog()
     }
+
     category = Category.HOME_EXAM
-    exam.onClick { setColor(Category.EXAM, resources.getColor(R.color.mark_red)) }
-    course_work.onClick { setColor(Category.COURSE_WORK, resources.getColor(R.color.mark_orange)) }
-    standings.onClick { setColor(Category.STANDINGS, resources.getColor(R.color.mark_yellow)) }
-    home_exam.onClick { setColor(Category.HOME_EXAM, resources.getColor(R.color.dark_cyan)) }
+
+    exam.onClick { setColor(Category.EXAM, 0, R.color.mark_red) }
+    course_work.onClick { setColor(Category.COURSE_WORK, 1, R.color.mark_orange) }
+    standings.onClick { setColor(Category.STANDINGS, 2, R.color.mark_yellow) }
+    home_exam.onClick { setColor(Category.HOME_EXAM, 3, R.color.dark_cyan) }
 
     spinner_number_of_lesson.onItemSelectedListener {
       onItemSelected { adapterView, view, i, l ->
-        number_of_lesson.text = "${i + 1}"
+        numberOfLesson = i + 1
       }
     }
 
@@ -94,21 +96,60 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    first_week.isChecked = true
-    second_week.isChecked = true
+    repeat_dates.onClick {
+      selector("Когда будет повторяться данное занятие?", listOf("Каждую неделю", "По первой неделе", "По второй неделе")) {
+        position ->
+        when (position) {
+          0 -> { setListOfDates(BOTH_WEEKS) }
+          1 -> { setListOfDates(FIRST_WEEK) }
+          2 -> { setListOfDates(SECOND_WEEK) }
+        }
+      }
+    }
+
     categoriesColors()
   }
 
-  private fun setColor(cat: Category, color: Int) {
-    (number_of_lesson.background as GradientDrawable).setColor(color)
+  private fun setListOfDates(week: Int) {
+    listOfDates.addAll(scheduleManager.getScheduleByDate(startPeriod ?: null!!, endPeriod ?: null!!,
+        intent.getIntExtra("current_day_of_week", 0), week).map { it })
+  }
+
+  private fun setColor(cat: Category, id: Int, color: Int) {
+    when (id) {
+      0 -> {
+        exam.setColor(color)
+        course_work.setColor(R.color.nb_mark_orange)
+        standings.setColor(R.color.nb_mark_yellow)
+        home_exam.setColor(R.color.nb_dark_cyan)
+      }
+      1 -> {
+        exam.setColor(R.color.nb_mark_red)
+        course_work.setColor(color)
+        standings.setColor(R.color.nb_mark_yellow)
+        home_exam.setColor(R.color.nb_dark_cyan)
+      }
+      2 -> {
+        exam.setColor(R.color.nb_mark_red)
+        course_work.setColor(R.color.nb_mark_orange)
+        standings.setColor(color)
+        home_exam.setColor(R.color.nb_dark_cyan)
+      }
+      3 -> {
+        exam.setColor(R.color.nb_mark_red)
+        course_work.setColor(R.color.nb_mark_orange)
+        standings.setColor(R.color.nb_mark_yellow)
+        home_exam.setColor(color)
+      }
+    }
     category = cat
   }
 
   fun categoriesColors() {
-    exam.setColor(R.color.mark_red)
-    course_work.setColor(R.color.mark_orange)
-    standings.setColor(R.color.mark_yellow)
-    home_exam.setColor(R.color.dark_cyan)
+    exam.setColor(R.color.nb_mark_red)
+    course_work.setColor(R.color.nb_mark_orange)
+    standings.setColor(R.color.nb_mark_yellow)
+    home_exam.setColor(R.color.nb_dark_cyan)
   }
 
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -116,28 +157,32 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       R.id.add_item -> {
         parseDataForSchedule(); return true
       }
-      R.id.additional_calendar -> {
-        alert {
-          customView {
-            include<View>(R.layout.calendar_layout) {
-              val calendarView = find<MaterialCalendarView>(R.id.calendarView)
+      R.id.add_schedule_menu -> {
+        startPeriod?.let {
+          endPeriod?.let {
+            alert {
+              customView {
+                include<View>(R.layout.calendar_layout) {
+                  val calendarView = find<MaterialCalendarView>(R.id.calendarView)
 
-              calendarView.selectionMode = MaterialCalendarView.SELECTION_MODE_MULTIPLE
-              calendarView.state().edit()
-                  .setMinimumDate(startPeriod?.let { CalendarDay(it.year, it.monthOfYear, it.dayOfMonth) })
-                  .setMaximumDate(endPeriod?.let { CalendarDay(it.year, it.monthOfYear, it.dayOfMonth) })
-                  .commit()
+                  calendarView.selectionMode = MaterialCalendarView.SELECTION_MODE_MULTIPLE
+                  calendarView.state().edit()
+                      .setMinimumDate(startPeriod?.let { CalendarDay(it.year, it.monthOfYear, it.dayOfMonth) })
+                      .setMaximumDate(endPeriod?.let { CalendarDay(it.year, it.monthOfYear, it.dayOfMonth) })
+                      .commit()
 
-              find<TextView>(R.id.clear_dates).onClick { calendarView.clearSelection() }
-              find<TextView>(R.id.cancel_dates).onClick { dismiss() }
-              find<TextView>(R.id.approve_dates).onClick {
-                listOfDates.addAll(calendarView.selectedDates.map { "${it.day}-${it.month}-${it.year}" })
-                isScheduleTyped = false
-                dismiss()
+                  find<TextView>(R.id.clear_dates).onClick { calendarView.clearSelection() }
+                  find<TextView>(R.id.cancel_dates).onClick { dismiss() }
+                  find<TextView>(R.id.approve_dates).onClick {
+                    listOfDates.addAll(calendarView.selectedDates.map { "${it.day}-${it.month}-${it.year}" })
+                    dismiss()
+                  }
+                }
               }
-            }
-          }
-        }.show(); return true
+            }.show()
+          } ?: toast("Укажите дату окончания занятия")
+        } ?: toast("Укажите дату начала занятия")
+        return true
       }
       else -> return super.onOptionsItemSelected(item)
     }
@@ -151,40 +196,24 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   private fun parseDataForSchedule() {
     startPeriod?.let { start ->
       endPeriod?.let { end ->
-        val schedule = Schedule(number_of_lesson.text.toString(),
-            if (name_of_lesson.text.toString().isEmpty()) "" else name_of_lesson.text.toString(),
+        val schedule = Schedule(numberOfLesson.toString(),
+            if (name_of_lesson.getText().toString().isEmpty()) "" else name_of_lesson.getText().toString(),
             start, end)
 
-        schedule.location = Location(classroom.text.toString(), housing.text.toString())
+        schedule.location = Location(classroom.getText().toString(), housing.getText().toString())
         schedule.startTime = startTime
         schedule.endTime = endTime
-        schedule.teacher = Teacher(name_of_teacher.text.toString(), name_of_lesson.text.toString())
-        schedule.teacher?.assessment = "E"
+        schedule.teacher = name_of_teacher.getText().toString()
         schedule.typeLesson = if (spinner_type_of_lesson.selectedItem.toString().equals("Практика")) TypeLesson.SEMINAR else TypeLesson.LECTURE
         schedule.category = category
-
-        if (isScheduleTyped) {
-          if (second_week.isChecked && first_week.isChecked)
-            schedule.dates.addAll(scheduleManager.getScheduleByDate(schedule.startPeriod, schedule.endPeriod,
-                intent.getIntExtra("current_day_of_week", 0), BOTH_WEEKS).map { it })
-          else if (first_week.isChecked && !second_week.isChecked)
-            schedule.dates.addAll(scheduleManager.getScheduleByDate(schedule.startPeriod, schedule.endPeriod,
-                intent.getIntExtra("current_day_of_week", 0), FIRST_WEEK).map { it })
-          else if (!first_week.isChecked && second_week.isChecked)
-            schedule.dates.addAll(scheduleManager.getScheduleByDate(schedule.startPeriod, schedule.endPeriod,
-                intent.getIntExtra("current_day_of_week", 0), SECOND_WEEK).map { it })
-          else  if (!second_week.isChecked && !first_week.isChecked)
-            schedule.dates.addAll(scheduleManager.getScheduleByDate(schedule.startPeriod, schedule.endPeriod,
-                intent.getIntExtra("current_day_of_week", 0), BOTH_WEEKS).map { it })
-        } else
-          schedule.dates.addAll(listOfDates.map { it })
+        schedule.dates.addAll(listOfDates.map { it })
 
         schedule.dates.let {
           scheduleManager.globalList.add(schedule)
           setResult(Activity.RESULT_OK)
           finish()
         }
-      } ?: toast("Упс! Введите окончание периода предмета")
+      } ?: toast("Упс! Введите окончание периода предмета ")
     } ?: toast("Упс! Введите начало периода предмета")
   }
 
@@ -216,12 +245,12 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     val time = "$h:$m"
     when (switcher) {
       1 -> {
-        end_time_of_lesson.text = time
+        end_time.setText(time)
         switcher = 0
         endTime = Time(hourOfDay, minute)
       }
       else -> {
-        start_time_of_lesson.text = time
+        begin_time.setText(time)
         startTime = Time(hourOfDay, minute)
       }
     }
@@ -233,12 +262,12 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     val date = "$day.$month.$year"
     when (switcher) {
       1 -> {
-        end_period_of_lesson.text = date
+        end_period.setText(date)
         switcher = 0
         endPeriod = Date(dayOfMonth, monthOfYear, year)
       }
       else -> {
-        start_period_of_lesson.text = date
+        begin_period.setText(date)
         startPeriod = Date(dayOfMonth, monthOfYear, year)
       }
     }

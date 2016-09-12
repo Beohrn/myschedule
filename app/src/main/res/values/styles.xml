@@ -7,6 +7,12 @@
         <item name="colorAccent">@color/white</item>
     </style>
 
+    <style name="AddScheduleTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/sch_green</item>
+        <item name="colorPrimaryDark">@color/sch_dark_green</item>
+        <item name="colorAccent">@color/yellow</item>
+    </style>
+
     <style name="AddSchedule" parent="AppTheme">
         <item name="colorAccent">@color/colorPrimary</item>
     </style>

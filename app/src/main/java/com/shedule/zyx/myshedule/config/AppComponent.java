@@ -4,7 +4,6 @@ package com.shedule.zyx.myshedule.config;
 
 import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity;
 import com.shedule.zyx.myshedule.ui.activities.MainActivity;
-import com.shedule.zyx.myshedule.ui.activities.TeachersActivity;
 import com.shedule.zyx.myshedule.ui.fragments.BondedDevicesFragment;
 import com.shedule.zyx.myshedule.ui.fragments.NearbyDevicesFragment;
 import com.shedule.zyx.myshedule.ui.fragments.ScheduleFragment;
@@ -25,4 +24,5 @@ public interface AppComponent {
     void inject(AddScheduleActivity addScheduleActivity);
     void inject(ScheduleFragment scheduleFragment);
     void inject(TeachersActivity teachersActivity);
+    void inject(DiscussionActivity discussionActivity);
 }

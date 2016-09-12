@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.provider.MediaStore
+import android.support.annotation.NonNull
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
@@ -16,6 +17,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import app.voter.xyz.comments.DiscussionActivity
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.activity_navigation
 import com.shedule.zyx.myshedule.ScheduleApplication
@@ -165,6 +167,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       bluetoothManager.schedule = scheduleManager.globalList
     }
       R.id.nav_manage -> startActivity<TeachersActivity>()
+      R.id.nav_camera -> startActivity<DiscussionActivity>()
     }
 
 

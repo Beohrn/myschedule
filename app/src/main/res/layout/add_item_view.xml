@@ -211,38 +211,38 @@
             android:layout_weight="0.5"
             android:paddingLeft="30dp"
             android:paddingTop="20dp"
-            android:text="Выберите по каким неделям будет создаваемый предмет"
+            android:text="Выберите тип расписания"
             android:textSize="17sp"/>
 
 
-        <LinearLayout
+        <RadioGroup
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:orientation="horizontal"
-            android:paddingLeft="25dp"
+            android:paddingLeft="30dp"
             android:paddingRight="10dp"
             android:paddingTop="10dp"
             android:weightSum="1">
 
-            <android.support.v7.widget.AppCompatCheckBox
-                android:id="@+id/first_week"
+            <RadioButton
+                android:id="@+id/fixed_schedule"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
-                android:text="Первая неделя"
+                android:text="Фиксированое"
                 android:textSize="14sp"/>
 
-            <android.support.v7.widget.AppCompatCheckBox
-                android:id="@+id/second_week"
+            <RadioButton
+                android:id="@+id/unfixed_schedule"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="10dp"
                 android:layout_weight="0.5"
-                android:text="Вторая неделя"
+                android:text="Мигалки"
                 android:textSize="14sp"/>
 
-        </LinearLayout>
+        </RadioGroup>
 
     </LinearLayout>
 
