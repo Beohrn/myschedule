@@ -36,12 +36,12 @@
 
         <activity
             android:name=".ui.activities.AddScheduleActivity"
-            android:theme="@style/AddSchedule"/>
+            android:theme="@style/AddScheduleTheme"/>
 
         <activity
             android:name="app.voter.xyz.comments.DiscussionActivity"
             android:theme="@style/AddSchedule"/>
-            android:theme="@style/AddScheduleTheme"/>
+
     </application>
 
 </manifest>
