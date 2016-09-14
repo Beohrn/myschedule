@@ -18,6 +18,8 @@
 
     <string name="add_schedule_toolbar_title">Создать занятие</string>
 
+    <string name="banner_ad_unit_id">ca-app-pub-7743911822125060/2694759036</string>
+
     <string-array name="type_of_lesson">
         <item>Практика</item>
         <item>Лекция</item>
