@@ -50,7 +50,6 @@ class NearbyDevicesFragment : Fragment() {
 
   override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-
     adapter = ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, nearbyDevicesList)
     list_of_devices.adapter = adapter
 
@@ -70,8 +69,11 @@ class NearbyDevicesFragment : Fragment() {
         else if (bluetoothManager.FOUND.equals(it.action)) {
           val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
           devices.add(Pair(device.address, device.name))
-          nearbyDevicesList.addAll(devices.map { it.second }.filter { !nearbyDevicesList.contains(it) })
-          adapter.notifyDataSetChanged()
+          if (devices.size != 0) {
+            nearbyDevicesList.addAll(devices.map { it.second }.filter { !nearbyDevicesList.contains(it) }
+                .distinctBy { bluetoothManager.getPairedDevices().map { it.second } })
+            adapter.notifyDataSetChanged()
+          }
         }
       }
 

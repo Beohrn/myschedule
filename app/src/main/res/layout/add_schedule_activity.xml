@@ -16,13 +16,22 @@
             android:id="@+id/add_schedule_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:title="@string/add_schedule_toolbar_title">
+            android:title="@string/add_schedule_toolbar_title"
+            app:theme="@style/ToolbarColoredBackArrow">
 
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/add_schedule_screen"/>
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <include layout="@layout/add_schedule_screen"/>
+
+    </android.support.v4.widget.NestedScrollView>
+
 
     <LinearLayout
         android:id="@+id/bottom_sheet"
@@ -30,16 +39,16 @@
         android:layout_height="wrap_content"
         android:background="@color/snow"
         android:clipToPadding="true"
-        app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+        android:elevation="5dp"
         android:orientation="vertical"
-        android:elevation="5dp">
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.8dp"
             android:alpha="0.2"
-            android:paddingTop="20dp"
-            android:background="@color/silver"/>
+            android:background="@color/silver"
+            android:paddingTop="20dp"/>
 
         <include layout="@layout/number_layout"/>
 
