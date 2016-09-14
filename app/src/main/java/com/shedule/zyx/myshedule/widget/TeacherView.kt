@@ -3,19 +3,22 @@ package com.shedule.zyx.myshedule.widget
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
+import android.view.View
 import android.widget.FrameLayout
+import android.widget.TextView
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.models.Teacher
 import com.shedule.zyx.myshedule.utils.Utils
 import kotlinx.android.synthetic.main.teacher_view.view.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.find
+import org.jetbrains.anko.include
 import org.jetbrains.anko.onClick
-import org.jetbrains.anko.selector
 
 /**
  * Created by alexkowlew on 06.09.2016.
  */
 class TeacherView : FrameLayout {
-
 
   var onAssessmentClickListener: OnAssessmentClickListener? = null
 
@@ -37,60 +40,52 @@ class TeacherView : FrameLayout {
 
   fun init(context: Context?) {
     inflate(context, R.layout.teacher_view, this)
-//    tv_assessment_of_teacher.setOnClickListener(this)
-    setAssessment("E")
+    setAssessment("E", 6.0)
 
-//    tv_container.onClick {  }
     tv_assessment_of_teacher.onClick {
       showAssessments()
     }
   }
 
-
   fun setData(teacher: Teacher) {
     tv_name_of_teacher.text = teacher.nameOfTeacher
     tv_name_of_lesson.text = teacher.nameOfLesson
-    setAssessment(teacher.assessment.toString())
+    setAssessment(teacher.assessmentString.toString(), teacher.averageAssessment ?: 60.0)
   }
 
-  fun setAssessment(assessment: String) {
+  fun setAssessment(assessment: String, assessmentDouble: Double) {
     (tv_assessment_of_teacher.background as GradientDrawable)
         .setColor(Utils.getColorByAssessment(context, assessment))
     tv_assessment_of_teacher.text = assessment
+    tv_average_assessment_of_teacher.text = assessmentDouble.toString()
   }
 
-  fun setAssessmentWithListener(assessment: String) {
-    setAssessment(assessment)
+  fun setAssessmentWithListener(assessment: String, averageAssessment: Double) {
+    setAssessment(assessment, averageAssessment)
     onAssessmentClickListener?.let {
-      it.onAssessmentClick(assessment, tv_name_of_teacher.text.toString())
+      it.onAssessmentClick(assessment, tv_name_of_teacher.text.toString(),
+          tv_average_assessment_of_teacher.text.toString().toDouble())
     }
   }
-
-//  override fun onClick(v: View?) {
-//    when (v?.id) {
-////      R.id.tv_assessment_of_teacher ->  showAssessments()
-////      R.id.tv_container -> context.toast("Teacher")
-//    }
-//  }
 
   fun showAssessments() {
-    context.selector("Как вы оцениваете преподавателя?",
-        listOf("Отлично", "Хорошо", "Нормально", "Так себе", "Плохо")) { position ->
-      when (position) {
-        0 -> setAssessmentWithListener("A")
-        1 -> setAssessmentWithListener("B")
-        2 -> setAssessmentWithListener("C")
-        3 -> setAssessmentWithListener("D")
-        4 -> setAssessmentWithListener("E")
+    context.alert {
+      customView {
+        include<View>(R.layout.teacher_assessment_dialog) {
+          val view = find<TeacherAssessmentView>(R.id.teacher_assessment_view)
+          find<TextView>(R.id.at_ok).onClick {
+            setAssessmentWithListener(Utils.getLetterByAverageAssessment(Utils.getAverageAssessment(view.getValues())),
+                Utils.getAverageAssessment(view.getValues()))
+
+            dismiss()
+          }
+          find<TextView>(R.id.at_cancel).onClick { dismiss() }
+        }
       }
-    }
+    }.show()
   }
 
   interface OnAssessmentClickListener {
-    fun onAssessmentClick(assessment: String, teacherName: String)
+    fun onAssessmentClick(assessment: String, teacherName: String, averageAssessment: Double)
   }
-}
-
-interface TeacherClickListener {
-  fun onClick()
 }

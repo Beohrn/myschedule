@@ -25,11 +25,9 @@ class ScheduleItemsAdapter(val context: Context, val list: ArrayList<Schedule>) 
 
 
   inner class ViewHolder(itemView: ScheduleItemView) : RecyclerView.ViewHolder(itemView) {
-
-    init {
-      itemView.onClick {
-        itemView.onClick()
-      }
-    }
+    init { itemView.onClick { (context as ScheduleItemListener).scheduleItemClick(list[adapterPosition]) } }
+  }
+  interface ScheduleItemListener {
+    fun scheduleItemClick(schedule: Schedule)
   }
 }

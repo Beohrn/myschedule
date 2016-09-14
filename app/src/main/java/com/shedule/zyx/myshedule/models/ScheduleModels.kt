@@ -39,5 +39,6 @@ data class Date(val dayOfMonth: Int, val monthOfYear: Int, val year: Int)
 enum class Category { EXAM, COURSE_WORK, STANDINGS, HOME_EXAM }
 
 data class Teacher(val nameOfTeacher: String, val nameOfLesson: String) {
-  var assessment: String? = ""
+  var assessmentString: String? = ""
+  var averageAssessment: Double? = 0.0
 }

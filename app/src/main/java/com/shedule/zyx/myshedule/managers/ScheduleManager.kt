@@ -16,8 +16,7 @@ class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPrefere
 
   fun getScheduleByDay(day: String) = globalList.map { schedule ->
     schedule.dates.filter { it.equals(day) }.map { schedule }
-  }
-      .flatMap { it -> it.map { it } }.sortedBy { it.numberLesson.toInt() }
+  }.flatMap { it -> it.map { it } }.sortedBy { it.numberLesson.toInt() }
 
   fun getScheduleByDate(startDate: Date, endDate: Date, currentDayOfWeek: Int, week: Int): ArrayList<String> {
     val result = arrayListOf<String>()
@@ -105,5 +104,9 @@ class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPrefere
   }
 
   fun getTeachers() = globalList.map { it.teacher }.filterNotNull().map { it }.distinctBy { it.nameOfTeacher }
+
+  fun removeSchedule(schedule: Schedule) {
+    globalList.remove(schedule)
+  }
 }
 

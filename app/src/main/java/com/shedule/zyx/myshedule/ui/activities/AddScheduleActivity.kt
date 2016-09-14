@@ -43,10 +43,16 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   var category: Category? = null
   var listOfDates = arrayListOf<String>()
 
+  companion object {
+    val ADD_SCHEDULE_REQUEST = 5555
+    val SCHEDULE_REQUEST = "schedule_object"
+  }
+
   val FIRST_WEEK = 1
   val SECOND_WEEK = 2
   val BOTH_WEEKS = 0
   var numberOfLesson = 1
+
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -63,8 +69,6 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       val bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
       bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
-
-
 
     begin_period.onClick { showDateDialog() }
 
@@ -99,22 +103,36 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     }
 
     repeat_dates.onClick {
-      selector("Когда будет повторяться данное занятие?", listOf("Каждую неделю", "По первой неделе", "По второй неделе")) {
-        position ->
-        when (position) {
-          0 -> { setListOfDates(BOTH_WEEKS) }
-          1 -> { setListOfDates(FIRST_WEEK) }
-          2 -> { setListOfDates(SECOND_WEEK) }
-        }
-      }
+      startPeriod?.let {
+        endPeriod?.let {
+          selector("Повторение занятия:", listOf("Каждую неделю", "По первой неделе", "По второй неделе")) {
+            position ->
+            when (position) {
+              0 -> {
+                setListOfDates(BOTH_WEEKS, "(Каждую неделю)")
+              }
+              1 -> {
+                setListOfDates(FIRST_WEEK, "(По первой неделе)")
+              }
+              2 -> {
+                setListOfDates(SECOND_WEEK, "(По второй неделе)")
+              }
+            }
+          }
+        } ?: toast("Укажите дату окончания занятия")
+      } ?: toast("Укажите дату начала занятия")
     }
 
     categoriesColors()
   }
 
-  private fun setListOfDates(week: Int) {
+  private fun setListOfDates(week: Int, message: String) {
+    if (listOfDates.size != 0)
+      listOfDates.clear()
+
     listOfDates.addAll(scheduleManager.getScheduleByDate(startPeriod ?: null!!, endPeriod ?: null!!,
         intent.getIntExtra("current_day_of_week", 0), week).map { it })
+    repeat_value.text = message
   }
 
   private fun setColor(cat: Category, id: Int, color: Int) {
@@ -206,7 +224,8 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
         schedule.startTime = startTime
         schedule.endTime = endTime
         schedule.teacher = Teacher(name_of_teacher.getText().toString(), name_of_lesson.getText().toString())
-        schedule.teacher?.assessment = "E"
+        schedule.teacher?.assessmentString = "E"
+        schedule.teacher?.averageAssessment = 60.0
         schedule.typeLesson = if (spinner_type_of_lesson.selectedItem.toString().equals("Практика")) TypeLesson.SEMINAR else TypeLesson.LECTURE
         schedule.category = category
         schedule.dates.addAll(listOfDates.map { it })
@@ -216,8 +235,8 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
           setResult(Activity.RESULT_OK)
           finish()
         }
-      } ?: toast("Упс! Введите окончание периода предмета ")
-    } ?: toast("Упс! Введите начало периода предмета")
+      } ?: toast("Укажите дату окончания занятия")
+    } ?: toast("Укажите дату начала занятия")
   }
 
   private fun showTimeDialog() {
@@ -268,10 +287,17 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
         end_period.setText(date)
         switcher = 0
         endPeriod = Date(dayOfMonth, monthOfYear, year)
+        startPeriod?.let {
+          setListOfDates(BOTH_WEEKS, "(Каждую неделю)")
+        }
       }
       else -> {
         begin_period.setText(date)
         startPeriod = Date(dayOfMonth, monthOfYear, year)
+
+        endPeriod?.let {
+          setListOfDates(BOTH_WEEKS, "(Каждую неделю)")
+        }
       }
     }
   }

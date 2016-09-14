@@ -16,10 +16,10 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import app.voter.xyz.comments.DiscussionActivity
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.activity_navigation
 import com.shedule.zyx.myshedule.ScheduleApplication
+import com.shedule.zyx.myshedule.adapters.ScheduleItemsAdapter
 import com.shedule.zyx.myshedule.adapters.ViewPagerAdapter
 import com.shedule.zyx.myshedule.interfaces.ChangeStateFragmentListener
 import com.shedule.zyx.myshedule.interfaces.DataChangeListener
@@ -27,7 +27,10 @@ import com.shedule.zyx.myshedule.managers.BluetoothManager
 import com.shedule.zyx.myshedule.managers.DateManager
 import com.shedule.zyx.myshedule.managers.ReceiveManager
 import com.shedule.zyx.myshedule.managers.ScheduleManager
+import com.shedule.zyx.myshedule.models.Schedule
+import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity.Companion.ADD_SCHEDULE_REQUEST
 import com.shedule.zyx.myshedule.ui.fragments.BluetoothDialog
+import com.shedule.zyx.myshedule.utils.Utils
 import com.tbruyelle.rxpermissions.RxPermissions
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import kotlinx.android.synthetic.main.activity_navigation.*
@@ -35,16 +38,14 @@ import kotlinx.android.synthetic.main.app_bar_navigation.*
 import kotlinx.android.synthetic.main.content_navigation.*
 import kotlinx.android.synthetic.main.nav_header_navigation.*
 import kotlinx.android.synthetic.main.nav_header_navigation.view.*
-import org.jetbrains.anko.onClick
-import org.jetbrains.anko.selector
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.startActivityForResult
+import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.onPageChangeListener
 import java.util.*
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-    ChangeStateFragmentListener, DatePickerDialog.OnDateSetListener {
+    ChangeStateFragmentListener, DatePickerDialog.OnDateSetListener, ScheduleItemsAdapter.ScheduleItemListener {
+
 
   @Inject
   lateinit var dateManager: DateManager
@@ -62,16 +63,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   private val CAMERA_REQUEST = 1888
   private val GALLERY_REQUEST = 2888
 
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(activity_navigation)
     ScheduleApplication.getComponent().inject(this)
+    startActivity<FirstStartActivity>()
 
     setSupportActionBar(main_toolbar)
     setupDataForViewPager(main_viewpager)
     main_tabs.setupWithViewPager(main_viewpager)
-
     nav_view?.setNavigationItemSelectedListener(this)
     ActionBarDrawerToggle(this, drawer_layout, main_toolbar,
         R.string.navigation_drawer_open, R.string.navigation_drawer_close).syncState()
@@ -86,18 +86,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     add_schedule_button.onClick {
-      startActivityForResult<AddScheduleActivity>(5555, Pair("current_day_of_week", main_viewpager.currentItem + 2))
+      startActivityForResult<AddScheduleActivity>(ADD_SCHEDULE_REQUEST, Pair("current_day_of_week", main_viewpager.currentItem + 2))
     }
 
-    nav_view.inflateHeaderView(R.layout.nav_header_navigation).circleView.onClick {
+    val nav = nav_view.inflateHeaderView(R.layout.nav_header_navigation)
+    Utils.getBitmap(applicationContext)?.let { nav.circleView.setImageBitmap(it) }
+    nav.circleView.onClick {
       selector("Выберите, чтобы загрузить фото:", listOf("Камера", "Галерея")) { i ->
         when (i) {
           0 -> {
-            startActivityForResult(Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE), CAMERA_REQUEST)
+            checkSinglePermission(Manifest.permission.CAMERA).subscribe({
+              if (it) startActivityForResult(Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE), CAMERA_REQUEST)
+              else toast("Нет разререшния на доступ к Камере")
+            }, {})
           }
           else -> {
-            startActivityForResult(Intent(Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), GALLERY_REQUEST)
+            checkSinglePermission(Manifest.permission.READ_EXTERNAL_STORAGE).subscribe({
+              if (it) startActivityForResult(Intent(Intent.ACTION_PICK,
+                  android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), GALLERY_REQUEST)
+              else toast("Нет разрешения на доступ к Памяти")
+            }, {})
           }
         }
       }
@@ -164,26 +172,30 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       showDialog()
       bluetoothManager.schedule = scheduleManager.globalList
     }
-      R.id.nav_manage -> startActivity<TeachersActivity>()
-      R.id.nav_camera -> startActivity<DiscussionActivity>()
+      R.id.nav_teachers -> startActivity<TeachersActivity>()
     }
-
 
     drawer_layout?.closeDrawer(GravityCompat.START)
     return true
   }
 
+  override fun onResume() {
+    super.onResume()
+
+  }
+
   override fun onStart() {
     super.onStart()
-    checkPermissions()
     bluetoothInit()
     Log.i("TAG", "onStart")
   }
 
   override fun onWindowFocusChanged(hasFocus: Boolean) {
     super.onWindowFocusChanged(hasFocus)
-    if (hasFocus)
+    if (hasFocus) {
       bluetoothInit()
+      checkAllPermissions()
+    }
   }
 
   override fun onDestroy() {
@@ -197,13 +209,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     Log.i("TAG", "onStop")
   }
 
-  private fun checkPermissions() {
+  private fun checkSinglePermission(permission: String) = RxPermissions.getInstance(this).request(permission)
+
+  private fun checkAllPermissions() {
     RxPermissions.getInstance(this)
         .request(Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.CAMERA,
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        .subscribe()
+            Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe()
   }
 
   private fun bluetoothInit() {
@@ -232,23 +246,55 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
   }
 
+  override fun scheduleItemClick(schedule: Schedule) {
+    selector(null, listOf("Домашнее задание", "Переслать", "Редактировать", "Удалить")) { position ->
+      when (position) {
+        0 -> {
+        }
+        1 -> {
+          showDialog()
+          bluetoothManager.schedule = arrayListOf(schedule)
+        }
+        2 -> { }
+        3 -> {
+          selector("Удалить предмет", listOf("Только в этот день", "Во все остальные дни")) {
+            index ->
+            when (index) {
+              0 -> {
+              }
+              1 -> {
+                scheduleManager.removeSchedule(schedule)
+                listenerList.map { it.updateData() }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == Activity.RESULT_OK) {
-
-    } else if (requestCode == CAMERA_REQUEST) {
-      val bitmap = data?.extras?.get("data") as? Bitmap
-      bitmap?.let {
-        circleView.setImageBitmap(it)
-      }
-    } else if (requestCode == GALLERY_REQUEST) {
-      val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
-      data?.let {
-        val cursor = contentResolver.query(it.data, filePathColumn, null, null, null)
-        cursor.moveToFirst()
-        val picturePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]))
-        cursor.close()
-        circleView.setImageBitmap(BitmapFactory.decodeFile(picturePath))
+    if (resultCode == Activity.RESULT_OK) {
+      if (requestCode == ADD_SCHEDULE_REQUEST) {
+        listenerList.map { it.updateData() }
+      } else if (requestCode == CAMERA_REQUEST) {
+        val bitmap = data?.extras?.get("data") as? Bitmap
+        bitmap?.let {
+          circleView.setImageBitmap(it)
+          Utils.saveImage(applicationContext, it)
+        }
+      } else if (requestCode == GALLERY_REQUEST) {
+        val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
+        data?.let {
+          val cursor = contentResolver.query(it.data, filePathColumn, null, null, null)
+          cursor.moveToFirst()
+          val picturePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]))
+          cursor.close()
+          val bitmap = BitmapFactory.decodeFile(picturePath)
+          circleView.setImageBitmap(bitmap)
+          Utils.saveImage(applicationContext, bitmap)
+        }
       }
     }
   }

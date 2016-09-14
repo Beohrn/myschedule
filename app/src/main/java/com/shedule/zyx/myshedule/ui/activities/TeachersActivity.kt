@@ -40,13 +40,14 @@ class TeachersActivity: AppCompatActivity(), TeacherView.OnAssessmentClickListen
     list_of_teachers.adapter = adapter
   }
 
-  // todo
-  override fun onAssessmentClick(assessment: String, teacherName: String) {
+  override fun onAssessmentClick(assessment: String, teacherName: String, averageAssessment: Double) {
     Log.i(TAG, "$assessment - $teacherName")
 
     scheduleManager.globalList.map {
-      if (it.teacher?.nameOfTeacher.equals(teacherName))
-        it.teacher?.assessment = assessment
+      if (it.teacher?.nameOfTeacher.equals(teacherName)) {
+        it.teacher?.assessmentString = assessment
+        it.teacher?.averageAssessment = averageAssessment
+      }
     }
   }
 }
