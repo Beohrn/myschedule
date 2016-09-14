@@ -34,13 +34,14 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".ui.activities.AddScheduleActivity"
-            android:theme="@style/AddScheduleTheme"/>
+        <activity android:name=".ui.activities.AddScheduleActivity"/>
 
-        <activity
-            android:name="app.voter.xyz.comments.DiscussionActivity"
-            android:theme="@style/AddSchedule"/>
+        <activity android:name="app.voter.xyz.comments.DiscussionActivity"/>
+
+        <activity android:name=".ui.activities.TeachersActivity"/>
+
+        <activity android:name=".ui.activities.FirstStartActivity"
+            android:theme="@style/TutorialTheme"/>
 
     </application>
 

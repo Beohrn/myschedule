@@ -4,8 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/silver_lite"
-              android:orientation="vertical"
-              app:layout_behavior="@string/appbar_scrolling_view_behavior">
+              android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,7 +56,8 @@
                     android:paddingRight="10dp"
                     app:hint="Корпус"
                     android:id="@+id/housing"
-                    app:inputType="numberDecimal"/>
+                    app:inputType="numberDecimal"
+                    app:maxLength="5"/>
             </LinearLayout>
 
             <LinearLayout
@@ -79,7 +79,8 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/classroom"
                     android:layout_weight="0.7"
-                    app:hint="Аудитория"/>
+                    app:hint="Аудитория"
+                    app:maxLength="10"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -150,12 +151,26 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.9"
+                android:layout_weight="0.35"
                 android:paddingLeft="5dp"
                 android:paddingTop="5dp"
                 android:text="Повторение"
                 android:textColor="@color/black"
                 android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/repeat_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6"
+                android:paddingLeft="5dp"
+                android:paddingRight="30dp"
+                android:paddingTop="5dp"
+                android:gravity="right"
+                android:text="(Каждую неделю)"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+
         </LinearLayout>
 
         <View

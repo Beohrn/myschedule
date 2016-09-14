@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:padding="10dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Компетентность"
+        android:paddingLeft="15dp"
+        android:textColor="@color/silver"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <io.techery.progresshint.addition.widget.SeekBar
+        android:layout_marginTop="40dp"
+        android:id="@+id/competence"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="10dp"
+        app:popupAlwaysShown="true"
+        app:popupStyle="follow"
+        />
+
+    <TextView
+        android:paddingTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Требовательность"
+        android:paddingLeft="15dp"
+
+        android:textColor="@color/silver"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <io.techery.progresshint.addition.widget.SeekBar
+        android:layout_marginTop="40dp"
+        android:id="@+id/demanding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginLeft="10dp"
+        app:popupAlwaysShown="true"
+        app:popupStyle="follow"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Умение донести информацию"
+        android:textColor="@color/silver"
+        android:paddingLeft="15dp"
+        android:textSize="16sp"
+
+        android:textStyle="bold"/>
+
+    <io.techery.progresshint.addition.widget.SeekBar
+        android:layout_marginTop="40dp"
+        android:id="@+id/ability_to_information"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+
+        app:popupAlwaysShown="true"
+        app:popupStyle="follow"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Желание учить"
+        android:paddingLeft="15dp"
+        android:textColor="@color/silver"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <io.techery.progresshint.addition.widget.SeekBar
+        android:layout_marginTop="40dp"
+        android:id="@+id/desire_to_learn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginLeft="10dp"
+        app:popupAlwaysShown="true"
+        app:popupStyle="follow"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Культура преподавателя"
+        android:textColor="@color/silver"
+        android:paddingLeft="15dp"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <io.techery.progresshint.addition.widget.SeekBar
+        android:layout_marginTop="40dp"
+        android:id="@+id/teacher_culture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:popupAlwaysShown="true"
+
+        android:layout_marginLeft="10dp"
+        app:popupStyle="follow"/>
+
+
+
+</LinearLayout>

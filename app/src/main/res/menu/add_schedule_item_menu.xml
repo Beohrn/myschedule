@@ -11,5 +11,5 @@
 
     <item
         android:id="@+id/add_schedule_menu"
-        android:title="Random"/>
+        android:title="Произвольные даты"/>
 </menu>

@@ -49,11 +49,15 @@ class ScheduleFragment : Fragment(), DataChangeListener {
     ScheduleApplication.getComponent().inject(this)
     position = arguments.getInt(ARGUMENT_PAGE_NUMBER)
 
-    listSchedulers.clear()
-    listSchedulers.addAll(scheduleManager.getScheduleByDay(dateManager.getDayByPosition(position)))
+    update()
 
     (activity as ChangeStateFragmentListener).let { Log.d("listener", "add to list"); it.addListener(this) }
     return inflater!!.inflate(R.layout.shedule_fragment_layout, container, false)
+  }
+
+  private fun update() {
+    listSchedulers.clear()
+    listSchedulers.addAll(scheduleManager.getScheduleByDay(dateManager.getDayByPosition(position)))
   }
 
   override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -69,7 +73,9 @@ class ScheduleFragment : Fragment(), DataChangeListener {
   }
 
   override fun updateData() {
-    Log.i("TDADFA", dateManager.getDayByPosition(position))
+    Log.d("1111", dateManager.getDayByPosition(position))
+    update()
+    adapter.notifyDataSetChanged()
   }
 
   override fun onDestroyView() {

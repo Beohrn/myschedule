@@ -8,7 +8,7 @@ import java.util.*
 
 class Schedule(val numberLesson: String, val nameLesson: String, val startPeriod: Date, val endPeriod: Date) {
 
-  var teacher: String? = ""
+  var teacher: Teacher? = null
   var location: Location? = null
   var typeLesson: TypeLesson? = null
   var startTime: Time? = null
@@ -37,3 +37,8 @@ enum class TypeLesson { SEMINAR, LECTURE }
 data class Date(val dayOfMonth: Int, val monthOfYear: Int, val year: Int)
 
 enum class Category { EXAM, COURSE_WORK, STANDINGS, HOME_EXAM }
+
+data class Teacher(val nameOfTeacher: String, val nameOfLesson: String) {
+  var assessmentString: String? = ""
+  var averageAssessment: Double? = 0.0
+}

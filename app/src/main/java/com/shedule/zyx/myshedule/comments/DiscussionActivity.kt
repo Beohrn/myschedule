@@ -27,12 +27,15 @@ class DiscussionActivity : AppCompatActivity(), CommentsAdapter.OnCommentClickLi
   @Inject
   lateinit var deviceToken: String
 
-  val whichId = "111"
+  var whichId = ""
   val discussRef = "discussion"
 
   lateinit var ref: DatabaseReference
   lateinit var layoutManager: LinearLayoutManager
 
+  companion object {
+    val TEACHER_REQUEST = "teacher_name"
+  }
 
   var recycleAdapter: CommentsAdapter? = null
   val comments = arrayListOf<String>()
@@ -41,6 +44,8 @@ class DiscussionActivity : AppCompatActivity(), CommentsAdapter.OnCommentClickLi
     super.onCreate(savedInstanceState)
     setContentView(R.layout.discussion_activity_layout)
     ScheduleApplication.getComponent().inject(this)
+
+    whichId = Utils.getKeyByName(Utils.decoder(intent.getStringExtra(TEACHER_REQUEST)))
 
     ref = firebaseRef.child(discussRef).child(whichId).child(COMMENTS)
 
