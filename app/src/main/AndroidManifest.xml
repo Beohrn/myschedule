@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.shedule.zyx.myshedule">
+<manifest package="com.shedule.zyx.myshedule"
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <!-- for api 23!!! -->
     <!-- But it is no enable dynamically -->
@@ -26,13 +26,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activities.MainActivity">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
+        <activity android:name=".ui.activities.MainActivity"/>
 
         <activity android:name=".ui.activities.AddScheduleActivity"/>
 
@@ -40,8 +34,14 @@
 
         <activity android:name=".ui.activities.TeachersActivity"/>
 
-        <activity android:name=".ui.activities.FirstStartActivity"
-            android:theme="@style/TutorialTheme"/>
+        <activity
+            android:name=".ui.activities.TutorialActivity"
+            android:theme="@style/TutorialTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
 
     </application>
 
