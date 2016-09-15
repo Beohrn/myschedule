@@ -38,9 +38,10 @@ class ScheduleItemView : FrameLayout {
   fun setData(schedule: Schedule) {
     (view_number_of_lesson.background as GradientDrawable).setColor(Utils.getColorByCategory(context, schedule.category!!))
     view_number_of_lesson.text = schedule.numberLesson
-    view_title_of_lesson.text = schedule.nameLesson
-    view_name_of_teacher.text = schedule.teacher?.nameOfTeacher ?: "Имя преподавателя"
-    view_location.text = "${schedule.location?.housing}-${schedule.location?.classroom}"
+    view_title_of_lesson.text = if (schedule.nameLesson.isNullOrBlank()) "Название предмета" else schedule.nameLesson
+    view_name_of_teacher.text = if (schedule.teacher?.nameOfTeacher.isNullOrBlank()) "Имя преподавателя" else schedule.teacher?.nameOfTeacher
+    view_location.text = "${if (schedule.location?.housing.isNullOrBlank()) "корп." else schedule.location?.housing}-" +
+        "${if(schedule.location?.classroom.isNullOrBlank()) "ауд." else schedule.location?.classroom}"
     view_type_of_lesson.text = if (schedule.typeLesson == TypeLesson.LECTURE) "Лекция" else "Практика"
     view_time_of_lesson.text = "${schedule.startTime?.toString() ?: "Начало"} - ${schedule.endTime?.toString() ?: "Конец"}"
   }

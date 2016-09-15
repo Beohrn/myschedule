@@ -43,6 +43,8 @@
         <activity android:name=".ui.activities.FirstStartActivity"
             android:theme="@style/TutorialTheme"/>
 
+        <activity android:name=".ui.activities.HomeWorkActivity" />
+
     </application>
 
 </manifest>

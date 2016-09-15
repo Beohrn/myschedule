@@ -29,6 +29,8 @@ import com.shedule.zyx.myshedule.managers.ReceiveManager
 import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity.Companion.ADD_SCHEDULE_REQUEST
+import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity.Companion.DAY_OF_WEEK_KEY
+import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity.Companion.EDIT_SCHEDULE_REQUEST
 import com.shedule.zyx.myshedule.ui.fragments.BluetoothDialog
 import com.shedule.zyx.myshedule.utils.Utils
 import com.tbruyelle.rxpermissions.RxPermissions
@@ -45,7 +47,6 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     ChangeStateFragmentListener, DatePickerDialog.OnDateSetListener, ScheduleItemsAdapter.ScheduleItemListener {
-
 
   @Inject
   lateinit var dateManager: DateManager
@@ -86,7 +87,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     add_schedule_button.onClick {
-      startActivityForResult<AddScheduleActivity>(ADD_SCHEDULE_REQUEST, Pair("current_day_of_week", main_viewpager.currentItem + 2))
+      startActivityForResult<AddScheduleActivity>(ADD_SCHEDULE_REQUEST, Pair(DAY_OF_WEEK_KEY, main_viewpager.currentItem + 2))
     }
 
     val nav = nav_view.inflateHeaderView(R.layout.nav_header_navigation)
@@ -249,13 +250,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   override fun scheduleItemClick(schedule: Schedule) {
     selector(null, listOf("Домашнее задание", "Переслать", "Редактировать", "Удалить")) { position ->
       when (position) {
-        0 -> {
+        0 -> { scheduleManager.editSchedule = schedule; startActivity<HomeWorkActivity>() }
+        1 -> { showDialog(); bluetoothManager.schedule = arrayListOf(schedule) }
+        2 -> {
+          scheduleManager.editSchedule = schedule
+          startActivityForResult<AddScheduleActivity>(EDIT_SCHEDULE_REQUEST,
+              Pair(DAY_OF_WEEK_KEY, main_viewpager.currentItem + 2))
         }
-        1 -> {
-          showDialog()
-          bluetoothManager.schedule = arrayListOf(schedule)
-        }
-        2 -> { }
         3 -> {
           selector("Удалить предмет", listOf("Только в этот день", "Во все остальные дни")) {
             index ->
@@ -277,6 +278,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     super.onActivityResult(requestCode, resultCode, data)
     if (resultCode == Activity.RESULT_OK) {
       if (requestCode == ADD_SCHEDULE_REQUEST) {
+        listenerList.map { it.updateData() }
+      } else if (requestCode == EDIT_SCHEDULE_REQUEST) {
         listenerList.map { it.updateData() }
       } else if (requestCode == CAMERA_REQUEST) {
         val bitmap = data?.extras?.get("data") as? Bitmap
