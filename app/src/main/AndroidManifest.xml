@@ -43,6 +43,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.activities.HomeWorkActivity" />
+
     </application>
 
 </manifest>

@@ -17,6 +17,7 @@ import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.models.*
 import com.shedule.zyx.myshedule.models.Date
+import com.shedule.zyx.myshedule.utils.Utils
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
@@ -35,6 +36,12 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   @Inject
   lateinit var scheduleManager: ScheduleManager
 
+  companion object {
+    val ADD_SCHEDULE_REQUEST = 5555
+    val EDIT_SCHEDULE_REQUEST = 5423
+    val DAY_OF_WEEK_KEY = "current_day_of_week"
+  }
+
   var switcher = 0
   var startPeriod: Date? = null
   var endPeriod: Date? = null
@@ -42,25 +49,55 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   var endTime: Time? = null
   var category: Category? = null
   var listOfDates = arrayListOf<String>()
-
-  companion object {
-    val ADD_SCHEDULE_REQUEST = 5555
-    val SCHEDULE_REQUEST = "schedule_object"
-  }
+  var week = 0
 
   val FIRST_WEEK = 1
   val SECOND_WEEK = 2
   val BOTH_WEEKS = 0
   var numberOfLesson = 1
-
+  var isScheduleEdit = false
+  var schedule: Schedule? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(add_schedule_activity)
     ScheduleApplication.getComponent().inject(this)
     setSupportActionBar(add_schedule_toolbar)
-    supportActionBar?.title = applicationContext.getString(R.string.add_schedule_toolbar_title)
+    supportActionBar?.title = getString(R.string.add_schedule_toolbar_title)
     add_schedule_toolbar.setTitleTextColor(Color.WHITE)
+
+    category = Category.HOME_EXAM
+
+
+    categoriesColors()
+
+    schedule = scheduleManager.editSchedule
+    schedule?.let {
+      isScheduleEdit = true
+      supportActionBar?.title = "Изменить занятие"
+      setPeriods(it.startPeriod, it.endPeriod)
+      setListOfDates(it.week)
+      numberOfLesson = it.numberLesson.toInt()
+
+      housing.setText("${it.location?.housing}")
+      classroom.setText("${it.location?.classroom}")
+
+      spinner_number_of_lesson.setSelection(it.numberLesson.toInt() - 1)
+      spinner_type_of_lesson.setSelection(if (it.typeLesson == TypeLesson.SEMINAR) 0 else 1)
+
+      when (it.category) {
+        Category.EXAM ->  setColor(Category.EXAM, 0, R.color.mark_red)
+        Category.COURSE_WORK -> setColor(Category.COURSE_WORK, 1, R.color.mark_orange)
+        Category.STANDINGS -> setColor(Category.STANDINGS, 2, R.color.mark_yellow)
+        Category.HOME_EXAM -> setColor(Category.HOME_EXAM, 3, R.color.dark_cyan)
+      }
+
+      name_of_lesson.setText(it.nameLesson)
+      name_of_teacher.setText(it.teacher?.nameOfTeacher.toString())
+
+      setTime(it.startTime, it.endTime)
+    }
+
     supportActionBar?.setHomeButtonEnabled(true)
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     add_schedule_toolbar.setNavigationOnClickListener { finish() }
@@ -72,19 +109,11 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
 
     begin_period.onClick { showDateDialog() }
 
-    end_period.onClick {
-      showDateDialog()
-      switcher = 1
-    }
+    end_period.onClick { showDateDialog(); switcher = 1 }
 
     begin_time.onClick { showTimeDialog() }
 
-    end_time.onClick {
-      switcher = 1
-      showTimeDialog()
-    }
-
-    category = Category.HOME_EXAM
+    end_time.onClick { switcher = 1;showTimeDialog() }
 
     exam.onClick { setColor(Category.EXAM, 0, R.color.mark_red) }
     course_work.onClick { setColor(Category.COURSE_WORK, 1, R.color.mark_orange) }
@@ -108,31 +137,58 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
           selector("Повторение занятия:", listOf("Каждую неделю", "По первой неделе", "По второй неделе")) {
             position ->
             when (position) {
-              0 -> {
-                setListOfDates(BOTH_WEEKS, "(Каждую неделю)")
-              }
-              1 -> {
-                setListOfDates(FIRST_WEEK, "(По первой неделе)")
-              }
-              2 -> {
-                setListOfDates(SECOND_WEEK, "(По второй неделе)")
-              }
+              0 -> { setListOfDates(BOTH_WEEKS) }
+              1 -> { setListOfDates(FIRST_WEEK) }
+              2 -> { setListOfDates(SECOND_WEEK) }
             }
           }
         } ?: toast("Укажите дату окончания занятия")
       } ?: toast("Укажите дату начала занятия")
     }
 
-    categoriesColors()
+
   }
 
-  private fun setListOfDates(week: Int, message: String) {
+  private fun setPeriods(startPeriod: Date, endPeriod: Date) {
+    begin_period.setText(Utils.getNormalizedDate(startPeriod))
+    end_period.setText(Utils.getNormalizedDate(endPeriod))
+
+    this.startPeriod = startPeriod
+    this.endPeriod = endPeriod
+  }
+
+  private fun setTime(startTime: Time?, endTime: Time?) {
+    startTime?.let {
+      begin_time.setText(it.toString())
+    } ?: begin_time.setText("чч:мм")
+
+    endTime?.let {
+      end_time.setText(it.toString())
+    } ?: begin_time.setText("чч:мм")
+
+    this.startTime = startTime
+    this.endTime = endTime
+  }
+
+  // need to save ref for editSchedule
+  override fun onDestroy() {
+    super.onDestroy()
+    scheduleManager.editSchedule = null
+  }
+
+  private fun setListOfDates(week: Int) {
     if (listOfDates.size != 0)
       listOfDates.clear()
 
     listOfDates.addAll(scheduleManager.getScheduleByDate(startPeriod ?: null!!, endPeriod ?: null!!,
-        intent.getIntExtra("current_day_of_week", 0), week).map { it })
-    repeat_value.text = message
+        intent.getIntExtra(DAY_OF_WEEK_KEY, 0), week).map { it })
+    repeat_value.text = when (week) {
+      1 -> "(По первой неделе)"
+      2 -> "(По второй неделе)"
+      else -> "(Каждую неделю)"
+    }
+
+    this.week = week
   }
 
   private fun setColor(cat: Category, id: Int, color: Int) {
@@ -175,7 +231,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {
     when (item?.itemId) {
       R.id.add_item -> {
-        parseDataForSchedule(); return true
+        changeSchedule(); return true
       }
       R.id.add_schedule_menu -> {
         startPeriod?.let {
@@ -194,6 +250,9 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
                   find<TextView>(R.id.clear_dates).onClick { calendarView.clearSelection() }
                   find<TextView>(R.id.cancel_dates).onClick { dismiss() }
                   find<TextView>(R.id.approve_dates).onClick {
+                    if (listOfDates.size != 0)
+                      listOfDates.clear()
+
                     listOfDates.addAll(calendarView.selectedDates.map { "${it.day}-${it.month}-${it.year}" })
                     dismiss()
                   }
@@ -213,30 +272,50 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     return super.onCreateOptionsMenu(menu)
   }
 
-  private fun parseDataForSchedule() {
+  private fun changeSchedule() {
     startPeriod?.let { start ->
       endPeriod?.let { end ->
-        val schedule = Schedule(numberOfLesson.toString(),
-            if (name_of_lesson.getText().toString().isEmpty()) "" else name_of_lesson.getText().toString(),
-            start, end)
 
-        schedule.location = Location(classroom.getText().toString(), housing.getText().toString())
-        schedule.startTime = startTime
-        schedule.endTime = endTime
-        schedule.teacher = Teacher(name_of_teacher.getText().toString(), name_of_lesson.getText().toString())
-        schedule.teacher?.assessmentString = "E"
-        schedule.teacher?.averageAssessment = 60.0
-        schedule.typeLesson = if (spinner_type_of_lesson.selectedItem.toString().equals("Практика")) TypeLesson.SEMINAR else TypeLesson.LECTURE
-        schedule.category = category
-        schedule.dates.addAll(listOfDates.map { it })
+        if (!isScheduleEdit) {
+          schedule = Schedule(numberOfLesson.toString(),
+              if (name_of_lesson.getText().toString().isEmpty()) "" else name_of_lesson.getText().toString(),
+              start, end)
+          setDataToSchedule(schedule!!)
 
-        schedule.dates.let {
-          scheduleManager.globalList.add(schedule)
+          schedule?.dates.let {
+            scheduleManager.globalList.add(schedule!!)
+            setResult(Activity.RESULT_OK)
+            finish()
+          }
+        } else {
+          schedule?.numberLesson = numberOfLesson.toString()
+          schedule?.nameLesson = if (name_of_lesson.getText().toString().isEmpty()) "" else name_of_lesson.getText().toString()
+          schedule?.startPeriod = start
+          schedule?.endPeriod = end
+          setDataToSchedule(schedule!!)
           setResult(Activity.RESULT_OK)
           finish()
         }
+
       } ?: toast("Укажите дату окончания занятия")
     } ?: toast("Укажите дату начала занятия")
+  }
+
+  private fun setDataToSchedule(schedule: Schedule) {
+    schedule.location = Location(classroom.getText().toString(), housing.getText().toString())
+    schedule.startTime = startTime
+    schedule.endTime = endTime
+    schedule.teacher = Teacher(name_of_teacher.getText().toString(), name_of_lesson.getText().toString())
+    schedule.teacher?.assessmentString = "E"
+    schedule.teacher?.averageAssessment = 60.0
+    schedule.typeLesson = if (spinner_type_of_lesson.selectedItem.toString().equals("Практика")) TypeLesson.SEMINAR else TypeLesson.LECTURE
+    schedule.category = category
+    schedule.week = week
+
+    if (schedule.dates.size != 0)
+      schedule.dates.clear()
+
+    schedule.dates.addAll(listOfDates.map { it })
   }
 
   private fun showTimeDialog() {
@@ -262,9 +341,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   }
 
   override fun onTimeSet(view: RadialPickerLayout?, hourOfDay: Int, minute: Int, second: Int) {
-    val h = if (hourOfDay < 10) "0$hourOfDay" else "$hourOfDay"
-    val m = if (minute < 10) "0$minute" else "$minute"
-    val time = "$h:$m"
+    val time = Time(hourOfDay, minute).toString()
     when (switcher) {
       1 -> {
         end_time.setText(time)
@@ -279,25 +356,18 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   }
 
   override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
-    val day = if (dayOfMonth < 10) "0$dayOfMonth" else "$dayOfMonth"
-    val month = if (monthOfYear < 9) "0${monthOfYear + 1}" else "${monthOfYear + 1}"
-    val date = "$day.$month.$year"
+    val date = Utils.getNormalizedDate(Date(dayOfMonth, monthOfYear, year))
     when (switcher) {
       1 -> {
         end_period.setText(date)
         switcher = 0
         endPeriod = Date(dayOfMonth, monthOfYear, year)
-        startPeriod?.let {
-          setListOfDates(BOTH_WEEKS, "(Каждую неделю)")
-        }
+        startPeriod?.let { setListOfDates(BOTH_WEEKS) }
       }
       else -> {
         begin_period.setText(date)
         startPeriod = Date(dayOfMonth, monthOfYear, year)
-
-        endPeriod?.let {
-          setListOfDates(BOTH_WEEKS, "(Каждую неделю)")
-        }
+        endPeriod?.let { setListOfDates(BOTH_WEEKS) }
       }
     }
   }

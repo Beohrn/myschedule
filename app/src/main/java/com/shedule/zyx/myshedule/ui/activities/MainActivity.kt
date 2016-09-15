@@ -32,6 +32,8 @@ import com.shedule.zyx.myshedule.managers.ReceiveManager
 import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity.Companion.ADD_SCHEDULE_REQUEST
+import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity.Companion.DAY_OF_WEEK_KEY
+import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity.Companion.EDIT_SCHEDULE_REQUEST
 import com.shedule.zyx.myshedule.ui.fragments.BluetoothDialog
 import com.shedule.zyx.myshedule.utils.Utils
 import com.tbruyelle.rxpermissions.RxPermissions
@@ -180,6 +182,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       }
       R.id.nav_teachers -> startActivity<TeachersActivity>()
     }
+
     drawer_layout?.closeDrawer(GravityCompat.START)
     return true
   }
@@ -252,13 +255,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   override fun scheduleItemClick(schedule: Schedule) {
     selector(null, listOf("Домашнее задание", "Переслать", "Редактировать", "Удалить")) { position ->
       when (position) {
-        0 -> {
-        }
-        1 -> {
-          showDialog()
-          bluetoothManager.schedule = arrayListOf(schedule)
-        }
+        0 -> { scheduleManager.editSchedule = schedule; startActivity<HomeWorkActivity>() }
+        1 -> { showDialog(); bluetoothManager.schedule = arrayListOf(schedule) }
         2 -> {
+          scheduleManager.editSchedule = schedule
+          startActivityForResult<AddScheduleActivity>(EDIT_SCHEDULE_REQUEST,
+              Pair(DAY_OF_WEEK_KEY, main_viewpager.currentItem + 2))
         }
         3 -> {
           selector("Удалить предмет", listOf("Только в этот день", "Во все остальные дни")) {
@@ -281,6 +283,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     super.onActivityResult(requestCode, resultCode, data)
     if (resultCode == Activity.RESULT_OK) {
       if (requestCode == ADD_SCHEDULE_REQUEST) {
+        listenerList.map { it.updateData() }
+      } else if (requestCode == EDIT_SCHEDULE_REQUEST) {
         listenerList.map { it.updateData() }
       } else if (requestCode == CAMERA_REQUEST) {
         val bitmap = data?.extras?.get("data") as? Bitmap
