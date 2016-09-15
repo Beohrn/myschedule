@@ -17,6 +17,7 @@
     <string name="end_period_of_lesson">Дата окончания занятия</string>
 
     <string name="add_schedule_toolbar_title">Создать занятие</string>
+    <string name="homework_activity_title">Домашнее задание</string>
 
     <string-array name="type_of_lesson">
         <item>Практика</item>

@@ -108,5 +108,9 @@ class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPrefere
   fun removeSchedule(schedule: Schedule) {
     globalList.remove(schedule)
   }
+
+  fun getHomeWorkBySchedule(schedule: Schedule) = schedule.homework
+
+  var editSchedule: Schedule? = null
 }
 

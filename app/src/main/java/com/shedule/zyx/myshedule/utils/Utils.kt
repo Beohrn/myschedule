@@ -8,6 +8,7 @@ import com.amazonaws.util.Base64
 import com.google.gson.Gson
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.models.Category
+import com.shedule.zyx.myshedule.models.Date
 import com.shedule.zyx.myshedule.models.Schedule
 import java.io.File
 import java.io.FileOutputStream
@@ -86,5 +87,15 @@ class Utils {
       val image = File("${Environment.getExternalStorageDirectory()}/Android/data/ ${context.packageName}/Files/Sch_account_photo.jpg")
       return BitmapFactory.decodeFile(image.toString())
     }
+
+    fun getNormalizedDate(date: Date) =
+        if (date.dayOfMonth < 10 && date.monthOfYear < 9)
+          "0${date.dayOfMonth}.0${date.monthOfYear + 1}.${date.year}"
+        else if (date.dayOfMonth > 10 && date.monthOfYear < 9)
+          "${date.dayOfMonth}.0${date.monthOfYear + 1}.${date.year}"
+        else "${date.dayOfMonth}.${date.monthOfYear + 1}.${date.year}"
+
+
+
   }
 }
