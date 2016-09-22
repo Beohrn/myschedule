@@ -17,6 +17,7 @@ import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.models.HomeWork
 import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.ui.activities.CreateHomeWorkActivity.Companion.CREATE_HOMEWORK_REQUEST
+import com.shedule.zyx.myshedule.ui.activities.CreateHomeWorkActivity.Companion.DATE_ON_TITLE
 import com.shedule.zyx.myshedule.ui.activities.CreateHomeWorkActivity.Companion.EDIT_HOMEWORK_REQUEST
 import com.shedule.zyx.myshedule.widget.HomeWorkView
 import kotlinx.android.synthetic.main.home_work_activity.*
@@ -81,7 +82,7 @@ class HomeWorkActivity : AppCompatActivity(),
 
     add_homework_fab.onClick {
       scheduleManager.editHomework = null
-      startActivityForResult<CreateHomeWorkActivity>(CREATE_HOMEWORK_REQUEST)
+      startActivityForResult<CreateHomeWorkActivity>(CREATE_HOMEWORK_REQUEST, DATE_ON_TITLE to date)
     }
   }
 
@@ -117,7 +118,7 @@ class HomeWorkActivity : AppCompatActivity(),
 
   override fun onHomeWorkClick(homeWork: HomeWork) {
     scheduleManager.editHomework = homeWork
-    startActivityForResult<CreateHomeWorkActivity>(EDIT_HOMEWORK_REQUEST, CreateHomeWorkActivity.DATE_ON_TITLE to date)
+    startActivityForResult<CreateHomeWorkActivity>(EDIT_HOMEWORK_REQUEST, DATE_ON_TITLE to date)
   }
 
   override fun onLongClick(homeWork: HomeWork) {

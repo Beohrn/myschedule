@@ -309,8 +309,6 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     schedule.startTime = startTime
     schedule.endTime = endTime
     schedule.teacher = Teacher(name_of_teacher.getText().toString(), name_of_lesson.getText().toString())
-    schedule.teacher?.assessmentString = getString(R.string.e)
-    schedule.teacher?.averageAssessment = 60.0
     schedule.typeLesson = if (spinner_type_of_lesson.selectedItem.toString().equals(getString(R.string.practice)))
       TypeLesson.SEMINAR else TypeLesson.LECTURE
     schedule.category = category

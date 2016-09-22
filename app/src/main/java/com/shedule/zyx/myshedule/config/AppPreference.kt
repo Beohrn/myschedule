@@ -26,8 +26,8 @@ class AppPreference(val context: Context, val gson: Gson) {
 
   fun getSchedule(): ArrayList<Schedule> {
     val result: ArrayList<Schedule>
-    if (settings.contains(KEY)) {
-      val json = settings.getString(KEY, null)
+    if (prefs.contains(KEY)) {
+      val json = prefs.getString(KEY, null)
       val type = object : TypeToken<ArrayList<Schedule>>() {}.type
       result = gson.fromJson(json, type)
     } else {
