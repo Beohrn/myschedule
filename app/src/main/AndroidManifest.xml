@@ -6,14 +6,9 @@
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-permission android:name="android.permission.CAMERA"/>
-
-    <!-- for api 23!!! -->
-    <!-- But it is no enable dynamically -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
-    <!--for making discoverable device without user's confirmation (maybe)-->
-    <!-- don't touch this!!! -->
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
     <uses-permission
         android:name="android.permission.WRITE_SECURE_SETTINGS"
@@ -32,7 +27,7 @@
 
         <activity android:name="app.voter.xyz.comments.DiscussionActivity"/>
 
-        <activity android:name=".ui.activities.TeachersActivity"/>
+        <activity android:name=".teachers.TeachersActivity"/>
 
         <activity
             android:name=".ui.activities.TutorialActivity"

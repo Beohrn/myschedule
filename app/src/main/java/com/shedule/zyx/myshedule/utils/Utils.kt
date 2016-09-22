@@ -29,7 +29,7 @@ class Utils {
 
     fun toJson(list: ArrayList<Schedule>) = Gson().toJson(list)
 
-    fun getColorByAssessment(context: Context, assessment: String) = when (assessment) {
+    fun getColorByRating(context: Context, assessment: String) = when (assessment) {
       "E" -> context.resources.getColor(R.color.assess_E)
       "D" -> context.resources.getColor(R.color.assess_D)
       "C" -> context.resources.getColor(R.color.assess_C)
@@ -38,19 +38,21 @@ class Utils {
       else -> 0
     }
 
+    fun getUniversities(context: Context) = context.getString(R.string.universities).split(";")
+
     fun getKeyByName(name: String) = String(Base64.encode(name.toByteArray()))
 
     fun getNameByKey(key: String) = String(Base64.decode(key))
 
     fun decoder(text: String) = text.replace("і", "и")
 
-    fun getAverageAssessment(assessments: HashMap<String, Int>): Double {
+    fun getRatingByData(assessments: HashMap<String, Int>): Double {
       var result = 0.0
       assessments.map { result += it.value }
       return result / assessments.size
     }
 
-    fun getLetterByAverageAssessment(assessment: Double): String {
+    fun getLetterByRating(assessment: Double): String {
       if (assessment >= 95.0 && assessment <= 100.0)
         return "A"
       else if (assessment >= 85.0 && assessment <= 94.99)
@@ -94,8 +96,5 @@ class Utils {
         else if (date.dayOfMonth > 10 && date.monthOfYear < 9)
           "${date.dayOfMonth}.0${date.monthOfYear + 1}.${date.year}"
         else "${date.dayOfMonth}.${date.monthOfYear + 1}.${date.year}"
-
-
-
   }
 }

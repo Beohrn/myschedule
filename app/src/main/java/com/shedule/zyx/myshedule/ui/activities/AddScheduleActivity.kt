@@ -93,7 +93,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       }
 
       name_of_lesson.setText(it.nameLesson)
-      name_of_teacher.setText(it.teacher?.nameOfTeacher.toString())
+      name_of_teacher.setText(it.teacher?.teacherName.toString())
 
       setTime(it.startTime, it.endTime)
     }
@@ -306,8 +306,6 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     schedule.startTime = startTime
     schedule.endTime = endTime
     schedule.teacher = Teacher(name_of_teacher.getText().toString(), name_of_lesson.getText().toString())
-    schedule.teacher?.assessmentString = "E"
-    schedule.teacher?.averageAssessment = 60.0
     schedule.typeLesson = if (spinner_type_of_lesson.selectedItem.toString().equals("Практика")) TypeLesson.SEMINAR else TypeLesson.LECTURE
     schedule.category = category
     schedule.week = week

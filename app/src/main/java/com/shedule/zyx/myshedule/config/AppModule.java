@@ -3,10 +3,12 @@ package com.shedule.zyx.myshedule.config;
 import android.content.Context;
 import android.provider.Settings;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.shedule.zyx.myshedule.FirebaseWrapper;
 import com.shedule.zyx.myshedule.managers.BluetoothManager;
 import com.shedule.zyx.myshedule.managers.DateManager;
 import com.shedule.zyx.myshedule.managers.ReceiveManager;
@@ -96,10 +98,22 @@ public class AppModule {
                 Settings.Secure.ANDROID_ID);
     }
 
+    @Provides
+    @Singleton
+    public FirebaseAuth provideFirebaseAuth() {
+        return FirebaseAuth.getInstance();
+    }
+
     @Singleton
     @Provides
     DatabaseReference provideDatabaseReference() {
         return FirebaseDatabase.getInstance().getReference();
+    }
+
+    @Singleton
+    @Provides
+    FirebaseWrapper provideFirebaseWrapper(DatabaseReference ref, AppPreference prefs, String token) {
+        return new FirebaseWrapper(ref, prefs, token);
     }
 
     @Singleton

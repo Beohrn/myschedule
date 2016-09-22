@@ -9,6 +9,7 @@ import android.widget.TextView
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.models.Teacher
 import com.shedule.zyx.myshedule.utils.Utils
+import com.shedule.zyx.myshedule.utils.Utils.Companion.getLetterByRating
 import kotlinx.android.synthetic.main.teacher_view.view.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.find
@@ -20,7 +21,8 @@ import org.jetbrains.anko.onClick
  */
 class TeacherView : FrameLayout {
 
-  var onAssessmentClickListener: OnAssessmentClickListener? = null
+  lateinit var ratingClickListener: OnRatingClickListener
+  lateinit var teacher: Teacher
 
   constructor(context: Context?) : super(context) {
     init(context)
@@ -40,43 +42,32 @@ class TeacherView : FrameLayout {
 
   fun init(context: Context?) {
     inflate(context, R.layout.teacher_view, this)
-    setAssessment("E", 6.0)
-
-    tv_assessment_of_teacher.onClick {
-      showAssessments()
-    }
+    teacher_rating.onClick { showAssessments() }
   }
 
   fun setData(teacher: Teacher) {
-    tv_name_of_teacher.text = teacher.nameOfTeacher
-    tv_name_of_lesson.text = teacher.nameOfLesson
-    setAssessment(teacher.assessmentString.toString(), teacher.averageAssessment ?: 60.0)
-  }
+    this.teacher = teacher
+    teacher_name.text = teacher.teacherName
+    tv_name_of_lesson.text = teacher.lessonName
 
-  fun setAssessment(assessment: String, assessmentDouble: Double) {
-    (tv_assessment_of_teacher.background as GradientDrawable)
-        .setColor(Utils.getColorByAssessment(context, assessment))
-    tv_assessment_of_teacher.text = assessment
-    tv_average_assessment_of_teacher.text = assessmentDouble.toString()
-  }
+    if (teacher.ratings.isNotEmpty()) {
+      val mediumRating = teacher.ratings.values.toList().reduce { d1, d2 -> d1 + d2 } /
+          teacher.ratings.values.toList().size
 
-  fun setAssessmentWithListener(assessment: String, averageAssessment: Double) {
-    setAssessment(assessment, averageAssessment)
-    onAssessmentClickListener?.let {
-      it.onAssessmentClick(assessment, tv_name_of_teacher.text.toString(),
-          tv_average_assessment_of_teacher.text.toString().toDouble())
+      (teacher_rating.background as GradientDrawable)
+          .setColor(Utils.getColorByRating(context, getLetterByRating(mediumRating)))
+      teacher_rating.text = getLetterByRating(mediumRating)
+      rating.text = "$mediumRating"
     }
   }
 
   fun showAssessments() {
     context.alert {
       customView {
-        include<View>(R.layout.teacher_assessment_dialog) {
+        include<View>(R.layout.teacher_rating_dialog) {
           val view = find<TeacherAssessmentView>(R.id.teacher_assessment_view)
           find<TextView>(R.id.at_ok).onClick {
-            setAssessmentWithListener(Utils.getLetterByAverageAssessment(Utils.getAverageAssessment(view.getValues())),
-                Utils.getAverageAssessment(view.getValues()))
-
+            ratingClickListener.onRatingClick(teacher.teacherName, Utils.getRatingByData(view.getValues()))
             dismiss()
           }
           find<TextView>(R.id.at_cancel).onClick { dismiss() }
@@ -85,7 +76,7 @@ class TeacherView : FrameLayout {
     }.show()
   }
 
-  interface OnAssessmentClickListener {
-    fun onAssessmentClick(assessment: String, teacherName: String, averageAssessment: Double)
+  interface OnRatingClickListener {
+    fun onRatingClick(teacherName: String, averageAssessment: Double)
   }
 }

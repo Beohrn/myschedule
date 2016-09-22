@@ -94,9 +94,5 @@ object RxFirebase {
     CHILD_CHANGED, CHILD_REMOVED, CHILD_MOVED, CHILD_ADDED
   }
 
-  /**
-   * Essentially a struct so that we can pass all children events through as a single object.
-   */
-
   class FirebaseChildEvent(var snapshot: DataSnapshot?, var eventType: EventType, var prevName: String?)
 }

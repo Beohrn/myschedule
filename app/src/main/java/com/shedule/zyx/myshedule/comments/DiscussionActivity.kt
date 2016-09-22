@@ -6,12 +6,16 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import app.voter.xyz.RxFirebase
+import app.voter.xyz.utils.Constants
 import app.voter.xyz.utils.Constants.Companion.COMMENTS
+import app.voter.xyz.utils.Constants.Companion.LIKES
 import app.voter.xyz.utils.Constants.Companion.REPLIES
 import com.google.firebase.database.DatabaseReference
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.ScheduleApplication
+import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.utils.Utils
+import com.shedule.zyx.myshedule.utils.Utils.Companion.getKeyByName
 import kotlinx.android.synthetic.main.discussion_activity_layout.*
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.onClick
@@ -27,8 +31,13 @@ class DiscussionActivity : AppCompatActivity(), CommentsAdapter.OnCommentClickLi
   @Inject
   lateinit var deviceToken: String
 
+  @Inject
+  lateinit var prefs: AppPreference
+
   var whichId = ""
-  val discussRef = "discussion"
+
+  var isReplying = false
+  var replyCommentKey: DatabaseReference? = null
 
   lateinit var ref: DatabaseReference
   lateinit var layoutManager: LinearLayoutManager
@@ -45,9 +54,13 @@ class DiscussionActivity : AppCompatActivity(), CommentsAdapter.OnCommentClickLi
     setContentView(R.layout.discussion_activity_layout)
     ScheduleApplication.getComponent().inject(this)
 
-    whichId = Utils.getKeyByName(Utils.decoder(intent.getStringExtra(TEACHER_REQUEST)))
+    whichId = getKeyByName(Utils.decoder(intent.getStringExtra(TEACHER_REQUEST)))
 
-    ref = firebaseRef.child(discussRef).child(whichId).child(COMMENTS)
+    ref = firebaseRef.child(getKeyByName(prefs.getUniverName()))
+        .child(getKeyByName(prefs.getFacultyName()))
+        .child(Constants.TEACHERS)
+        .child(whichId)
+        .child(COMMENTS)
 
     RxFirebase.observeChildAdded(ref).subscribe({
       recycleAdapter?.let { discus_recycleview.smoothScrollToPosition(recycleAdapter!!.itemCount) }
@@ -70,56 +83,62 @@ class DiscussionActivity : AppCompatActivity(), CommentsAdapter.OnCommentClickLi
     layoutManager = LinearLayoutManager(this)
 
     post_btn.onClick {
-      postComment(commentET?.text.toString())
-      commentET?.setText("")
+      onPostButtonClick()
     }
   }
 
-  override fun onCommentClicked(userId: String, keyLike: String?, position: Int, replayId: String?) {
+  fun onPostButtonClick() {
+    val text = commentET.text.toString().trim()
 
-    if (replayId.isNullOrEmpty()) {
-      if (keyLike.isNullOrEmpty()) selector(items = listOf("Like", "Reply")) {
-        if (it == 0) {
-          pushLike(deviceToken, firebaseRef.child(discussRef).child(whichId)
-              .child(COMMENTS).child(recycleAdapter?.getRef(position)?.key))
-        } else replayComment(position)
-      } else selector(items = listOf("Dislike", "Reply")) {
-        if (it == 0) {
-          removeLike(keyLike, firebaseRef.child(discussRef).child(whichId)
-              .child(COMMENTS).child(recycleAdapter?.getRef(position)?.key))
-        } else replayComment(position)
+    if (!text.isNullOrBlank()) {
+      val comment = Comment(deviceToken, text, getTimeCommentPost())
+
+      if (isReplying) {
+        replyCommentKey?.child(REPLIES)?.push()?.setValue(comment)
+      } else {
+        ref.push().setValue(comment)
       }
-    } else {
-      if (keyLike.isNullOrEmpty()) selector(items = listOf("Like", "Reply")) {
-        if (it == 0) {
-          pushLike(deviceToken, firebaseRef.child(discussRef).child(whichId)
-              .child(COMMENTS).child(recycleAdapter?.getRef(position)?.key).child(REPLIES).child(replayId))
-        } else replayComment(position)
-      } else selector(items = listOf("Dislike", "Reply")) {
-        if (it == 0) {
-          removeLike(keyLike, firebaseRef.child(discussRef).child(whichId)
-              .child(COMMENTS).child(recycleAdapter?.getRef(position)?.key).child(REPLIES).child(replayId))
-        } else replayComment(position)
+
+      toggleReply(false)
+    }
+  }
+
+  fun toggleReply(isReply: Boolean) {
+    isReplying = isReply
+    if (!isReply) commentET.setText("")
+    post_btn?.text = if (isReply) "Ответить" else "Отправить"
+    commentET.hint = if (isReply) "Ответить" else "Отправить коментарий"
+  }
+
+  override fun onCommentClicked(commentRef: DatabaseReference, comment: Comment) {
+    val likeId = comment.isLikedByUser(deviceToken)
+    val isLiked = likeId != null
+    val likeText = if (!isLiked) "Нравиться" else "Не нравиться"
+
+    selector(items = listOf(likeText, "Ответить")) {
+      when (it) {
+        0 -> if (isLiked) removeLike(commentRef, likeId) else pushLike(commentRef)
+        else -> replyComment(commentRef)
       }
     }
   }
 
-  private fun pushLike(deviceId: String, ref: DatabaseReference) = ref.child("likes").push().setValue(deviceId)
-
-  private fun replayComment(position: Int) {
-    if (commentET?.text.toString().isNotEmpty()) {
-      firebaseRef.child(discussRef).child(whichId).child(COMMENTS).child(recycleAdapter?.getRef(position)?.key).child(REPLIES).push()
-          .setValue(CommentFirebase(deviceToken, commentET?.text.toString(), getTimeCommentPost()))
-      commentET?.setText("")
-    }
+  override fun onReplyClicked(commentRef: DatabaseReference, replyComment: Comment) {
+    val likeId = replyComment.isLikedByUser(deviceToken)
+    if (likeId != null) removeLike(commentRef, likeId) else pushLike(commentRef)
   }
 
-  private fun removeLike(keyLike: String?, ref: DatabaseReference) = ref.child("likes").child(keyLike).removeValue()
+  private fun pushLike(commentRef: DatabaseReference) {
+    commentRef.child(LIKES).push().setValue(deviceToken)
+  }
 
-  fun postComment(text: String) {
-    if (text.isNotEmpty())
-      firebaseRef.child(discussRef).child(whichId).child(COMMENTS).push()
-          .setValue(CommentFirebase(deviceToken, text, getTimeCommentPost()))
+  private fun removeLike(commentRef: DatabaseReference, likeId: String?) {
+    commentRef.child(LIKES).child(likeId).removeValue()
+  }
+
+  private fun replyComment(commentKey: DatabaseReference) {
+    replyCommentKey = commentKey
+    toggleReply(true)
   }
 
   fun getTimeCommentPost() = "${GregorianCalendar().timeInMillis}"
