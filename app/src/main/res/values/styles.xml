@@ -52,4 +52,13 @@
         <item name="android:textColorSecondary">@color/white</item>
     </style>
 
+    <style name="AppTheme.Transparent">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="AppDark" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/black</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
 </resources>

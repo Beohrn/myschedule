@@ -1,45 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.shedule.zyx.myshedule"
-          xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.shedule.zyx.myshedule" >
 
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
-    <uses-permission
-        android:name="android.permission.WRITE_SECURE_SETTINGS"
-        tools:ignore="ProtectedPermissions"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".ScheduleApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".ui.activities.MainActivity"/>
-
-        <activity android:name=".ui.activities.AddScheduleActivity"/>
-
-        <activity android:name="app.voter.xyz.comments.DiscussionActivity"/>
-
-        <activity android:name=".teachers.TeachersActivity"/>
-
+        android:theme="@style/AppTheme" >
+        <activity android:name=".ui.activities.MainActivity" />
+        <activity android:name=".ui.activities.AddScheduleActivity" />
+        <activity android:name="app.voter.xyz.comments.DiscussionActivity" />
+        <activity android:name=".teachers.TeachersActivity" />
         <activity
             android:name=".ui.activities.TutorialActivity"
-            android:theme="@style/TutorialTheme">
+            android:theme="@style/TutorialTheme" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".ui.activities.HomeWorkActivity" />
-
+        <activity android:name=".ui.activities.CreateHomeWorkActivity" />
+        <activity
+            android:name=".ui.activities.PhotoActivity"
+            android:theme="@style/AppDark" />
+        <activity android:name=".ui.activities.AllHomeWorksActivity" />
     </application>
 
 </manifest>

@@ -10,6 +10,7 @@
         android:id="@+id/cv_edit_text"
         android:paddingTop="20dp"
         android:textSize="14sp"
+        android:textStyle=""
         android:textCursorDrawable="@null"
         android:background="@android:color/transparent"/>
 

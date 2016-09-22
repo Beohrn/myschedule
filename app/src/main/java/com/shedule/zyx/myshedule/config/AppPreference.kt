@@ -3,7 +3,6 @@ package com.shedule.zyx.myshedule.config
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.shedule.zyx.myshedule.models.Schedule
@@ -14,8 +13,6 @@ import java.util.*
  */
 class AppPreference(val context: Context, val gson: Gson) {
 
-  private val TAG = AppPreference::class.java.simpleName
-  private val NAME = "schedule_preference"
   private val KEY = "schedule"
   private val UNIVER_NAME = "univer_name"
   private val FACULTY_NAME = "facylty_name"
@@ -31,7 +28,6 @@ class AppPreference(val context: Context, val gson: Gson) {
     val result: ArrayList<Schedule>
     if (prefs.contains(KEY)) {
       val json = prefs.getString(KEY, null)
-      Log.i(TAG, "$json")
       val type = object : TypeToken<ArrayList<Schedule>>() {}.type
       result = gson.fromJson(json, type)
     } else {

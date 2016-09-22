@@ -49,5 +49,4 @@ class MarkView : FrameLayout {
   fun setTextCategory(text: String?) {
     mark_view.text = text ?: ""
   }
-
 }

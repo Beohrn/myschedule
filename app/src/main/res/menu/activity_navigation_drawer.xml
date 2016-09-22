@@ -13,6 +13,11 @@
             android:title="Поделиться"/>
 
         <item
+            android:id="@+id/nav_tasks"
+            android:icon="@drawable/task"
+            android:title="Задания"/>
+
+        <item
             android:id="@+id/nav_tools"
             android:icon="@drawable/ic_menu_manage"
             android:title="Настройки"/>

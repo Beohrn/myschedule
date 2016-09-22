@@ -25,11 +25,15 @@
 
     <declare-styleable name="CustomEditText">
         <attr name="hint" format="string"/>
+        <attr name="single_line" format="boolean"/>
         <attr name="inputType">
             <flag name="numberDecimal" value="0x00002002" />
             <flag name="text" value="0x00000001" />
         </attr>
         <attr name="maxLength" format="integer" />
+        <attr name="text_size" format="integer" />
+
+        <attr name="text_style" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="CustomTextView">

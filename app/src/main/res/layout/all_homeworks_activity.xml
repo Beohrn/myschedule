@@ -13,7 +13,7 @@
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/homework_toolbar"
+            android:id="@+id/ah_toolbar"
             android:layout_width="match_parent"
             app:theme="@style/ToolbarColoredBackArrow"
             android:layout_height="?attr/actionBarSize"
@@ -29,22 +29,7 @@
         android:layout_height="match_parent"
         android:background="@color/silver_lite"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:id="@+id/homework_list"/>
+        android:id="@+id/list_of_homeworks"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:fabSize="normal"
-        android:id="@+id/add_homework_fab"
-        android:layout_gravity="bottom|right"
-        app:layout_anchorGravity="bottom|right|end"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_add_white_24px"
-        app:backgroundTint="@color/mark_orange"
-        android:clickable="true"
-        app:layout_anchor="@id/homework_list"
-        app:rippleColor="@color/mark_orange_dark"
-        android:nestedScrollingEnabled="true"
-        app:layout_behavior="com.shedule.zyx.myshedule.widget.FabNestedScrollBehavior"/>
 
 </android.support.design.widget.CoordinatorLayout>

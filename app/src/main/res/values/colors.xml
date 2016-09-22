@@ -14,6 +14,7 @@
     <color name="red">#eb2624</color>
     <color name="bottom_images">#c0c7ca</color>
     <color name="material_gray">#B5B5B5</color>
+    <color name="text_color">#424242</color>
 
     <color name="background_schedule_fragment">#e8e8e8</color>
     <color name="title_frame">#4db6ac</color>
@@ -31,6 +32,7 @@
     <color name="nb_mark_orange">#5ff99631</color>
     <color name="nb_mark_red">#60e82f2d</color>
 
+    <color name="mark_orange_dark">#a4601b</color>
     <color name="snow">#fafaff</color>
 
     <color name="assess_E">#5b6c7b</color>
@@ -38,6 +40,8 @@
     <color name="assess_C">#fec23b</color>
     <color name="assess_B">#35a4ff</color>
     <color name="assess_A">#a9ca4b</color>
+
+    <color name="hw_title">#595959</color>
 
     <color name="sch_green">#4CAF50</color>
     <color name="sch_dark_green">#247c2b</color>

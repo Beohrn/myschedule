@@ -3,6 +3,7 @@ package com.shedule.zyx.myshedule.managers
 import app.voter.xyz.comments.Comment
 import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.models.Date
+import com.shedule.zyx.myshedule.models.HomeWork
 import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.utils.Utils.Companion.getKeyByName
 import java.util.*
@@ -113,7 +114,11 @@ class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPrefere
     globalList.remove(schedule)
   }
 
-  fun getHomeWorkBySchedule(schedule: Schedule) = schedule.homework
+  fun getAllHomework() = globalList.map { it }.filter { it.homework.size != 0 }
+
+  fun getHomeWork(schedule: Schedule) = schedule.homework
+
+  fun getHomeWorkByDate(schedule: Schedule, date: String) = schedule.homework.map { it }.filter { it.deadLine.equals(date)  }
 
   var editSchedule: Schedule? = null
 
@@ -123,5 +128,7 @@ class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPrefere
 
     teacher?.let { it.comments.put(keyToComment, comment) }
   }
+
+  var editHomework: HomeWork? = null
 }
 

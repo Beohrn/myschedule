@@ -57,4 +57,7 @@ class Teacher {
 
 }
 
-data class HomeWork(var taskName: String, var status: Boolean)
+data class HomeWork(var taskName: String, var status: Boolean) {
+  var taskDescription = ""
+  var deadLine = ""
+}
