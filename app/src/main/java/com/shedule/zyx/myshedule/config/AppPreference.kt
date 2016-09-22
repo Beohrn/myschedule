@@ -14,11 +14,15 @@ import java.util.*
 class AppPreference(val context: Context, val gson: Gson) {
 
   private val KEY = "schedule"
-  private val settings: SharedPreferences
+  private val UNIVER_NAME = "univer_name"
+  private val FACULTY_NAME = "facylty_name"
+  private val prefs: SharedPreferences
 
-  init { settings = PreferenceManager.getDefaultSharedPreferences(context) }
+  init {
+    prefs = PreferenceManager.getDefaultSharedPreferences(context)
+  }
 
-  fun saveSchedule(list: List<Schedule>) = settings.edit().putString(KEY, gson.toJson(list)).apply()
+  fun saveSchedule(list: List<Schedule>) = prefs.edit().putString(KEY, gson.toJson(list)).apply()
 
   fun getSchedule(): ArrayList<Schedule> {
     val result: ArrayList<Schedule>
@@ -30,8 +34,14 @@ class AppPreference(val context: Context, val gson: Gson) {
       result = ArrayList<Schedule>()
       return result
     }
-
     return result
   }
 
+  fun saveUniverName(name: String) = prefs.edit().putString(UNIVER_NAME, name).apply()
+
+  fun getUniverName() = prefs.getString(UNIVER_NAME, null)
+
+  fun saveFacultyName(name: String) = prefs.edit().putString(FACULTY_NAME, name).apply()
+
+  fun getFacultyName() = prefs.getString(FACULTY_NAME, null)
 }

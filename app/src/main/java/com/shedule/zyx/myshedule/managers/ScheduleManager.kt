@@ -1,9 +1,11 @@
 package com.shedule.zyx.myshedule.managers
 
+import app.voter.xyz.comments.Comment
 import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.models.Date
 import com.shedule.zyx.myshedule.models.HomeWork
 import com.shedule.zyx.myshedule.models.Schedule
+import com.shedule.zyx.myshedule.utils.Utils.Companion.getKeyByName
 import java.util.*
 
 /**
@@ -38,7 +40,9 @@ class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPrefere
       difference = currentDayOfWeek - startDayOfWeek
 
       when (week) {
-        1 -> { range++; weeksCount /= 2 }
+        1 -> {
+          range++; weeksCount /= 2
+        }
         2 -> {
           startCalendar.add(Calendar.WEEK_OF_MONTH, 1)
           range++
@@ -104,7 +108,7 @@ class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPrefere
     return calendar
   }
 
-  fun getTeachers() = globalList.map { it.teacher }.filterNotNull().map { it }.distinctBy { it.nameOfTeacher }
+  fun getTeachers() = globalList.map { it.teacher }.filterNotNull().map { it }.distinctBy { it.teacherName }
 
   fun removeSchedule(schedule: Schedule) {
     globalList.remove(schedule)
@@ -117,6 +121,13 @@ class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPrefere
   fun getHomeWorkByDate(schedule: Schedule, date: String) = schedule.homework.map { it }.filter { it.deadLine.equals(date)  }
 
   var editSchedule: Schedule? = null
+
+  fun setCommentToTeacher(keyToComment: String, comment: Comment, teacherName: String) {
+    val teacher = getTeachers().filter { getKeyByName(it.teacherName).equals(teacherName) }
+        .firstOrNull()
+
+    teacher?.let { it.comments.put(keyToComment, comment) }
+  }
 
   var editHomework: HomeWork? = null
 }

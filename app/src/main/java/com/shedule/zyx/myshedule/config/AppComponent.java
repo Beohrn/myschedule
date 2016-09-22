@@ -6,13 +6,15 @@ import com.shedule.zyx.myshedule.ui.activities.AllHomeWorksActivity;
 import com.shedule.zyx.myshedule.ui.activities.CreateHomeWorkActivity;
 import com.shedule.zyx.myshedule.ui.activities.HomeWorkActivity;
 import com.shedule.zyx.myshedule.ui.activities.MainActivity;
-import com.shedule.zyx.myshedule.ui.activities.TeachersActivity;
+import com.shedule.zyx.myshedule.teachers.TeachersActivity;
 import com.shedule.zyx.myshedule.ui.fragments.BondedDevicesFragment;
 import com.shedule.zyx.myshedule.ui.fragments.NearbyDevicesFragment;
 import com.shedule.zyx.myshedule.ui.fragments.ScheduleFragment;
 
 import javax.inject.Singleton;
 
+import app.voter.xyz.auth.fragments.CreateAccountFragment;
+import app.voter.xyz.auth.fragments.TeachersRatingFragment;
 import app.voter.xyz.comments.DiscussionActivity;
 import dagger.Component;
 
@@ -32,4 +34,6 @@ public interface AppComponent {
     void inject(HomeWorkActivity homeWorkActivity);
     void inject(CreateHomeWorkActivity createHomeWorkActivity);
     void inject(AllHomeWorksActivity allHomeWorksActivity);
+    void inject(CreateAccountFragment createAccountFragment);
+    void inject(TeachersRatingFragment teachersRatingFragment);
 }

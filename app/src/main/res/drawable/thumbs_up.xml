@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_selected="true" android:drawable="@drawable/thumbs_up_selected"/>
-    <item  android:drawable="@drawable/thumbs_up_unselected"/>
+    <item android:state_selected="true" android:drawable="@drawable/dislike"/>
+    <item  android:drawable="@drawable/like"/>
 </selector>

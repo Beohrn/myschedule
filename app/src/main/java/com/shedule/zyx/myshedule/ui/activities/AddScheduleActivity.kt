@@ -93,7 +93,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       }
 
       name_of_lesson.setText(it.nameLesson)
-      name_of_teacher.setText(it.teacher?.nameOfTeacher.toString())
+      name_of_teacher.setText(it.teacher?.teacherName.toString())
 
       setTime(it.startTime, it.endTime)
     }
@@ -148,11 +148,14 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
         } ?: toast(getString(R.string.set_date_of_end_period))
       } ?: toast(getString(R.string.set_date_of_begin_period))
     }
+
+
   }
 
   private fun setPeriods(startPeriod: Date, endPeriod: Date) {
     begin_period.setText(Utils.getNormalizedDate(startPeriod))
     end_period.setText(Utils.getNormalizedDate(endPeriod))
+
     this.startPeriod = startPeriod
     this.endPeriod = endPeriod
   }
@@ -170,6 +173,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     this.endTime = endTime
   }
 
+  // need to save ref for editSchedule
   override fun onDestroy() {
     super.onDestroy()
     scheduleManager.editSchedule = null

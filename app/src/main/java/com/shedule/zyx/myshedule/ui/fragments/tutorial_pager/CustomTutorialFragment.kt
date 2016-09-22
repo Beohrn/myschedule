@@ -7,7 +7,9 @@ import android.view.View
 import com.cleveroad.slidingtutorial.TutorialFragment
 import com.cleveroad.slidingtutorial.TutorialPageProvider
 import com.shedule.zyx.myshedule.R
+import com.shedule.zyx.myshedule.ui.activities.MainActivity
 import kotlinx.android.synthetic.main.custom_tutorial_layout.*
+import org.jetbrains.anko.startActivity
 
 /**
  * Created by alexkowlew on 14.09.2016.
@@ -49,8 +51,6 @@ class CustomTutorialFragment : TutorialFragment() {
           ContextCompat.getColor(activity, android.R.color.holo_green_dark),
           ContextCompat.getColor(activity, android.R.color.holo_blue_dark)))
       .setTutorialPageProvider(tutorialPageProvider)
-      .onSkipClickListener {
-        activity.finish()
-      }
+      .onSkipClickListener { startActivity<MainActivity>() }
       .build()
 }

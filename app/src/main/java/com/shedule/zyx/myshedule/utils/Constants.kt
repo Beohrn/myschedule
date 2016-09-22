@@ -7,5 +7,9 @@ class Constants {
   companion object {
     val COMMENTS = "comments"
     val REPLIES = "replies"
+    val LIKES = "likes"
+    val DISCUSSION = "discussion"
+    val RATINGS = "ratings"
+    val TEACHERS = "teachers"
   }
 }

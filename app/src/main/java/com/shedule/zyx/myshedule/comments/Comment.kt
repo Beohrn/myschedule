@@ -1,11 +1,11 @@
 package app.voter.xyz.comments
 
-class CommentFirebase {
+class Comment {
   var text = ""
   var user_id = ""
   var datetime = ""
   var likes = hashMapOf<String, String>()
-  var replies = hashMapOf<String, CommentFirebase>()
+  var replies = hashMapOf<String, Comment>()
 
   constructor() {
   }
@@ -15,4 +15,6 @@ class CommentFirebase {
     this.user_id = userId
     this.datetime = datetime
   }
+
+  fun isLikedByUser(userId: String) = likes.filterValues { it.equals(userId) }.keys.firstOrNull()
 }
