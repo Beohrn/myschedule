@@ -2,6 +2,8 @@ package com.shedule.zyx.myshedule.config;
 
 
 import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity;
+import com.shedule.zyx.myshedule.ui.activities.AllHomeWorksActivity;
+import com.shedule.zyx.myshedule.ui.activities.CreateHomeWorkActivity;
 import com.shedule.zyx.myshedule.ui.activities.HomeWorkActivity;
 import com.shedule.zyx.myshedule.ui.activities.MainActivity;
 import com.shedule.zyx.myshedule.ui.activities.TeachersActivity;
@@ -28,4 +30,6 @@ public interface AppComponent {
     void inject(TeachersActivity teachersActivity);
     void inject(DiscussionActivity discussionActivity);
     void inject(HomeWorkActivity homeWorkActivity);
+    void inject(CreateHomeWorkActivity createHomeWorkActivity);
+    void inject(AllHomeWorksActivity allHomeWorksActivity);
 }

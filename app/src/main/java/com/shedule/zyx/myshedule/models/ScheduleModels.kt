@@ -45,4 +45,7 @@ data class Teacher(val nameOfTeacher: String, val nameOfLesson: String): Seriali
   var averageAssessment: Double? = 0.0
 }
 
-data class HomeWork(var taskName: String, var status: Boolean)
+data class HomeWork(var taskName: String, var status: Boolean) {
+  var taskDescription = ""
+  var deadLine = ""
+}

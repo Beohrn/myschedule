@@ -1,20 +1,27 @@
 <resources>
-    <string name="app_name">MyShedule</string>
-    <string name="title_activity_navigation">NavigationActivity</string>
+    <string name="app_name">MySchedule</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="title_activity_main2">Main2Activity</string>
 
     <string name="name_of_lesson">Название предмета</string>
     <string name="name_of_teacher">Имя преподавателя</string>
-    <string name="number_of_lesson">Номер пары</string>
-    <string name="start_time_of_lesson">Начало пары</string>
-    <string name="end_time_of_lesson">Конец пары</string>
     <string name="start_period_of_lesson">Дата начала занятия</string>
     <string name="end_period_of_lesson">Дата окончания занятия</string>
+
+    <string name="housing">корп.</string>
+    <string name="classroom">ауд.</string>
+    <string name="begin">Начало</string>
+    <string name="end">Конец</string>
+
+
+    <string name="monday">Понедельник</string>
+    <string name="tuesday">Вторник</string>
+    <string name="wednesday">Среда</string>
+    <string name="thursday">Четверг</string>
+    <string name="friday">Пятница</string>
 
     <string name="add_schedule_toolbar_title">Создать занятие</string>
     <string name="homework_activity_title">Домашнее задание</string>
@@ -34,6 +41,47 @@
         <item>7 пара</item>
     </string-array>
 
-    <string name="start_time_hint">Начало</string>
-    <string name="end_time_hint">Конец</string>
+
+    <string name="set_date_of_begin_period">Укажите дату начала занятия</string>
+    <string name="set_date_of_end_period">Укажите дату окончания занятия</string>
+    <string name="set_lesson">Изменить занятие</string>
+    <string name="repeat_of_lesson">Повторение занятия:</string>
+    <string name="every_week">Каждую неделю</string>
+    <string name="on_first_week">По первой неделе</string>
+    <string name="on_second_week">По второй неделе</string>
+    <string name="practice">Практика</string>
+    <string name="lecture">Лекция</string>
+
+    <string name="e">E</string>
+    <string name="d">D</string>
+    <string name="c">C</string>
+    <string name="b">B</string>
+    <string name="a">A</string>
+
+    <string name="time_reduction">чч:мм</string>
+    <string name="date_reduction"></string>
+    <string name="task">Задания</string>
+
+    <string name="camera">Камера</string>
+    <string name="gallery">Галерея</string>
+    <string name="enter_name">Введите название</string>
+
+    <string name="delete">Удалить?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+
+    <string name="home_task">Домашнее задание</string>
+    <string name="send">Переслать</string>
+    <string name="edit">Редактировать</string>
+    <string name="delete_lesson">Удалить</string>
+
+    <string name="lesson_delete">Удалить предмет</string>
+    <string name="in_single_day">Только в этот день</string>
+    <string name="in_others_day">Во все остальные дни</string>
+
+    <string name="no_permission_for_camera">Нет разререшния на доступ к Камере</string>
+    <string name="no_permission_for_storage">Нет разрешения на доступ к Памяти</string>
+
+    <string name="teachers">Преподаватели</string>
+
 </resources>

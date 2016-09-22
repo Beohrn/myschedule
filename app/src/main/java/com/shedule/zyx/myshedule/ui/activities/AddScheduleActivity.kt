@@ -74,7 +74,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     schedule = scheduleManager.editSchedule
     schedule?.let {
       isScheduleEdit = true
-      supportActionBar?.title = "Изменить занятие"
+      supportActionBar?.title = getString(R.string.set_lesson)
       setPeriods(it.startPeriod, it.endPeriod)
       setListOfDates(it.week)
       numberOfLesson = it.numberLesson.toInt()
@@ -134,7 +134,10 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     repeat_dates.onClick {
       startPeriod?.let {
         endPeriod?.let {
-          selector("Повторение занятия:", listOf("Каждую неделю", "По первой неделе", "По второй неделе")) {
+          selector(getString(R.string.repeat_of_lesson),
+              listOf(getString(R.string.every_week),
+                  getString(R.string.on_first_week),
+                  getString(R.string.on_second_week))) {
             position ->
             when (position) {
               0 -> { setListOfDates(BOTH_WEEKS) }
@@ -142,17 +145,14 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
               2 -> { setListOfDates(SECOND_WEEK) }
             }
           }
-        } ?: toast("Укажите дату окончания занятия")
-      } ?: toast("Укажите дату начала занятия")
+        } ?: toast(getString(R.string.set_date_of_end_period))
+      } ?: toast(getString(R.string.set_date_of_begin_period))
     }
-
-
   }
 
   private fun setPeriods(startPeriod: Date, endPeriod: Date) {
     begin_period.setText(Utils.getNormalizedDate(startPeriod))
     end_period.setText(Utils.getNormalizedDate(endPeriod))
-
     this.startPeriod = startPeriod
     this.endPeriod = endPeriod
   }
@@ -160,17 +160,16 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   private fun setTime(startTime: Time?, endTime: Time?) {
     startTime?.let {
       begin_time.setText(it.toString())
-    } ?: begin_time.setText("чч:мм")
+    } ?: begin_time.setText(getString(R.string.time_reduction))
 
     endTime?.let {
       end_time.setText(it.toString())
-    } ?: begin_time.setText("чч:мм")
+    } ?: begin_time.setText(getString(R.string.time_reduction))
 
     this.startTime = startTime
     this.endTime = endTime
   }
 
-  // need to save ref for editSchedule
   override fun onDestroy() {
     super.onDestroy()
     scheduleManager.editSchedule = null
@@ -183,9 +182,9 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     listOfDates.addAll(scheduleManager.getScheduleByDate(startPeriod ?: null!!, endPeriod ?: null!!,
         intent.getIntExtra(DAY_OF_WEEK_KEY, 0), week).map { it })
     repeat_value.text = when (week) {
-      1 -> "(По первой неделе)"
-      2 -> "(По второй неделе)"
-      else -> "(Каждую неделю)"
+      1 -> "(${getString(R.string.on_first_week)})"
+      2 -> "(${getString(R.string.on_second_week)})"
+      else -> "(${getString(R.string.every_week)})"
     }
 
     this.week = week
@@ -259,8 +258,8 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
                 }
               }
             }.show()
-          } ?: toast("Укажите дату окончания занятия")
-        } ?: toast("Укажите дату начала занятия")
+          } ?: toast(getString(R.string.set_date_of_end_period))
+        } ?: toast(getString(R.string.set_date_of_begin_period))
         return true
       }
       else -> return super.onOptionsItemSelected(item)
@@ -297,8 +296,8 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
           finish()
         }
 
-      } ?: toast("Укажите дату окончания занятия")
-    } ?: toast("Укажите дату начала занятия")
+      } ?: toast(getString(R.string.set_date_of_end_period))
+    } ?: toast(getString(R.string.set_date_of_begin_period))
   }
 
   private fun setDataToSchedule(schedule: Schedule) {
@@ -306,9 +305,10 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     schedule.startTime = startTime
     schedule.endTime = endTime
     schedule.teacher = Teacher(name_of_teacher.getText().toString(), name_of_lesson.getText().toString())
-    schedule.teacher?.assessmentString = "E"
+    schedule.teacher?.assessmentString = getString(R.string.e)
     schedule.teacher?.averageAssessment = 60.0
-    schedule.typeLesson = if (spinner_type_of_lesson.selectedItem.toString().equals("Практика")) TypeLesson.SEMINAR else TypeLesson.LECTURE
+    schedule.typeLesson = if (spinner_type_of_lesson.selectedItem.toString().equals(getString(R.string.practice)))
+      TypeLesson.SEMINAR else TypeLesson.LECTURE
     schedule.category = category
     schedule.week = week
 

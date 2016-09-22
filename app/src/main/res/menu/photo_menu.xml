@@ -3,8 +3,8 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/add_homework"
-        android:icon="@drawable/add_to_list"
+        android:id="@+id/delete_photo"
+        android:icon="@drawable/delete"
         android:title="Approve"
         app:showAsAction="always"
         android:orderInCategory="100"/>

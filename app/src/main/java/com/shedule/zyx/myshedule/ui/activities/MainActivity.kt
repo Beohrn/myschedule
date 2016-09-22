@@ -13,7 +13,6 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.shedule.zyx.myshedule.R
@@ -31,6 +30,8 @@ import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity.Companion.ADD_SCHEDULE_REQUEST
 import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity.Companion.DAY_OF_WEEK_KEY
 import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity.Companion.EDIT_SCHEDULE_REQUEST
+import com.shedule.zyx.myshedule.ui.activities.HomeWorkActivity.Companion.HOMEWORK_BY_DATE
+import com.shedule.zyx.myshedule.ui.activities.HomeWorkActivity.Companion.SCHEDULE_HOMEWORK_REQUEST
 import com.shedule.zyx.myshedule.ui.fragments.BluetoothDialog
 import com.shedule.zyx.myshedule.utils.Utils
 import com.tbruyelle.rxpermissions.RxPermissions
@@ -91,21 +92,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     val nav = nav_view.inflateHeaderView(R.layout.nav_header_navigation)
-    Utils.getBitmap(applicationContext)?.let { nav.circleView.setImageBitmap(it) }
+    Utils.getAccountPhoto(applicationContext)?.let { nav.circleView.setImageBitmap(it) }
     nav.circleView.onClick {
-      selector("Выберите, чтобы загрузить фото:", listOf("Камера", "Галерея")) { i ->
+      selector(null, listOf(getString(R.string.camera),
+          getString(R.string.gallery))) { i ->
         when (i) {
           0 -> {
             checkSinglePermission(Manifest.permission.CAMERA).subscribe({
               if (it) startActivityForResult(Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE), CAMERA_REQUEST)
-              else toast("Нет разререшния на доступ к Камере")
+              else toast(getString(R.string.no_permission_for_camera))
             }, {})
           }
           else -> {
             checkSinglePermission(Manifest.permission.READ_EXTERNAL_STORAGE).subscribe({
               if (it) startActivityForResult(Intent(Intent.ACTION_PICK,
                   android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), GALLERY_REQUEST)
-              else toast("Нет разрешения на доступ к Памяти")
+              else toast(getString(R.string.no_permission_for_storage))
             }, {})
           }
         }
@@ -128,7 +130,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   }
 
   private fun setupDataForViewPager(viewPager: ViewPager) {
-    val adapter = ViewPagerAdapter(supportFragmentManager)
+    val adapter = ViewPagerAdapter(this, supportFragmentManager)
     viewPager.adapter = adapter
   }
 
@@ -174,6 +176,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       bluetoothManager.schedule = scheduleManager.globalList
     }
       R.id.nav_teachers -> startActivity<TeachersActivity>()
+      R.id.nav_tasks -> startActivity<AllHomeWorksActivity>()
     }
 
     drawer_layout?.closeDrawer(GravityCompat.START)
@@ -188,7 +191,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   override fun onStart() {
     super.onStart()
     bluetoothInit()
-    Log.i("TAG", "onStart")
   }
 
   override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -207,7 +209,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   override fun onStop() {
     super.onStop()
     scheduleManager.saveSchedule()
-    Log.i("TAG", "onStop")
   }
 
   private fun checkSinglePermission(permission: String) = RxPermissions.getInstance(this).request(permission)
@@ -239,7 +240,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   fun showDialog() {
     if (bluetoothManager.bluetoothEnabled()) {
       val dialog = BluetoothDialog()
-      dialog.show(supportFragmentManager, "dialog")
+      dialog.show(supportFragmentManager, "")
     } else {
       bluetoothManager.autoConnect()
       bluetoothInit()
@@ -248,9 +249,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   }
 
   override fun scheduleItemClick(schedule: Schedule) {
-    selector(null, listOf("Домашнее задание", "Переслать", "Редактировать", "Удалить")) { position ->
+    selector(null, listOf(getString(R.string.home_task),
+        getString(R.string.send),
+        getString(R.string.edit),
+        getString(R.string.delete_lesson))) { position ->
       when (position) {
-        0 -> { scheduleManager.editSchedule = schedule; startActivity<HomeWorkActivity>() }
+        0 -> { scheduleManager.editSchedule = schedule
+          startActivityForResult<HomeWorkActivity>(SCHEDULE_HOMEWORK_REQUEST,
+              HOMEWORK_BY_DATE to dateManager.getDayByPosition(main_viewpager.currentItem))
+        }
         1 -> { showDialog(); bluetoothManager.schedule = arrayListOf(schedule) }
         2 -> {
           scheduleManager.editSchedule = schedule
@@ -258,11 +265,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
               Pair(DAY_OF_WEEK_KEY, main_viewpager.currentItem + 2))
         }
         3 -> {
-          selector("Удалить предмет", listOf("Только в этот день", "Во все остальные дни")) {
+          selector(getString(R.string.lesson_delete),
+              listOf(getString(R.string.in_single_day),
+                  getString(R.string.in_others_day))) {
             index ->
             when (index) {
-              0 -> {
-              }
+              0 -> { }
               1 -> {
                 scheduleManager.removeSchedule(schedule)
                 listenerList.map { it.updateData() }
@@ -285,7 +293,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val bitmap = data?.extras?.get("data") as? Bitmap
         bitmap?.let {
           circleView.setImageBitmap(it)
-          Utils.saveImage(applicationContext, it)
+          Utils.saveAccountImage(applicationContext, it)
         }
       } else if (requestCode == GALLERY_REQUEST) {
         val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
@@ -296,7 +304,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
           cursor.close()
           val bitmap = BitmapFactory.decodeFile(picturePath)
           circleView.setImageBitmap(bitmap)
-          Utils.saveImage(applicationContext, bitmap)
+          Utils.saveAccountImage(applicationContext, bitmap)
         }
       }
     }

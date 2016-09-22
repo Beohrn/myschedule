@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:focusable="true"
+              android:focusableInTouchMode="true"
+              app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <com.shedule.zyx.myshedule.widget.CustomEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/home_work_name"
+        android:paddingLeft="20dp"
+        app:hint="Название"
+        app:text_size="18"/>
+
+    <com.shedule.zyx.myshedule.widget.CustomEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/home_work_description"
+        app:single_line="false"
+        android:paddingLeft="20dp"
+        app:hint="Описание"
+        app:text_size="18"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <GridView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="400dp"
+            android:numColumns="3"
+            android:horizontalSpacing="5dp"
+            android:verticalSpacing="5dp"
+            android:padding="20dp"
+            android:gravity="center"
+            android:id="@+id/photo_grid"
+            android:stretchMode="columnWidth"/>
+
+    </LinearLayout>
+
+</LinearLayout>

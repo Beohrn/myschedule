@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.adapters.TeachersAdapter
@@ -21,7 +20,6 @@ class TeachersActivity: AppCompatActivity(), TeacherView.OnAssessmentClickListen
 
   @Inject
   lateinit var scheduleManager: ScheduleManager
-  val TAG = this@TeachersActivity.javaClass.simpleName
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -29,11 +27,12 @@ class TeachersActivity: AppCompatActivity(), TeacherView.OnAssessmentClickListen
     ScheduleApplication.getComponent().inject(this)
 
     setSupportActionBar(teachers_toolbar)
-    supportActionBar?.title = "Преподаватели"
+    supportActionBar?.title = getString(R.string.teachers)
     teachers_toolbar.setTitleTextColor(Color.WHITE)
     supportActionBar?.setHomeButtonEnabled(true)
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     teachers_toolbar.setNavigationOnClickListener { finish() }
+
     val adapter = TeachersAdapter(this@TeachersActivity, scheduleManager.getTeachers(), this)
     list_of_teachers.layoutManager = LinearLayoutManager(applicationContext)
     list_of_teachers.itemAnimator = DefaultItemAnimator()
@@ -41,8 +40,6 @@ class TeachersActivity: AppCompatActivity(), TeacherView.OnAssessmentClickListen
   }
 
   override fun onAssessmentClick(assessment: String, teacherName: String, averageAssessment: Double) {
-    Log.i(TAG, "$assessment - $teacherName")
-
     scheduleManager.globalList.map {
       if (it.teacher?.nameOfTeacher.equals(teacherName)) {
         it.teacher?.assessmentString = assessment

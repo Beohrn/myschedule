@@ -12,6 +12,8 @@ import com.shedule.zyx.myshedule.models.Date
 import com.shedule.zyx.myshedule.models.Schedule
 import java.io.File
 import java.io.FileOutputStream
+import java.text.DateFormatSymbols
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -63,7 +65,7 @@ class Utils {
         return "E"
     }
 
-    fun saveImage(context: Context, bitmap: Bitmap) {
+    fun saveAccountImage(context: Context, bitmap: Bitmap) {
       val mediaFile = getMediaFile(context)
       mediaFile?.let {
         val fos = FileOutputStream(it)
@@ -83,7 +85,7 @@ class Utils {
       return File("${mediaStorageDir.path}${File.separator}$imageName")
     }
 
-    fun getBitmap(context: Context): Bitmap? {
+    fun getAccountPhoto(context: Context): Bitmap? {
       val image = File("${Environment.getExternalStorageDirectory()}/Android/data/ ${context.packageName}/Files/Sch_account_photo.jpg")
       return BitmapFactory.decodeFile(image.toString())
     }
@@ -95,7 +97,36 @@ class Utils {
           "${date.dayOfMonth}.0${date.monthOfYear + 1}.${date.year}"
         else "${date.dayOfMonth}.${date.monthOfYear + 1}.${date.year}"
 
+    fun getHomeWorkImagePath(context: Context, homeWork: String) = File("${Environment.getExternalStorageDirectory()}/Android/data/ " +
+          "${context.packageName}/Files/HomeWork/$homeWork").listFiles()
 
+    fun saveHomeWorkImage(context: Context, bitmap: Bitmap, imageName: String) {
+      val photo = getHomeWorkFile(context, imageName)
+      photo?.let {
+        val fos = FileOutputStream(it)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+        fos.close()
+      } ?: return
+    }
+
+    fun getHomeWorkFile(context: Context, homeWorkName: String): File? {
+      val storageDir = File("${Environment.getExternalStorageDirectory()}/Android/data/ ${context.packageName}/Files/HomeWork/$homeWorkName")
+
+      if (!storageDir.exists())
+        storageDir.mkdirs()
+
+      val timeStamp = SimpleDateFormat("ddMMyyyy_HHmmss").format(Date())
+      val image = "HomeWork_${timeStamp}_photo.jpg"
+      return File("${storageDir.path}${File.separator}$image")
+    }
+
+    fun deleteHomeWorkPhoto(path: String) = File(path).delete()
+
+    fun convertDateString(dateString: String): String {
+      val day = dateString.split("-")[0]
+      val month = DateFormatSymbols().months[dateString.split("-")[1].toInt()]
+      return "$day $month"
+    }
 
   }
 }
