@@ -1,5 +1,6 @@
 package com.shedule.zyx.myshedule.models
 
+import app.voter.xyz.comments.Comment
 import java.io.Serializable
 
 /**
@@ -40,9 +41,20 @@ data class Date(val dayOfMonth: Int, val monthOfYear: Int, val year: Int): Seria
 
 enum class Category: Serializable { EXAM, COURSE_WORK, STANDINGS, HOME_EXAM }
 
-data class Teacher(val nameOfTeacher: String, val nameOfLesson: String): Serializable {
-  var assessmentString: String? = ""
-  var averageAssessment: Double? = 0.0
+class Teacher {
+  var teacherName = ""
+  var lessonName = ""
+  var comments = hashMapOf<String, Comment>()
+  var ratings = hashMapOf<String, Double>()
+
+  constructor(){ }
+
+  constructor(nameOfTeacher: String, nameOfLesson: String) {
+    this.teacherName = nameOfTeacher
+    this.lessonName = nameOfLesson
+  }
+
+
 }
 
 data class HomeWork(var taskName: String, var status: Boolean)

@@ -1,19 +1,22 @@
 package com.shedule.zyx.myshedule.ui.activities
 
 import android.Manifest
+import android.Manifest.permission.*
 import android.app.Activity
 import android.content.Intent
+import android.content.Intent.ACTION_PICK
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.MediaStore.ACTION_IMAGE_CAPTURE
+import android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.shedule.zyx.myshedule.R
@@ -28,6 +31,7 @@ import com.shedule.zyx.myshedule.managers.DateManager
 import com.shedule.zyx.myshedule.managers.ReceiveManager
 import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.models.Schedule
+import com.shedule.zyx.myshedule.teachers.TeachersActivity
 import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity.Companion.ADD_SCHEDULE_REQUEST
 import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity.Companion.DAY_OF_WEEK_KEY
 import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity.Companion.EDIT_SCHEDULE_REQUEST
@@ -47,6 +51,7 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     ChangeStateFragmentListener, DatePickerDialog.OnDateSetListener, ScheduleItemsAdapter.ScheduleItemListener {
+
 
   @Inject
   lateinit var dateManager: DateManager
@@ -68,7 +73,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     super.onCreate(savedInstanceState)
     setContentView(activity_navigation)
     ScheduleApplication.getComponent().inject(this)
-    startActivity<FirstStartActivity>()
+    checkAllPermissions()
 
     setSupportActionBar(main_toolbar)
     setupDataForViewPager(main_viewpager)
@@ -81,30 +86,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     main_toolbar.post { title = convertDateString(dateManager.getDayByPosition(main_viewpager.currentItem)) }
 
     main_viewpager.onPageChangeListener {
-      onPageSelected {
-        main_toolbar.title = convertDateString(dateManager.getDayByPosition(it))
-      }
+      onPageSelected { main_toolbar.title = convertDateString(dateManager.getDayByPosition(it)) }
     }
 
     add_schedule_button.onClick {
-      startActivityForResult<AddScheduleActivity>(ADD_SCHEDULE_REQUEST, Pair(DAY_OF_WEEK_KEY, main_viewpager.currentItem + 2))
+      startActivityForResult<AddScheduleActivity>(ADD_SCHEDULE_REQUEST,
+          Pair("current_day_of_week", main_viewpager.currentItem + 2))
     }
 
     val nav = nav_view.inflateHeaderView(R.layout.nav_header_navigation)
     Utils.getBitmap(applicationContext)?.let { nav.circleView.setImageBitmap(it) }
     nav.circleView.onClick {
-      selector("Выберите, чтобы загрузить фото:", listOf("Камера", "Галерея")) { i ->
-        when (i) {
+      selector("Выберите, чтобы загрузить фото:", listOf("Камера", "Галерея")) {
+        when (it) {
           0 -> {
-            checkSinglePermission(Manifest.permission.CAMERA).subscribe({
-              if (it) startActivityForResult(Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE), CAMERA_REQUEST)
+            checkSinglePermission(CAMERA).subscribe({
+              if (it) startActivityForResult(Intent(ACTION_IMAGE_CAPTURE), CAMERA_REQUEST)
               else toast("Нет разререшния на доступ к Камере")
             }, {})
           }
           else -> {
-            checkSinglePermission(Manifest.permission.READ_EXTERNAL_STORAGE).subscribe({
-              if (it) startActivityForResult(Intent(Intent.ACTION_PICK,
-                  android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), GALLERY_REQUEST)
+            checkSinglePermission(READ_EXTERNAL_STORAGE).subscribe({
+              if (it) startActivityForResult(Intent(ACTION_PICK, EXTERNAL_CONTENT_URI), GALLERY_REQUEST)
               else toast("Нет разрешения на доступ к Памяти")
             }, {})
           }
@@ -169,10 +172,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   }
 
   override fun onNavigationItemSelected(item: MenuItem): Boolean {
-    when (item.itemId) { R.id.nav_share -> {
-      showDialog()
-      bluetoothManager.schedule = scheduleManager.globalList
-    }
+    when (item.itemId) {
+      R.id.nav_share -> {
+        checkSinglePermission(ACCESS_FINE_LOCATION).subscribe({
+          if (it) {
+            showDialog()
+            bluetoothManager.schedule = scheduleManager.globalList
+          } else toast("Нет разререшния на использрвание блютус")
+        }, {})
+      }
       R.id.nav_teachers -> startActivity<TeachersActivity>()
     }
 
@@ -188,14 +196,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   override fun onStart() {
     super.onStart()
     bluetoothInit()
-    Log.i("TAG", "onStart")
   }
 
   override fun onWindowFocusChanged(hasFocus: Boolean) {
     super.onWindowFocusChanged(hasFocus)
     if (hasFocus) {
       bluetoothInit()
-      checkAllPermissions()
     }
   }
 
@@ -207,17 +213,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   override fun onStop() {
     super.onStop()
     scheduleManager.saveSchedule()
-    Log.i("TAG", "onStop")
   }
 
-  private fun checkSinglePermission(permission: String) = RxPermissions.getInstance(this).request(permission)
+  private fun checkSinglePermission(permission: String) = RxPermissions.getInstance(this)
+      .request(permission)
 
   private fun checkAllPermissions() {
     RxPermissions.getInstance(this)
-        .request(Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.CAMERA,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
+        .request(ACCESS_FINE_LOCATION,
+            ACCESS_COARSE_LOCATION,
+            CAMERA,
+            READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe()
   }
 

@@ -17,16 +17,20 @@ class AppPreference(val context: Context, val gson: Gson) {
   private val TAG = AppPreference::class.java.simpleName
   private val NAME = "schedule_preference"
   private val KEY = "schedule"
-  private val settings: SharedPreferences
+  private val UNIVER_NAME = "univer_name"
+  private val FACULTY_NAME = "facylty_name"
+  private val prefs: SharedPreferences
 
-  init { settings = PreferenceManager.getDefaultSharedPreferences(context) }
+  init {
+    prefs = PreferenceManager.getDefaultSharedPreferences(context)
+  }
 
-  fun saveSchedule(list: List<Schedule>) = settings.edit().putString(KEY, gson.toJson(list)).apply()
+  fun saveSchedule(list: List<Schedule>) = prefs.edit().putString(KEY, gson.toJson(list)).apply()
 
   fun getSchedule(): ArrayList<Schedule> {
     val result: ArrayList<Schedule>
-    if (settings.contains(KEY)) {
-      val json = settings.getString(KEY, null)
+    if (prefs.contains(KEY)) {
+      val json = prefs.getString(KEY, null)
       Log.i(TAG, "$json")
       val type = object : TypeToken<ArrayList<Schedule>>() {}.type
       result = gson.fromJson(json, type)
@@ -34,8 +38,14 @@ class AppPreference(val context: Context, val gson: Gson) {
       result = ArrayList<Schedule>()
       return result
     }
-
     return result
   }
 
+  fun saveUniverName(name: String) = prefs.edit().putString(UNIVER_NAME, name).apply()
+
+  fun getUniverName() = prefs.getString(UNIVER_NAME, null)
+
+  fun saveFacultyName(name: String) = prefs.edit().putString(FACULTY_NAME, name).apply()
+
+  fun getFacultyName() = prefs.getString(FACULTY_NAME, null)
 }

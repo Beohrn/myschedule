@@ -8,14 +8,11 @@ import com.shedule.zyx.myshedule.ui.fragments.tutorial_pager.CustomTutorialFragm
 /**
  * Created by alexkowlew on 14.09.2016.
  */
-class FirstStartActivity: AppCompatActivity() {
+class TutorialActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.fitrst_start_activity)
-
-
-
     tutorialFragment()
   }
 
