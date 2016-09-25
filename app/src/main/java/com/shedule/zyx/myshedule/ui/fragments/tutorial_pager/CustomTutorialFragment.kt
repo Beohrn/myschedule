@@ -7,14 +7,20 @@ import android.view.View
 import com.cleveroad.slidingtutorial.TutorialFragment
 import com.cleveroad.slidingtutorial.TutorialPageProvider
 import com.shedule.zyx.myshedule.R
+import com.shedule.zyx.myshedule.ScheduleApplication
+import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.ui.activities.MainActivity
 import kotlinx.android.synthetic.main.custom_tutorial_layout.*
 import org.jetbrains.anko.startActivity
+import javax.inject.Inject
 
 /**
  * Created by alexkowlew on 14.09.2016.
  */
 class CustomTutorialFragment : TutorialFragment() {
+
+  @Inject
+  lateinit var appPreference: AppPreference
 
   val TOTAL_PAGES = 3
 
@@ -28,6 +34,10 @@ class CustomTutorialFragment : TutorialFragment() {
 
   override fun getViewPagerResId() = R.id.viewPagerCustom
 
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    ScheduleApplication.getComponent().inject(this)
+  }
 
   override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
@@ -51,6 +61,6 @@ class CustomTutorialFragment : TutorialFragment() {
           ContextCompat.getColor(activity, android.R.color.holo_green_dark),
           ContextCompat.getColor(activity, android.R.color.holo_blue_dark)))
       .setTutorialPageProvider(tutorialPageProvider)
-      .onSkipClickListener { startActivity<MainActivity>() }
+      .onSkipClickListener { startActivity<MainActivity>(); appPreference.saveFirstTimeLaunch(false) }
       .build()
 }

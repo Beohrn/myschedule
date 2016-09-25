@@ -477,6 +477,8 @@
         <item>7 пара</item>
     </string-array>
 
+    <string name="bonded_devices">Подключенные \n устройства</string>
+    <string name="nearby_devices">Доступные \n устройства</string>
 
     <string name="set_date_of_begin_period">Укажите дату начала занятия</string>
     <string name="set_date_of_end_period">Укажите дату окончания занятия</string>
@@ -505,11 +507,14 @@
     <string name="delete">Удалить?</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
+    <string name="no_connection">Не удалось подключиться</string>
 
     <string name="home_task">Домашнее задание</string>
     <string name="send">Переслать</string>
     <string name="edit">Редактировать</string>
     <string name="delete_lesson">Удалить</string>
+    <string name="cancel">Отмена</string>
+    <string name="connecting">Подключение</string>
 
     <string name="lesson_delete">Удалить предмет</string>
     <string name="in_single_day">Только в этот день</string>
@@ -519,5 +524,9 @@
     <string name="no_permission_for_storage">Нет разрешения на доступ к Памяти</string>
 
     <string name="teachers">Преподаватели</string>
+
+    <string name="receive_single_schedule">Принять?</string>
+    <string name="merge_schedule">Слитие расписания</string>
+    <string name="override_schedule">Заменить расписание</string>
 
 </resources>

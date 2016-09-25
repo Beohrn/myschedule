@@ -1,30 +1,36 @@
 package com.shedule.zyx.myshedule.managers
 
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_FINISHED
+import android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_STARTED
+import android.bluetooth.BluetoothDevice.ACTION_FOUND
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
+import app.akexorcist.bluetotohspp.library.BluetoothSPP.BluetoothConnectionListener
+import app.akexorcist.bluetotohspp.library.BluetoothSPP.OnDataReceivedListener
 import app.akexorcist.bluetotohspp.library.BluetoothState
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.utils.Utils
-import org.jetbrains.anko.toast
 import java.util.*
 
 /**
  * Created by Alexander on 03.08.2016.
  */
-class BluetoothManager(val context: Context, val bt: BluetoothSPP):
-    BluetoothSPP.AutoConnectionListener, BluetoothSPP.BluetoothConnectionListener {
+class BluetoothManager(val context: Context, val bt: BluetoothSPP, val gson: Gson): BluetoothConnectionListener,
+    OnDataReceivedListener {
 
-
-  private val TAG = BluetoothManager::class.java.simpleName
   val btAdapter: BluetoothAdapter
+  var onScheduleReceiveListener: OnScheduleReceiveListener? = null
 
-  val FOUND = BluetoothDevice.ACTION_FOUND
-  val DISCOVERY_STARTED = BluetoothAdapter.ACTION_DISCOVERY_STARTED
-  val DISCOVERY_FINISHED = BluetoothAdapter.ACTION_DISCOVERY_FINISHED
+  val FOUND = ACTION_FOUND
+  val DISCOVERY_STARTED = ACTION_DISCOVERY_STARTED
+  val DISCOVERY_FINISHED = ACTION_DISCOVERY_FINISHED
+  val STATE_CONNECTED = BluetoothState.STATE_CONNECTED
+  val STATE_CONNECTING = BluetoothState.STATE_CONNECTING
 
   //todo don't forget the set this parameter before sending
   var schedule = ArrayList<Schedule>()
@@ -33,15 +39,19 @@ class BluetoothManager(val context: Context, val bt: BluetoothSPP):
     btAdapter = BluetoothAdapter.getDefaultAdapter()
   }
 
+  fun setScheduleReceiveListener(listener: OnScheduleReceiveListener) {
+    this.onScheduleReceiveListener = listener
+  }
+
   fun getPairedDevices() = btAdapter.bondedDevices.map { Pair(it.address, it.name.toString()) }
 
   fun connect(address: String) = bt.connect(address)
 
-  private fun send(message: String) = bt.send(message, true)
+  fun disconnect() = bt.disconnect()
 
-  fun setConnectionListener(listener: BluetoothSPP.BluetoothConnectionListener) = bt.setBluetoothConnectionListener(listener)
+  fun send() = bt.send(Utils.toJson(schedule), true)
 
-  fun setReceiveListener(listener: ReceiveManager) = bt.setOnDataReceivedListener(listener)
+  fun setConnectionListener(listener: BluetoothConnectionListener) = bt.setBluetoothConnectionListener(listener)
 
   fun serviceAvailable() = if (bt.isServiceAvailable) true else false
 
@@ -49,23 +59,17 @@ class BluetoothManager(val context: Context, val bt: BluetoothSPP):
     bt.setupService()
     bt.startService(BluetoothState.DEVICE_ANDROID)
     setConnectionListener(this)
+    bt.setOnDataReceivedListener(this)
 
     if (btAdapter.scanMode != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE)
       makeDiscoverable()
   }
 
-  fun stopService() {
-    if (bt.isServiceAvailable)
-      bt.stopService()
-  }
+  fun stopService() { if (bt.isServiceAvailable) bt.stopService() }
 
-  fun bluetoothEnabled() = if (btAdapter.isEnabled) true else false
+  fun bluetoothEnabled() = btAdapter.isEnabled
 
   fun autoConnect() = bt.enable()
-
-  override fun onAutoConnectionStarted() = context.toast("Auto Connect")
-
-  override fun onNewConnection(name: String?, address: String?) = context.toast("$name | $address")
 
   fun startDiscovery() = btAdapter.startDiscovery()
 
@@ -81,16 +85,24 @@ class BluetoothManager(val context: Context, val bt: BluetoothSPP):
       intentFilter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
       context.startActivity(intentFilter)
     }
-
   }
+
+  fun setStateListener(stateListener: BluetoothSPP.BluetoothStateListener) =
+    bt.setBluetoothStateListener(stateListener)
 
   override fun onDeviceDisconnected() { }
+  override fun onDeviceConnected(name: String?, address: String?) { }
+  override fun onDeviceConnectionFailed() { }
 
-  override fun onDeviceConnected(name: String?, address: String?) {
-    send(Utils.toJson(schedule))
+  override fun onDataReceived(data: ByteArray?, message: String?) {
+    val type = object : TypeToken<ArrayList<Schedule>>() {}.type
+    val schedule: ArrayList<Schedule> = gson.fromJson(message ?: "", type)
+    onScheduleReceiveListener?.let {
+      it.onScheduleReceived(schedule)
+    }
   }
 
-  override fun onDeviceConnectionFailed() { }
+  interface OnScheduleReceiveListener { fun onScheduleReceived(schedules: ArrayList<Schedule>) }
 }
 
 

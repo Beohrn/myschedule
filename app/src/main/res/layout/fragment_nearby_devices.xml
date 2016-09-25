@@ -5,28 +5,35 @@
               android:gravity="center"
               android:orientation="vertical">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:id="@+id/header"
-                  android:layout_width="match_parent"
-                  android:layout_height="190dp"
-                  android:layout_gravity="top"
-                  android:layout_weight="1"
-                  android:background="@color/red"
-                  android:elevation="3dp"
-                  android:gravity="center"
-                  android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_gravity="top"
+        android:background="@color/red"
+        android:elevation="3dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/left_page"
+            android:layout_width="10dp"
+            android:layout_height="70dp"
+            android:src="@drawable/left_arrow"
+            android:layout_weight="0.1"/>
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal|bottom"
-            android:text="Nearby devices"
+            android:text="@string/nearby_devices"
+            android:paddingRight="20dp"
             android:textColor="@color/white"
-            android:textSize="50dp"/>
+            android:layout_weight="0.9"
+            android:textSize="18dp"/>
 
     </LinearLayout>
 
     <include layout="@layout/fragment_list_of_devices"/>
-
 
 </LinearLayout>

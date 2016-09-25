@@ -4,14 +4,11 @@ import android.Manifest
 import android.Manifest.permission.*
 import android.app.Activity
 import android.content.Intent
-import android.content.Intent.ACTION_PICK
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.provider.MediaStore
-import android.provider.MediaStore.ACTION_IMAGE_CAPTURE
-import android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
@@ -28,7 +25,6 @@ import com.shedule.zyx.myshedule.interfaces.ChangeStateFragmentListener
 import com.shedule.zyx.myshedule.interfaces.DataChangeListener
 import com.shedule.zyx.myshedule.managers.BluetoothManager
 import com.shedule.zyx.myshedule.managers.DateManager
-import com.shedule.zyx.myshedule.managers.ReceiveManager
 import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.teachers.TeachersActivity
@@ -52,17 +48,14 @@ import java.util.*
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-    ChangeStateFragmentListener, DatePickerDialog.OnDateSetListener, ScheduleItemsAdapter.ScheduleItemListener {
-
+    ChangeStateFragmentListener, DatePickerDialog.OnDateSetListener, ScheduleItemsAdapter.ScheduleItemListener,
+    BluetoothManager.OnScheduleReceiveListener {
 
   @Inject
   lateinit var dateManager: DateManager
 
   @Inject
   lateinit var bluetoothManager: BluetoothManager
-
-  @Inject
-  lateinit var receiveManager: ReceiveManager
 
   @Inject
   lateinit var scheduleManager: ScheduleManager
@@ -193,9 +186,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     return true
   }
 
-  override fun onResume() {
-    super.onResume()
-
+  override fun onScheduleReceived(schedules: ArrayList<Schedule>) {
+    alert("", getString(R.string.receive_single_schedule)) {
+      positiveButton(getString(R.string.yes)) {
+        if (schedules.size > 1) {
+          dismiss()
+          selector(null, listOf(getString(R.string.merge_schedule), getString(R.string.override_schedule))) {
+            when (it) {
+              0 -> {
+                scheduleManager.globalList.addAll(schedules.map { it })
+                listenerList.map { it.updateData() }
+              }
+              1 -> {
+                scheduleManager.globalList.clear()
+                scheduleManager.globalList.addAll(schedules.map { it })
+                listenerList.map { it.updateData() }
+              }
+            }
+          }
+        } else {
+          scheduleManager.globalList.addAll(schedules.map { it })
+          listenerList.map { it.updateData() }
+          dismiss()
+        }
+      }
+      negativeButton(getString(R.string.no)) { dismiss() }
+    }.show()
   }
 
   override fun onStart() {
@@ -236,7 +252,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     if (bluetoothManager.bluetoothEnabled())
       if (!bluetoothManager.serviceAvailable()) {
         bluetoothManager.setupService()
-        bluetoothManager.setReceiveListener(receiveManager)
+        bluetoothManager.setScheduleReceiveListener(this)
       }
   }
 

@@ -6,26 +6,35 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="190dp"
+        android:layout_height="80dp"
+        android:layout_gravity="top"
         android:background="@color/colorPrimary"
         android:elevation="3dp"
         android:gravity="center"
-        android:layout_gravity="top"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:weightSum="1">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="0.9"
             android:gravity="center_horizontal|bottom"
-            android:text="Bonded devices"
+            android:text="@string/bonded_devices"
+            android:paddingLeft="20dp"
             android:textColor="@color/white"
-            android:textSize="50dp" />
+            android:textSize="18dp"/>
 
+        <ImageView
+            android:id="@+id/right_page"
+            android:layout_width="10dp"
+            android:layout_height="70dp"
+            android:layout_weight="0.1"
+            android:src="@drawable/right_arrow"/>
 
     </LinearLayout>
 
-    <include layout="@layout/fragment_list_of_devices" />
+    <include layout="@layout/fragment_list_of_devices"/>
+
 </LinearLayout>

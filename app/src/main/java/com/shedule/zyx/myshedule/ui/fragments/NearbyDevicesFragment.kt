@@ -11,11 +11,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.managers.BluetoothManager
 import kotlinx.android.synthetic.main.fragment_list_of_devices.*
 import org.jetbrains.anko.onItemClick
+import org.jetbrains.anko.support.v4.indeterminateProgressDialog
+import org.jetbrains.anko.support.v4.selector
 import javax.inject.Inject
 
 /**
@@ -55,6 +58,21 @@ class NearbyDevicesFragment : Fragment() {
 
     list_of_devices.onItemClick { adapterView, view, i, l ->
       bluetoothManager.connect(devices[i].first)
+      val progressDialog = indeterminateProgressDialog(getString(R.string.connecting))
+      bluetoothManager.setStateListener(BluetoothSPP.BluetoothStateListener { state ->
+        if (state == bluetoothManager.STATE_CONNECTED) {
+          progressDialog.hide()
+          if (isAdded)
+            selector("", listOf(getString(R.string.send), getString(R.string.cancel))) {
+              when (it) {
+                0 -> { bluetoothManager.send(); bluetoothManager.disconnect() }
+                1 -> { bluetoothManager.disconnect() }
+              }
+            }
+        } else if (state == bluetoothManager.STATE_CONNECTING)
+          progressDialog.show()
+      })
+
       nearbyDevicesList.removeAt(i)
       adapter.notifyDataSetChanged()
     }
@@ -70,7 +88,9 @@ class NearbyDevicesFragment : Fragment() {
           val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
           devices.add(Pair(device.address, device.name))
           if (devices.size != 0) {
-            nearbyDevicesList.addAll(devices.map { it.second }.filter { !nearbyDevicesList.contains(it) }
+            nearbyDevicesList.addAll(devices.map { it.second }
+                .filter { !nearbyDevicesList.contains(it) }
+                .filterNotNull()
                 .distinctBy { bluetoothManager.getPairedDevices().map { it.second } })
             adapter.notifyDataSetChanged()
           }

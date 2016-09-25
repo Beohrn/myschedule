@@ -118,7 +118,7 @@ class HomeWorkActivity : AppCompatActivity(),
 
   override fun onHomeWorkClick(homeWork: HomeWork) {
     scheduleManager.editHomework = homeWork
-    startActivityForResult<CreateHomeWorkActivity>(EDIT_HOMEWORK_REQUEST, DATE_ON_TITLE to date)
+    startActivityForResult<CreateHomeWorkActivity>(EDIT_HOMEWORK_REQUEST, DATE_ON_TITLE to homeWork.deadLine)
   }
 
   override fun onLongClick(homeWork: HomeWork) {

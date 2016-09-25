@@ -11,7 +11,6 @@ import com.google.gson.GsonBuilder;
 import com.shedule.zyx.myshedule.FirebaseWrapper;
 import com.shedule.zyx.myshedule.managers.BluetoothManager;
 import com.shedule.zyx.myshedule.managers.DateManager;
-import com.shedule.zyx.myshedule.managers.ReceiveManager;
 import com.shedule.zyx.myshedule.managers.ScheduleManager;
 
 import java.util.Calendar;
@@ -75,20 +74,15 @@ public class AppModule {
 
     @Singleton
     @Provides
-    public BluetoothManager provideBluetoothManager(BluetoothSPP bt, Context context) {
-        return new BluetoothManager(context, bt);
+    public BluetoothManager provideBluetoothManager(BluetoothSPP bt,
+                                                    Context context, Gson gson) {
+        return new BluetoothManager(context, bt, gson);
     }
 
     @Singleton
     @Provides
     public BluetoothSPP provideBluetoothSPP(Context context) {
         return new BluetoothSPP(context);
-    }
-
-    @Singleton
-    @Provides
-    public ReceiveManager provideReceiveManager(Context context, ScheduleManager scheduleManager, Gson gson) {
-        return new ReceiveManager(context, scheduleManager, gson);
     }
 
     @Provides
