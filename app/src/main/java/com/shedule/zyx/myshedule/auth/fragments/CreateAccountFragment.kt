@@ -62,13 +62,13 @@ class CreateAccountFragment : Fragment() {
             prefs.saveUniverName(univer_ET.text.toString())
             prefs.saveFacultyName(faculty_ET.text.toString())
             firebaseWrapper.updateTeacherRef()
-            (activity as ReplaceFragmentListener).changeVisibleFragment("Преподаватели", TeachersRatingFragment())
+            (activity as ReplaceFragmentListener).changeVisibleFragment(getString(R.string.teachers), TeachersRatingFragment())
           } else Log.d("", "error")
         }
       } else if (checkEdiTextIsEmpty(univer_ET)) {
-        univer_ET.error = "введите данные"
+        univer_ET.error = getString(R.string.input_data)
       } else if (checkEdiTextIsEmpty(faculty_ET)) {
-        faculty_ET.error = "введите данные"
+        faculty_ET.error = getString(R.string.input_data)
       }
     }
   }

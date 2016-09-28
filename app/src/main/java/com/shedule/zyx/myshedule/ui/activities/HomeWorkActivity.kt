@@ -48,6 +48,8 @@ class HomeWorkActivity : AppCompatActivity(),
     val SCHEDULE_HOMEWORK_REQUEST = 3923
     val HOMEWORK_BY_DATE = "homework_by_date"
     val ALL_HOMEWORK = "all_homework"
+    val HOMEWORK_NAME = "name"
+    val HOMEWORK_DESCRIPTION = "description"
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -140,8 +142,8 @@ class HomeWorkActivity : AppCompatActivity(),
     super.onActivityResult(requestCode, resultCode, data)
     if (resultCode == Activity.RESULT_OK) {
       if (requestCode == CREATE_HOMEWORK_REQUEST) {
-        val homework = HomeWork(data?.getStringExtra("name").toString(), false)
-        homework.taskDescription = data?.getStringExtra("description").toString()
+        val homework = HomeWork(data?.getStringExtra(HOMEWORK_NAME).toString(), false)
+        homework.taskDescription = data?.getStringExtra(HOMEWORK_DESCRIPTION).toString()
         homework.deadLine = date
         schedule?.homework?.add(homework)
         update(homework)

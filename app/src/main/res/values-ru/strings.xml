@@ -564,4 +564,6 @@
     <string name="send_comment_to">Отправить коментарий</string>
     <string name="like">Нравиться</string>
     <string name="dislike">Не нравиться</string>
+    <string name="input_data">Введите данные</string>
+
 </resources>

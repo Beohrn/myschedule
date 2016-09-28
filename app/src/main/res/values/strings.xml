@@ -564,5 +564,6 @@
     <string name="send_comment_to">Send comment</string>
     <string name="like">Like</string>
     <string name="dislike">Dislike</string>
+    <string name="input_data">Input data</string>
 
 </resources>

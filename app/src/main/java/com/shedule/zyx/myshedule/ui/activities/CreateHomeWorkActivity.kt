@@ -18,6 +18,8 @@ import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.adapters.ImageAdapter
 import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.models.HomeWork
+import com.shedule.zyx.myshedule.ui.activities.HomeWorkActivity.Companion.HOMEWORK_DESCRIPTION
+import com.shedule.zyx.myshedule.ui.activities.HomeWorkActivity.Companion.HOMEWORK_NAME
 import com.shedule.zyx.myshedule.ui.activities.PhotoActivity.Companion.BITMAP
 import com.shedule.zyx.myshedule.ui.activities.PhotoActivity.Companion.BITMAP_NAME
 import com.shedule.zyx.myshedule.ui.activities.PhotoActivity.Companion.PHOTO_ACTIVITY_REQUEST
@@ -126,8 +128,8 @@ class CreateHomeWorkActivity : AppCompatActivity() {
 
         if (!isHomeworkEdit) {
           val intent = Intent()
-          intent.putExtra("name", home_work_name.getText())
-          intent.putExtra("description", home_work_description.getText())
+          intent.putExtra(HOMEWORK_NAME, home_work_name.getText())
+          intent.putExtra(HOMEWORK_DESCRIPTION, home_work_description.getText())
           setResult(Activity.RESULT_OK, intent)
         } else {
           homework?.taskName = home_work_name.getText()

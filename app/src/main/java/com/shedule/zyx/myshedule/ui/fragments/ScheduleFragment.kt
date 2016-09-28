@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,7 +50,7 @@ class ScheduleFragment : Fragment(), DataChangeListener {
 
     update()
 
-    (activity as ChangeStateFragmentListener).let { Log.d("listener", "add to list"); it.addListener(this) }
+    (activity as ChangeStateFragmentListener).let { it.addListener(this) }
     return inflater!!.inflate(R.layout.shedule_fragment_layout, container, false)
   }
 
@@ -68,18 +67,15 @@ class ScheduleFragment : Fragment(), DataChangeListener {
 
     adapter = ScheduleItemsAdapter(context, listSchedulers)
     list_schedules.adapter = adapter
-
-    Log.d("1111", dateManager.getDayByPosition(position))
   }
 
   override fun updateData() {
-    Log.d("1111", dateManager.getDayByPosition(position))
     update()
     adapter.notifyDataSetChanged()
   }
 
   override fun onDestroyView() {
     super.onDestroyView()
-    (activity as ChangeStateFragmentListener).let { Log.d("listener", "remove from list"); it.removeListener(this) }
+    (activity as ChangeStateFragmentListener).let { it.removeListener(this) }
   }
 }

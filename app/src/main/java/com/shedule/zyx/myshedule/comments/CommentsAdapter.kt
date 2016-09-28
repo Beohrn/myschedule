@@ -7,10 +7,10 @@ import android.content.Context
 import android.graphics.Typeface
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import app.voter.xyz.utils.Constants
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.google.firebase.database.DatabaseReference
 import com.shedule.zyx.myshedule.R
+import com.shedule.zyx.myshedule.utils.Constants
 import kotlinx.android.synthetic.main.comment_item_layout.view.*
 import org.jetbrains.anko.onClick
 

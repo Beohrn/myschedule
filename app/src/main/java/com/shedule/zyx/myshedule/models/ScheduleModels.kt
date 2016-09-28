@@ -53,8 +53,6 @@ class Teacher {
     this.teacherName = nameOfTeacher
     this.lessonName = nameOfLesson
   }
-
-
 }
 
 data class HomeWork(var taskName: String, var status: Boolean) {
