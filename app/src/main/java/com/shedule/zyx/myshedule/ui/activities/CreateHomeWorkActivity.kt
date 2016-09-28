@@ -109,7 +109,7 @@ class CreateHomeWorkActivity : AppCompatActivity() {
             when (i) {
               0 -> {
                 val intent = Intent(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
-                val uri = Uri.fromFile(Utils.getHomeWorkFile(this, home_work_name.getText()))
+                val uri = Uri.fromFile(Utils.getMediaFile(this, home_work_name.getText(), true)/*Utils.getHomeWorkFile(this, home_work_name.getText())*/)
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
                 startActivityForResult(intent, 9393)
               }

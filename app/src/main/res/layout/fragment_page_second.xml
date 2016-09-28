@@ -98,7 +98,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:text="Second"
+        tools:text="Second"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         app:layout_heightPercent="15%"

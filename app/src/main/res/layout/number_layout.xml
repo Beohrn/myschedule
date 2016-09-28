@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_weight="1"
-            android:text="Выберите номер и тип пары"/>
+            android:text="@string/select_type_and_number_of_lesson"/>
 
     </LinearLayout>
 
@@ -66,25 +66,26 @@
             android:id="@+id/exam"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:text="Экзамен"/>
+            app:text="@string/exam"/>
 
         <com.shedule.zyx.myshedule.widget.MarkView
             android:id="@+id/course_work"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:text="Курсовая работа"/>
+            app:text="@string/course_work"/>
 
         <com.shedule.zyx.myshedule.widget.MarkView
             android:id="@+id/standings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:text="Зачёт"/>
+            app:text="@string/standings"/>
 
         <com.shedule.zyx.myshedule.widget.MarkView
             android:id="@+id/home_exam"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:text="Расчётка"/>
+            app:text="@string/home_exam"/>
 
     </LinearLayout>
+
 </LinearLayout>

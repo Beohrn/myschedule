@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothDevice.ACTION_FOUND
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Pair
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothSPP.BluetoothConnectionListener
 import app.akexorcist.bluetotohspp.library.BluetoothSPP.OnDataReceivedListener
@@ -25,19 +26,18 @@ class BluetoothManager(val context: Context, val bt: BluetoothSPP, val gson: Gso
 
   val btAdapter: BluetoothAdapter
   var onScheduleReceiveListener: OnScheduleReceiveListener? = null
+  var onConnectionListener: OnConnectionListener? = null
 
   val FOUND = ACTION_FOUND
   val DISCOVERY_STARTED = ACTION_DISCOVERY_STARTED
   val DISCOVERY_FINISHED = ACTION_DISCOVERY_FINISHED
   val STATE_CONNECTED = BluetoothState.STATE_CONNECTED
   val STATE_CONNECTING = BluetoothState.STATE_CONNECTING
+  val STATE_CONNECTION_FAILED = 5
 
-  //todo don't forget the set this parameter before sending
   var schedule = ArrayList<Schedule>()
 
-  init {
-    btAdapter = BluetoothAdapter.getDefaultAdapter()
-  }
+  init { btAdapter = BluetoothAdapter.getDefaultAdapter() }
 
   fun setScheduleReceiveListener(listener: OnScheduleReceiveListener) {
     this.onScheduleReceiveListener = listener
@@ -92,7 +92,10 @@ class BluetoothManager(val context: Context, val bt: BluetoothSPP, val gson: Gso
 
   override fun onDeviceDisconnected() { }
   override fun onDeviceConnected(name: String?, address: String?) { }
-  override fun onDeviceConnectionFailed() { }
+
+  override fun onDeviceConnectionFailed() {
+    onConnectionListener?.let { it.onConnectionState(STATE_CONNECTION_FAILED) }
+  }
 
   override fun onDataReceived(data: ByteArray?, message: String?) {
     val type = object : TypeToken<ArrayList<Schedule>>() {}.type
@@ -103,6 +106,7 @@ class BluetoothManager(val context: Context, val bt: BluetoothSPP, val gson: Gso
   }
 
   interface OnScheduleReceiveListener { fun onScheduleReceived(schedules: ArrayList<Schedule>) }
+  interface OnConnectionListener { fun onConnectionState(state: Int) }
 }
 
 

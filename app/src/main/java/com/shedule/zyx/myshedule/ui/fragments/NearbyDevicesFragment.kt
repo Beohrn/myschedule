@@ -1,5 +1,6 @@
 package com.shedule.zyx.myshedule.ui.fragments
 
+import android.app.ProgressDialog
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -24,11 +25,11 @@ import javax.inject.Inject
 /**
  * Created by Alexander on 20.08.2016.
  */
-class NearbyDevicesFragment : Fragment() {
+class NearbyDevicesFragment: Fragment() {
 
   @Inject
   lateinit var bluetoothManager: BluetoothManager
-
+  lateinit var progressDialog: ProgressDialog
   lateinit var adapter: ArrayAdapter<String>
   val nearbyDevicesList = arrayListOf<String>()
   var devices = arrayListOf<Pair<String, String>>()
@@ -58,7 +59,7 @@ class NearbyDevicesFragment : Fragment() {
 
     list_of_devices.onItemClick { adapterView, view, i, l ->
       bluetoothManager.connect(devices[i].first)
-      val progressDialog = indeterminateProgressDialog(getString(R.string.connecting))
+      progressDialog = indeterminateProgressDialog(getString(R.string.connecting))
       bluetoothManager.setStateListener(BluetoothSPP.BluetoothStateListener { state ->
         if (state == bluetoothManager.STATE_CONNECTED) {
           progressDialog.hide()
@@ -99,5 +100,4 @@ class NearbyDevicesFragment : Fragment() {
 
     }
   }
-
 }

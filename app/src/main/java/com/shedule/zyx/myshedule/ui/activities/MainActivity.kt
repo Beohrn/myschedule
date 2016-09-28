@@ -175,7 +175,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
           if (it) {
             showDialog()
             bluetoothManager.schedule = scheduleManager.globalList
-          } else toast("Нет разререшния на использрвание блютус")
+          } else toast(getString(R.string.no_permission_for_bluetooth))
         }, {})
       }
       R.id.nav_teachers -> startActivity<TeachersActivity>()
@@ -291,18 +291,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
               Pair(DAY_OF_WEEK_KEY, main_viewpager.currentItem + 2))
         }
         3 -> {
-          selector(getString(R.string.lesson_delete),
-              listOf(getString(R.string.in_single_day),
-                  getString(R.string.in_others_day))) {
-            index ->
-            when (index) {
-              0 -> { }
-              1 -> {
-                scheduleManager.removeSchedule(schedule)
-                listenerList.map { it.updateData() }
-              }
+          alert("", getString(R.string.delete)) {
+            positiveButton(getString(R.string.yes)) {
+              scheduleManager.removeSchedule(schedule)
+              listenerList.map { it.updateData() }
             }
-          }
+            negativeButton(getString(R.string.no))
+          }.show()
         }
       }
     }

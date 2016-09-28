@@ -19,6 +19,7 @@ import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.ui.activities.CreateHomeWorkActivity.Companion.CREATE_HOMEWORK_REQUEST
 import com.shedule.zyx.myshedule.ui.activities.CreateHomeWorkActivity.Companion.DATE_ON_TITLE
 import com.shedule.zyx.myshedule.ui.activities.CreateHomeWorkActivity.Companion.EDIT_HOMEWORK_REQUEST
+import com.shedule.zyx.myshedule.utils.Utils
 import com.shedule.zyx.myshedule.widget.HomeWorkView
 import kotlinx.android.synthetic.main.home_work_activity.*
 import org.jetbrains.anko.alert
@@ -125,11 +126,11 @@ class HomeWorkActivity : AppCompatActivity(),
     alert("", getString(R.string.delete)) {
       positiveButton(getString(R.string.yes)) {
         schedule?.homework?.remove(homeWork)
+        Utils.deleteHomeWorkDirectory(applicationContext, homeWork.taskName)
         dismiss()
         homework.clear()
         schedule?.let { loadData(it) }
         adapter.notifyDataSetChanged()
-
       }
       negativeButton(getString(R.string.no)) { dismiss() }
     }.show()

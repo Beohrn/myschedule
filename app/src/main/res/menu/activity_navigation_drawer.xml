@@ -5,22 +5,22 @@
         <item
             android:id="@+id/nav_teachers"
             android:icon="@drawable/people"
-            android:title="Преподаватели"/>
+            android:title="@string/teachers"/>
 
         <item
             android:id="@+id/nav_share"
-            android:icon="@drawable/ic_menu_share"
-            android:title="Поделиться"/>
+            android:icon="@drawable/share"
+            android:title="@string/share"/>
 
         <item
             android:id="@+id/nav_tasks"
             android:icon="@drawable/task"
-            android:title="Задания"/>
+            android:title="@string/task"/>
 
         <item
             android:id="@+id/nav_tools"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Настройки"/>
+            android:icon="@drawable/manage"
+            android:title="@string/settings"/>
 
 
     </group>

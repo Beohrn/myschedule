@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Компетентность"
+        android:text="@string/competence"
         android:paddingLeft="15dp"
         android:textColor="@color/silver"
         android:textSize="16sp"
@@ -23,16 +23,14 @@
         android:layout_gravity="left"
         android:layout_marginLeft="10dp"
         app:popupAlwaysShown="true"
-        app:popupStyle="follow"
-        />
+        app:popupStyle="follow"/>
 
     <TextView
         android:paddingTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Требовательность"
+        android:text="@string/demands"
         android:paddingLeft="15dp"
-
         android:textColor="@color/silver"
         android:textSize="16sp"
         android:textStyle="bold"/>
@@ -42,7 +40,6 @@
         android:id="@+id/demanding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:layout_marginLeft="10dp"
         app:popupAlwaysShown="true"
         app:popupStyle="follow"/>
@@ -54,7 +51,6 @@
         android:textColor="@color/silver"
         android:paddingLeft="15dp"
         android:textSize="16sp"
-
         android:textStyle="bold"/>
 
     <io.techery.progresshint.addition.widget.SeekBar
@@ -63,14 +59,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-
         app:popupAlwaysShown="true"
         app:popupStyle="follow"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Желание учить"
+        android:text="@string/desire_to_learn"
         android:paddingLeft="15dp"
         android:textColor="@color/silver"
         android:textSize="16sp"
@@ -81,7 +76,6 @@
         android:id="@+id/desire_to_learn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:layout_marginLeft="10dp"
         app:popupAlwaysShown="true"
         app:popupStyle="follow"/>
@@ -89,7 +83,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Культура преподавателя"
+        android:text="@string/teacher_culture"
         android:textColor="@color/silver"
         android:paddingLeft="15dp"
         android:textSize="16sp"
@@ -101,10 +95,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:popupAlwaysShown="true"
-
         android:layout_marginLeft="10dp"
         app:popupStyle="follow"/>
-
-
 
 </LinearLayout>

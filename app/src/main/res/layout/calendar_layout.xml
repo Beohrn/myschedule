@@ -32,8 +32,9 @@
             android:gravity="center"
             android:layout_weight="0.33"
             android:layout_height="wrap_content"
+            android:textSize="13sp"
             style="@style/DoneButtons"
-            android:text="Clear"/>
+            android:text="@string/clear"/>
 
         <TextView
             android:id="@+id/cancel_dates"
@@ -42,7 +43,8 @@
             android:gravity="center"
             android:layout_height="wrap_content"
             style="@style/DoneButtons"
-            android:text="Cancel"/>
+            android:textSize="13sp"
+            android:text="@string/cancel"/>
 
         <TextView
             android:id="@+id/approve_dates"
@@ -50,8 +52,9 @@
             android:layout_weight="0.33"
             android:gravity="center"
             style="@style/DoneButtons"
+            android:textSize="13sp"
             android:layout_height="wrap_content"
-            android:text="Ok"/>
+            android:text="@string/ok"/>
 
     </LinearLayout>
 

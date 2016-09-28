@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/home_work_name"
         android:paddingLeft="20dp"
-        app:hint="Название"
+        app:hint="@string/name"
         app:text_size="18"/>
 
     <com.shedule.zyx.myshedule.widget.CustomEditText
@@ -22,7 +22,7 @@
         android:id="@+id/home_work_description"
         app:single_line="false"
         android:paddingLeft="20dp"
-        app:hint="Описание"
+        app:hint="@string/description"
         app:text_size="18"/>
 
     <LinearLayout

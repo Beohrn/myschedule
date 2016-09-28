@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -22,7 +23,7 @@
             android:layout_gravity="center"
             android:background="@drawable/circle_image"
             android:gravity="center"
-            android:text="1"
+            tools:text="1"
             android:textColor="@color/white"
             android:textSize="22sp"
             android:textStyle="bold"/>
@@ -37,7 +38,7 @@
                 android:id="@+id/view_title_of_lesson"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="LOL"
+                tools:text="LOL"
                 android:textColor="@color/black"
                 android:textStyle="bold"/>
 
@@ -46,7 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Симоненко А. К."/>
+                tools:text="Симоненко А. К."/>
 
 
             <LinearLayout
@@ -62,7 +63,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.3"
                     android:gravity="center_vertical"
-                    android:text="18df-531"
+                    tools:text="18df-531"
                     android:textColor="@color/black"
                     android:textSize="12sp"
                     android:textStyle="bold"/>
@@ -74,7 +75,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.3"
                     android:gravity="center"
-                    android:text="практика"
+                    tools:text="практика"
                     android:textColor="@color/black"
                     android:textSize="10sp"/>
 
@@ -85,7 +86,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.4"
                     android:gravity="right"
-                    android:text="Начало - Конец"
+                    tools:text="Начало - Конец"
                     android:textColor="@color/red"
                     android:textSize="12sp"
                     android:textStyle="bold"/>
@@ -102,4 +103,5 @@
         android:alpha="0.3"
         android:paddingTop="10dp"
         android:background="@color/black"/>
+
 </LinearLayout>

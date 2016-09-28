@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:hint="Университет"
+            android:hint="@string/university"
             android:padding="7dp"
             android:inputType="textPersonName|textMultiLine"
             android:dropDownHeight="wrap_content"
@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:hint="Факультет (абривиаура)"
+            android:hint="@string/faculty"
             android:padding="7dp"
             android:textColor="@color/black"
             android:textCursorDrawable="@null"/>
@@ -61,7 +61,7 @@
         android:paddingRight="14dp"
         android:paddingStart="14dp"
         android:paddingTop="10dp"
-        android:text="Авторизоваться"
+        android:text="@string/authorize"
         android:textColor="@color/white"
         android:textSize="18sp"/>
 

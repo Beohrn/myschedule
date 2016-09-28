@@ -16,7 +16,6 @@
             android:id="@+id/teachers_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:title="List Of Teachers"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:theme="@style/ToolbarColoredBackArrow">
 
@@ -28,6 +27,5 @@
         android:id="@+id/account_container_fragments"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
 
 </LinearLayout>

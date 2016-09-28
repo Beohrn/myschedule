@@ -5,7 +5,7 @@
         <item name="colorPrimary">@color/sch_green</item>
         <item name="colorPrimaryDark">@color/sch_dark_green</item>
         <item name="colorAccent">@color/yellow</item>
-
+        <item name="android:backgroundStacked">@color/white</item>
     </style>
 
     <style name="TutorialTheme" parent="Theme.AppCompat.Light.NoActionBar">

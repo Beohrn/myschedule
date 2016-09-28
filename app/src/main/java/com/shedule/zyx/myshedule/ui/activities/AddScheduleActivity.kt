@@ -1,6 +1,7 @@
 package com.shedule.zyx.myshedule.ui.activities
 
 import android.app.Activity
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
@@ -60,6 +61,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     setContentView(add_schedule_activity)
     ScheduleApplication.getComponent().inject(this)
     setSupportActionBar(add_schedule_toolbar)
@@ -67,7 +69,6 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     add_schedule_toolbar.setTitleTextColor(Color.WHITE)
 
     category = Category.HOME_EXAM
-
 
     categoriesColors()
 
@@ -86,7 +87,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       spinner_type_of_lesson.setSelection(if (it.typeLesson == TypeLesson.SEMINAR) 0 else 1)
 
       when (it.category) {
-        Category.EXAM ->  setColor(Category.EXAM, 0, R.color.mark_red)
+        Category.EXAM -> setColor(Category.EXAM, 0, R.color.mark_red)
         Category.COURSE_WORK -> setColor(Category.COURSE_WORK, 1, R.color.mark_orange)
         Category.STANDINGS -> setColor(Category.STANDINGS, 2, R.color.mark_yellow)
         Category.HOME_EXAM -> setColor(Category.HOME_EXAM, 3, R.color.dark_cyan)
@@ -107,13 +108,13 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    begin_period.onClick { showDateDialog() }
+    begin_period.onClick { showDateDialog(); switcher = 1 }
 
-    end_period.onClick { showDateDialog(); switcher = 1 }
+    end_period.onClick { showDateDialog(); switcher = 2 }
 
-    begin_time.onClick { showTimeDialog() }
+    begin_time.onClick { showTimeDialog(); switcher = 3 }
 
-    end_time.onClick { switcher = 1;showTimeDialog() }
+    end_time.onClick { showTimeDialog(); switcher = 4 }
 
     exam.onClick { setColor(Category.EXAM, 0, R.color.mark_red) }
     course_work.onClick { setColor(Category.COURSE_WORK, 1, R.color.mark_orange) }
@@ -140,16 +141,20 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
                   getString(R.string.on_second_week))) {
             position ->
             when (position) {
-              0 -> { setListOfDates(BOTH_WEEKS) }
-              1 -> { setListOfDates(FIRST_WEEK) }
-              2 -> { setListOfDates(SECOND_WEEK) }
+              0 -> {
+                setListOfDates(BOTH_WEEKS)
+              }
+              1 -> {
+                setListOfDates(FIRST_WEEK)
+              }
+              2 -> {
+                setListOfDates(SECOND_WEEK)
+              }
             }
           }
         } ?: toast(getString(R.string.set_date_of_end_period))
       } ?: toast(getString(R.string.set_date_of_begin_period))
     }
-
-
   }
 
   private fun setPeriods(startPeriod: Date, endPeriod: Date) {
@@ -173,7 +178,6 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     this.endTime = endTime
   }
 
-  // need to save ref for editSchedule
   override fun onDestroy() {
     super.onDestroy()
     scheduleManager.editSchedule = null
@@ -279,25 +283,32 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     startPeriod?.let { start ->
       endPeriod?.let { end ->
 
-        if (!isScheduleEdit) {
-          schedule = Schedule(numberOfLesson.toString(),
-              if (name_of_lesson.getText().toString().isEmpty()) "" else name_of_lesson.getText().toString(),
-              start, end)
-          setDataToSchedule(schedule!!)
+        if (start.dayOfMonth <= end.dayOfMonth &&
+            start.monthOfYear <= end.monthOfYear &&
+            start.year <= end.year) {
 
-          schedule?.dates.let {
-            scheduleManager.globalList.add(schedule!!)
+          if (!isScheduleEdit) {
+            schedule = Schedule(numberOfLesson.toString(),
+                if (name_of_lesson.getText().toString().isEmpty()) "" else name_of_lesson.getText().toString(),
+                start, end)
+            setDataToSchedule(schedule!!)
+
+            schedule?.dates.let {
+              scheduleManager.globalList.add(schedule!!)
+              setResult(Activity.RESULT_OK)
+              finish()
+            }
+          } else {
+            schedule?.numberLesson = numberOfLesson.toString()
+            schedule?.nameLesson = if (name_of_lesson.getText().toString().isEmpty()) "" else name_of_lesson.getText().toString()
+            schedule?.startPeriod = start
+            schedule?.endPeriod = end
+            setDataToSchedule(schedule!!)
             setResult(Activity.RESULT_OK)
             finish()
           }
         } else {
-          schedule?.numberLesson = numberOfLesson.toString()
-          schedule?.nameLesson = if (name_of_lesson.getText().toString().isEmpty()) "" else name_of_lesson.getText().toString()
-          schedule?.startPeriod = start
-          schedule?.endPeriod = end
-          setDataToSchedule(schedule!!)
-          setResult(Activity.RESULT_OK)
-          finish()
+          toast(getString(R.string.dates_more))
         }
 
       } ?: toast(getString(R.string.set_date_of_end_period))
@@ -345,14 +356,15 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   override fun onTimeSet(view: RadialPickerLayout?, hourOfDay: Int, minute: Int, second: Int) {
     val time = Time(hourOfDay, minute).toString()
     when (switcher) {
-      1 -> {
+      4 -> {
         end_time.setText(time)
-        switcher = 0
         endTime = Time(hourOfDay, minute)
+        switcher = 0
       }
-      else -> {
+      3 -> {
         begin_time.setText(time)
         startTime = Time(hourOfDay, minute)
+        switcher = 0
       }
     }
   }
@@ -360,18 +372,18 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
     val date = Utils.getNormalizedDate(Date(dayOfMonth, monthOfYear, year))
     when (switcher) {
-      1 -> {
+      2 -> {
         end_period.setText(date)
-        switcher = 0
         endPeriod = Date(dayOfMonth, monthOfYear, year)
         startPeriod?.let { setListOfDates(BOTH_WEEKS) }
+        switcher = 0
       }
-      else -> {
+      1 -> {
         begin_period.setText(date)
         startPeriod = Date(dayOfMonth, monthOfYear, year)
         endPeriod?.let { setListOfDates(BOTH_WEEKS) }
+        switcher = 0
       }
     }
   }
-
 }
