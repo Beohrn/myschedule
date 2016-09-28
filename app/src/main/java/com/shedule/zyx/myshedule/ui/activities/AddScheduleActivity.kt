@@ -116,7 +116,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
 
     begin_period.onClick { showDateDialog(); switcher = 1 }
     teachers_list.onClick {
-      val dialog = indeterminateProgressDialog("Загрузка")
+      val dialog = indeterminateProgressDialog(getString(R.string.load))
       firebaseWrapper.getTeachers()
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread())
@@ -126,13 +126,13 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
               selector(null, teachers.map { it.teacherName }) {
                 name_of_teacher.setText(teachers[it].teacherName)
               }
-            } else toast("нету преподов")
+            } else toast(getString(R.string.notting_teachers))
           }, {
             dialog.dismiss()
           })
     }
 
-    begin_period.onClick { showDateDialog() }
+    begin_period.onClick { showDateDialog(); switcher = 1 }
 
     end_period.onClick { showDateDialog(); switcher = 2 }
 

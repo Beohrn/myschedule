@@ -15,7 +15,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-
         android:layout_alignParentStart="true"
         android:background="@android:color/transparent"
         android:padding="20dp"/>

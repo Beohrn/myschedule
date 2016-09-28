@@ -2,7 +2,6 @@ package com.shedule.zyx.myshedule
 
 import android.util.Log
 import app.voter.xyz.RxFirebase
-import app.voter.xyz.utils.Constants.Companion.RATINGS
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -11,6 +10,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.models.Teacher
+import com.shedule.zyx.myshedule.utils.Constants.Companion.RATINGS
 import com.shedule.zyx.myshedule.utils.Utils.Companion.getKeyByName
 import rx.Observable
 import java.util.*

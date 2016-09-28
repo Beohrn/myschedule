@@ -45,8 +45,4 @@ class AppPreference(val context: Context, val gson: Gson) {
   fun saveFacultyName(name: String) = prefs.edit().putString(FACULTY_NAME, name).apply()
 
   fun getFacultyName() = prefs.getString(FACULTY_NAME, null)
-
-  fun saveFirstTimeLaunch(isFirstTime: Boolean) = prefs.edit().putBoolean(IS_FIRST_TIME_LAUNCH, isFirstTime).apply()
-
-  fun isFirstTimeLaunch() = prefs.getBoolean(IS_FIRST_TIME_LAUNCH, true)
 }

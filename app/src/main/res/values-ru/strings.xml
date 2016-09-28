@@ -557,6 +557,18 @@
     <string name="university">Университет</string>
     <string name="faculty">Факультет (аббревиатура)</string>
     <string name="authorize">Авторизоваться</string>
+    
+    <string name="authentication">Авторизация</string>
+    <string name="authentication_error">Ошибка авторизации</string>
+    <string name="download_error">Ошибка загрузки</string>
+    <string name="notting_teachers">Нет преподавателей</string>
+    <string name="load">Загрузка</string>
+    <string name="create">Создавай</string>
+    <string name="create_your">Создавай свое расписание и определяй приоритеты между предметами сам</string>
+    <string name="share_it">Делись</string>
+    <string name="share_it_with_collegs">Делись готовым расписанием с одногрупниками</string>
+    <string name="asses">Оценивай</string>
+    <string name="asses_description">Теперь оценки преподавателям ставишь ты</string>
 
     <string name="anonymous_authentication">Анонимная авторизация</string>
     <string name="comments">Коментарии</string>

@@ -47,7 +47,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Умение донести информацию"
+        android:text="@string/ability_to_information"
         android:textColor="@color/silver"
         android:paddingLeft="15dp"
         android:textSize="16sp"

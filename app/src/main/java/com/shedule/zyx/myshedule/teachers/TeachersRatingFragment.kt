@@ -47,7 +47,7 @@ class TeachersRatingFragment : Fragment() {
     super.onViewCreated(view, savedInstanceState)
 
     if (scheduleManager.getTeachers().size != 0) {
-      val dialog = indeterminateProgressDialog("Загрузка")
+      val dialog = indeterminateProgressDialog(getString(R.string.load))
       dialog.setCanceledOnTouchOutside(false)
       dialog.show()
       firebase.pushTeacher(scheduleManager.getTeachers())
@@ -57,10 +57,10 @@ class TeachersRatingFragment : Fragment() {
             dialog.dismiss()
           }, {
             dialog.dismiss()
-            toast("Ошибка загрузки")
+            toast(getString(R.string.download_error))
           })
     } else {
-      toast("Нету преподавателей")
+      toast(getString(R.string.notting_teachers))
     }
 
     RxFirebase.observeChildAdded(firebase.createTeacherRef()).subscribe({

@@ -22,6 +22,6 @@ class SplashActivity : AppCompatActivity() {
 
     if (auth.currentUser == null) {
       startActivity<TutorialActivity>()
-    } else startActivity<MainActivity>()
+    } else { startActivity<MainActivity>() }
   }
 }

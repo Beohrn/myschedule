@@ -558,6 +558,18 @@
     <string name="faculty">Department (abbreviated)</string>
     <string name="authorize">Authorize</string>
 
+    <string name="authentication">Authentication</string>
+    <string name="authentication_error">Authentication error</string>
+    <string name="download_error">Load error</string>
+    <string name="notting_teachers">Teacher do not have</string>
+    <string name="load">Load</string>
+    <string name="create">Create</string>
+    <string name="create_your">Create your own schedule and determine priorities between subjects himself</string>
+    <string name="share_it">Share</string>
+    <string name="share_it_with_collegs">Share ready schedule with group mates</string>
+    <string name="asses">Evaluate</string>
+    <string name="asses_description">Now thou evaluation of teachers</string>
+
     <string name="anonymous_authentication">Anonymous authentication</string>
     <string name="comments">Comments</string>
     <string name="reply">Reply</string>

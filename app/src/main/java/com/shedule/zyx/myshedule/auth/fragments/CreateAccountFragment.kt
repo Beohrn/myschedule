@@ -81,7 +81,7 @@ class CreateAccountFragment : Fragment() {
 
     create_account_btn.onClick {
       if (!checkEdiTextIsEmpty(univer_ET) && !checkEdiTextIsEmpty(faculty_ET)) {
-        val dialog = indeterminateProgressDialog("Авторизация")
+        val dialog = indeterminateProgressDialog(getString(R.string.authentication))
         dialog.show()
         firebaseWrapper.createAccount()
             .doOnTerminate { dialog.dismiss() }
@@ -92,7 +92,7 @@ class CreateAccountFragment : Fragment() {
               prefs.saveFacultyName(faculty_ET.text.toString().trim())
               startActivity<MainActivity>()
             }, {
-              toast("Ошибка авторизации")
+              toast(getString(R.string.authentication_error))
             })
       } else if (checkEdiTextIsEmpty(univer_ET)) {
         univer_ET.error = getString(R.string.input_data)

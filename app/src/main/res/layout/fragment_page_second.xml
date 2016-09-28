@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Ділися"
+        android:text="@string/share_it"
         android:textColor="@color/white"
         android:textSize="22sp"
         android:textStyle="bold"/>
@@ -29,7 +29,7 @@
         android:gravity="center"
         android:padding="20dp"
         android:paddingTop="20dp"
-        android:text="Ділися готовим розкладом з одногрупниками"
+        android:text="@string/share_it_with_collegs"
         android:textColor="@color/white"
         android:textSize="18sp"/>
 

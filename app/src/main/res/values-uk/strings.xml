@@ -557,6 +557,18 @@
     <string name="faculty">Факультет (абревіатура)</string>
     <string name="authorize">Авторизуватися</string>
 
+    <string name="authentication">Авторизація</string>
+    <string name="authentication_error">Помилка авторизації</string>
+    <string name="download_error">Помилка завантаження</string>
+    <string name="notting_teachers">Немає викладачів</string>
+    <string name="load">Завантаження</string>
+    <string name="create">Створюй</string>
+    <string name="create_your">Створюй свій розклад і визначай пріорітети між предметами сам</string>
+    <string name="share_it">Ділись</string>
+    <string name="share_it_with_collegs">Ділись готовим розкладом із одногрупниками</string>
+    <string name="asses">Оцінюй</string>
+    <string name="asses_description">Тепер оцінки викладачам ставиш ти</string>
+
     <string name="anonymous_authentication">Анонімна авторизація</string>
     <string name="comments">Коментарі</string>
     <string name="reply">Відповісти</string>

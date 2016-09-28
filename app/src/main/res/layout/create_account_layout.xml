@@ -18,7 +18,6 @@
             android:layout_height="wrap_content"
             android:background="@null"
             android:hint="@string/university"
-            android:padding="7dp"
             android:dropDownHeight="wrap_content"
             android:inputType="textPersonName|textMultiLine"
             android:padding="7dp"
