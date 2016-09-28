@@ -22,7 +22,7 @@ import javax.inject.Inject
 /**
  * Created by alexkowlew on 21.09.2016.
  */
-class AllHomeWorksActivity: AppCompatActivity(), AllHomeWorkItemsAdapter.OnItemClick {
+class AllHomeWorksActivity : AppCompatActivity(), AllHomeWorkItemsAdapter.OnItemClick {
 
   @Inject
   lateinit var scheduleManager: ScheduleManager
@@ -34,6 +34,10 @@ class AllHomeWorksActivity: AppCompatActivity(), AllHomeWorkItemsAdapter.OnItemC
     super.onCreate(savedInstanceState)
     setContentView(all_homeworks_activity)
     ScheduleApplication.getComponent().inject(this)
+
+    setSupportActionBar(ah_toolbar)
+    supportActionBar?.title = getString(R.string.homework)
+    ah_toolbar.setTitleTextColor(Color.WHITE)
 
     setSupportActionBar(ah_toolbar)
     supportActionBar?.let { with(it) { setHomeButtonEnabled(true); setDisplayHomeAsUpEnabled(true) } }

@@ -70,7 +70,9 @@ class NearbyDevicesFragment : Fragment() {
           val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
           devices.add(Pair(device.address, device.name))
           if (devices.size != 0) {
-            nearbyDevicesList.addAll(devices.map { it.second }.filter { !nearbyDevicesList.contains(it) }
+            nearbyDevicesList.addAll(devices.map { it.second }
+                .filter { !nearbyDevicesList.contains(it) }
+                .filterNotNull()
                 .distinctBy { bluetoothManager.getPairedDevices().map { it.second } })
             adapter.notifyDataSetChanged()
           }

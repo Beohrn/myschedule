@@ -4,14 +4,11 @@ import android.Manifest
 import android.Manifest.permission.*
 import android.app.Activity
 import android.content.Intent
-import android.content.Intent.ACTION_PICK
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.provider.MediaStore
-import android.provider.MediaStore.ACTION_IMAGE_CAPTURE
-import android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
@@ -19,6 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.bumptech.glide.Glide
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.activity_navigation
 import com.shedule.zyx.myshedule.ScheduleApplication
@@ -41,6 +39,7 @@ import com.shedule.zyx.myshedule.ui.fragments.BluetoothDialog
 import com.shedule.zyx.myshedule.utils.Utils
 import com.tbruyelle.rxpermissions.RxPermissions
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
+import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_navigation.*
 import kotlinx.android.synthetic.main.content_navigation.*
@@ -98,6 +97,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     val nav = nav_view.inflateHeaderView(R.layout.nav_header_navigation)
     Utils.getAccountPhoto(applicationContext)?.let { nav.circleView.setImageBitmap(it) }
+    Glide.with(this).load(R.drawable.univer_image)
+        .bitmapTransform(BlurTransformation(this, 10))
+        .into(nav.container_to_image)
     nav.circleView.onClick {
       selector(null, listOf(getString(R.string.camera),
           getString(R.string.gallery))) { i ->
@@ -264,11 +266,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         getString(R.string.edit),
         getString(R.string.delete_lesson))) { position ->
       when (position) {
-        0 -> { scheduleManager.editSchedule = schedule
+        0 -> {
+          scheduleManager.editSchedule = schedule
           startActivityForResult<HomeWorkActivity>(SCHEDULE_HOMEWORK_REQUEST,
               HOMEWORK_BY_DATE to dateManager.getDayByPosition(main_viewpager.currentItem))
         }
-        1 -> { showDialog(); bluetoothManager.schedule = arrayListOf(schedule) }
+        1 -> {
+          showDialog(); bluetoothManager.schedule = arrayListOf(schedule)
+        }
         2 -> {
           scheduleManager.editSchedule = schedule
           startActivityForResult<AddScheduleActivity>(EDIT_SCHEDULE_REQUEST,
@@ -280,7 +285,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                   getString(R.string.in_others_day))) {
             index ->
             when (index) {
-              0 -> { }
+              0 -> {
+              }
               1 -> {
                 scheduleManager.removeSchedule(schedule)
                 listenerList.map { it.updateData() }

@@ -50,15 +50,22 @@ class TeacherView : FrameLayout {
     teacher_name.text = teacher.teacherName
     tv_name_of_lesson.text = teacher.lessonName
 
+    //default value and color
+    setColorByRating(60.toDouble())
+
     if (teacher.ratings.isNotEmpty()) {
       val mediumRating = teacher.ratings.values.toList().reduce { d1, d2 -> d1 + d2 } /
           teacher.ratings.values.toList().size
 
-      (teacher_rating.background as GradientDrawable)
-          .setColor(Utils.getColorByRating(context, getLetterByRating(mediumRating)))
+      setColorByRating(mediumRating)
       teacher_rating.text = getLetterByRating(mediumRating)
       rating.text = "$mediumRating"
     }
+  }
+
+  private fun setColorByRating(mediumRating: Double) {
+    (teacher_rating.background as GradientDrawable)
+        .setColor(Utils.getColorByRating(context, getLetterByRating(mediumRating)))
   }
 
   fun showAssessments() {
