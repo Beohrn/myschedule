@@ -18,11 +18,8 @@
             android:title="@string/task"/>
 
         <item
-            android:id="@+id/nav_tools"
+            android:id="@+id/nav_write_to_us"
             android:icon="@drawable/manage"
-            android:title="@string/settings"/>
-
-
+            android:title="@string/write_to_us"/>
     </group>
-
 </menu>

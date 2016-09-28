@@ -38,6 +38,7 @@ import com.shedule.zyx.myshedule.ui.fragments.BluetoothDialog
 import com.shedule.zyx.myshedule.utils.Utils
 import com.tbruyelle.rxpermissions.RxPermissions
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
+import de.cketti.mailto.EmailIntentBuilder
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_navigation.*
@@ -185,11 +186,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       }
       R.id.nav_teachers -> startActivity<TeachersActivity>()
       R.id.nav_tasks -> startActivity<AllHomeWorksActivity>()
+      R.id.nav_write_to_us -> { sendEmail() }
     }
 
     drawer_layout?.closeDrawer(GravityCompat.START)
     return true
   }
+
+  fun sendEmail() =
+    startActivity(EmailIntentBuilder.from(this)
+      .to("yourschedule.info@gmail.com")
+      .subject("Feedback")
+      .build())
+
 
   override fun onScheduleReceived(schedules: ArrayList<Schedule>) {
     alert("", getString(R.string.receive_single_schedule)) {
