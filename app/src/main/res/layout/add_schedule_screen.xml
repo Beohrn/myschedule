@@ -73,7 +73,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="0.8"
                     android:paddingRight="10dp"
-                    app:hint="Корпус"
+                    app:hint="@string/housing_hint"
                     app:inputType="numberDecimal"
                     app:maxLength="5"/>
             </LinearLayout>
@@ -97,7 +97,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.7"
-                    app:hint="Аудитория"
+                    app:hint="@string/classroom_hint"
                     app:maxLength="10"/>
             </LinearLayout>
 
@@ -107,32 +107,34 @@
             android:id="@+id/begin_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:time_text="@string/time_reduction"
+            app:title_text="@string/begin_of_lesson"/>
             android:clickable="true"
             app:time_text="чч:мм"
             app:title_text="Начало пары"/>
 
         <com.shedule.zyx.myshedule.widget.CustomTextView
             android:id="@+id/end_time"
+            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            app:time_text="чч:мм"
-            app:title_text="Конец пары"/>
+            app:time_text="@string/time_reduction"
+            app:title_text="@string/end_of_lesson"/>
 
         <com.shedule.zyx.myshedule.widget.CustomTextView
             android:id="@+id/begin_period"
+            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            app:time_text="дд.мм.гг"
+            app:time_text="@string/date_reduction"
             app:title_text="@string/start_period_of_lesson"/>
 
         <com.shedule.zyx.myshedule.widget.CustomTextView
             android:id="@+id/end_period"
+            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            app:time_text="дд.мм.гг"
+            app:time_text="@string/date_reduction"
             app:title_text="@string/end_period_of_lesson"/>
 
     </LinearLayout>
@@ -154,9 +156,9 @@
             android:id="@+id/repeat_dates"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:orientation="horizontal"
             android:padding="10dp"
             android:weightSum="1">
 
@@ -172,7 +174,7 @@
                 android:layout_weight="0.35"
                 android:paddingLeft="5dp"
                 android:paddingTop="5dp"
-                android:text="Повторение"
+                android:text="@string/repeat"
                 android:textColor="@color/black"
                 android:textSize="16sp"/>
 
@@ -181,11 +183,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.6"
-                android:gravity="right"
                 android:paddingLeft="5dp"
                 android:paddingRight="30dp"
                 android:paddingTop="5dp"
-                android:text="(Каждую неделю)"
+                android:gravity="right"
+                android:text="@string/every_week_brc"
                 android:textColor="@color/black"
                 android:textSize="16sp"/>
 
@@ -221,7 +223,7 @@
                 android:layout_weight="0.9"
                 android:paddingLeft="5dp"
                 android:paddingTop="5dp"
-                android:text="Тип и номер пары"
+                android:text="@string/type_and_number_of_lesson"
                 android:textColor="@color/black"
                 android:textSize="16sp"/>
         </LinearLayout>

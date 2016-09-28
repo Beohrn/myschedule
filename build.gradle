@@ -17,7 +17,7 @@ allprojects {
     ext {
         targetSDKVersion = 23
         minSDKVersion = 16
-        buildToolVersion = "23.0.3"
+        buildToolVersion = '24.0.2'
         supportLibraryVersion = "24.0.0"
         playServicesVersion = "8.4.0"
         ankoVersion = "0.9"

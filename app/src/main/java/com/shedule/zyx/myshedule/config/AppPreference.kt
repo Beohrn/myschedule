@@ -16,6 +16,7 @@ class AppPreference(val context: Context, val gson: Gson) {
   private val KEY = "schedule"
   private val UNIVER_NAME = "univer_name"
   private val FACULTY_NAME = "facylty_name"
+  private val IS_FIRST_TIME_LAUNCH = "is_first_time_launch"
   private val prefs: SharedPreferences
 
   init {

@@ -18,6 +18,8 @@ import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.adapters.ImageAdapter
 import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.models.HomeWork
+import com.shedule.zyx.myshedule.ui.activities.HomeWorkActivity.Companion.HOMEWORK_DESCRIPTION
+import com.shedule.zyx.myshedule.ui.activities.HomeWorkActivity.Companion.HOMEWORK_NAME
 import com.shedule.zyx.myshedule.ui.activities.PhotoActivity.Companion.BITMAP
 import com.shedule.zyx.myshedule.ui.activities.PhotoActivity.Companion.BITMAP_NAME
 import com.shedule.zyx.myshedule.ui.activities.PhotoActivity.Companion.PHOTO_ACTIVITY_REQUEST
@@ -109,7 +111,7 @@ class CreateHomeWorkActivity : AppCompatActivity() {
             when (i) {
               0 -> {
                 val intent = Intent(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
-                val uri = Uri.fromFile(Utils.getHomeWorkFile(this, home_work_name.getText()))
+                val uri = Uri.fromFile(Utils.getMediaFile(this, home_work_name.getText(), true)/*Utils.getHomeWorkFile(this, home_work_name.getText())*/)
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
                 startActivityForResult(intent, 9393)
               }
@@ -126,8 +128,8 @@ class CreateHomeWorkActivity : AppCompatActivity() {
 
         if (!isHomeworkEdit) {
           val intent = Intent()
-          intent.putExtra("name", home_work_name.getText())
-          intent.putExtra("description", home_work_description.getText())
+          intent.putExtra(HOMEWORK_NAME, home_work_name.getText())
+          intent.putExtra(HOMEWORK_DESCRIPTION, home_work_description.getText())
           setResult(Activity.RESULT_OK, intent)
         } else {
           homework?.taskName = home_work_name.getText()

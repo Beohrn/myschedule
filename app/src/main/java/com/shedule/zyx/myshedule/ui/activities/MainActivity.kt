@@ -26,7 +26,6 @@ import com.shedule.zyx.myshedule.interfaces.ChangeStateFragmentListener
 import com.shedule.zyx.myshedule.interfaces.DataChangeListener
 import com.shedule.zyx.myshedule.managers.BluetoothManager
 import com.shedule.zyx.myshedule.managers.DateManager
-import com.shedule.zyx.myshedule.managers.ReceiveManager
 import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.teachers.TeachersActivity
@@ -39,6 +38,7 @@ import com.shedule.zyx.myshedule.ui.fragments.BluetoothDialog
 import com.shedule.zyx.myshedule.utils.Utils
 import com.tbruyelle.rxpermissions.RxPermissions
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
+import de.cketti.mailto.EmailIntentBuilder
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_navigation.*
@@ -51,17 +51,14 @@ import java.util.*
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-    ChangeStateFragmentListener, DatePickerDialog.OnDateSetListener, ScheduleItemsAdapter.ScheduleItemListener {
-
+    ChangeStateFragmentListener, DatePickerDialog.OnDateSetListener, ScheduleItemsAdapter.ScheduleItemListener,
+    BluetoothManager.OnScheduleReceiveListener {
 
   @Inject
   lateinit var dateManager: DateManager
 
   @Inject
   lateinit var bluetoothManager: BluetoothManager
-
-  @Inject
-  lateinit var receiveManager: ReceiveManager
 
   @Inject
   lateinit var scheduleManager: ScheduleManager
@@ -145,7 +142,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     if (drawer_layout?.isDrawerOpen(GravityCompat.START)!!) {
       drawer_layout.closeDrawer(GravityCompat.START)
     } else {
-      super.onBackPressed()
+      finishAffinity()
     }
   }
 
@@ -184,20 +181,50 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
           if (it) {
             showDialog()
             bluetoothManager.schedule = scheduleManager.globalList
-          } else toast("Нет разререшния на использрвание блютус")
+          } else toast(getString(R.string.no_permission_for_bluetooth))
         }, {})
       }
       R.id.nav_teachers -> startActivity<TeachersActivity>()
       R.id.nav_tasks -> startActivity<AllHomeWorksActivity>()
+      R.id.nav_write_to_us -> { sendEmail() }
     }
 
     drawer_layout?.closeDrawer(GravityCompat.START)
     return true
   }
 
-  override fun onResume() {
-    super.onResume()
+  fun sendEmail() =
+    startActivity(EmailIntentBuilder.from(this)
+      .to("yourschedule.info@gmail.com")
+      .subject("Feedback")
+      .build())
 
+  override fun onScheduleReceived(schedules: ArrayList<Schedule>) {
+    alert("", getString(R.string.receive_single_schedule)) {
+      positiveButton(getString(R.string.yes)) {
+        if (schedules.size > 1) {
+          dismiss()
+          selector(null, listOf(getString(R.string.merge_schedule), getString(R.string.override_schedule))) {
+            when (it) {
+              0 -> {
+                scheduleManager.globalList.addAll(schedules.map { it })
+                listenerList.map { it.updateData() }
+              }
+              1 -> {
+                scheduleManager.globalList.clear()
+                scheduleManager.globalList.addAll(schedules.map { it })
+                listenerList.map { it.updateData() }
+              }
+            }
+          }
+        } else {
+          scheduleManager.globalList.addAll(schedules.map { it })
+          listenerList.map { it.updateData() }
+          dismiss()
+        }
+      }
+      negativeButton(getString(R.string.no)) { dismiss() }
+    }.show()
   }
 
   override fun onStart() {
@@ -238,7 +265,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     if (bluetoothManager.bluetoothEnabled())
       if (!bluetoothManager.serviceAvailable()) {
         bluetoothManager.setupService()
-        bluetoothManager.setReceiveListener(receiveManager)
+        bluetoothManager.setScheduleReceiveListener(this)
       }
   }
 
@@ -280,19 +307,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
               Pair(DAY_OF_WEEK_KEY, main_viewpager.currentItem + 2))
         }
         3 -> {
-          selector(getString(R.string.lesson_delete),
-              listOf(getString(R.string.in_single_day),
-                  getString(R.string.in_others_day))) {
-            index ->
-            when (index) {
-              0 -> {
-              }
-              1 -> {
-                scheduleManager.removeSchedule(schedule)
-                listenerList.map { it.updateData() }
-              }
+          alert("", getString(R.string.delete)) {
+            positiveButton(getString(R.string.yes)) {
+              scheduleManager.removeSchedule(schedule)
+              listenerList.map { it.updateData() }
             }
-          }
+            negativeButton(getString(R.string.no))
+          }.show()
         }
       }
     }

@@ -42,6 +42,7 @@
         app:backgroundTint="@color/colorAccent"
         android:clickable="true"
         app:rippleColor="@color/pink"
-        android:nestedScrollingEnabled="true" />
+        android:nestedScrollingEnabled="true"
+        app:layout_behavior="com.shedule.zyx.myshedule.widget.FabNestedScrollBehavior"/>
 
 </android.support.design.widget.CoordinatorLayout>

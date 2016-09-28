@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:id="@+id/ctv_container"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
@@ -21,7 +22,7 @@
             android:layout_marginLeft="20dp"
             android:layout_weight="0.7"
             android:gravity="left"
-            android:text="Начало пары"
+            tools:text="Начало пары"
             android:textColor="@color/black"
             android:textSize="14sp"/>
 
@@ -41,7 +42,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="0.7"
                 android:gravity="right"
-                android:text="31.12.2016"
+                tools:text="31.12.2016"
                 android:textColor="@color/black"
                 android:textSize="15sp"/>
 
@@ -55,7 +56,6 @@
                 android:background="@color/sch_green"/>
 
         </LinearLayout>
-
 
     </LinearLayout>
 

@@ -6,14 +6,14 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import app.voter.xyz.RxFirebase
-import app.voter.xyz.utils.Constants
-import app.voter.xyz.utils.Constants.Companion.COMMENTS
-import app.voter.xyz.utils.Constants.Companion.LIKES
-import app.voter.xyz.utils.Constants.Companion.REPLIES
 import com.google.firebase.database.DatabaseReference
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.config.AppPreference
+import com.shedule.zyx.myshedule.utils.Constants
+import com.shedule.zyx.myshedule.utils.Constants.Companion.COMMENTS
+import com.shedule.zyx.myshedule.utils.Constants.Companion.LIKES
+import com.shedule.zyx.myshedule.utils.Constants.Companion.REPLIES
 import com.shedule.zyx.myshedule.utils.Utils
 import com.shedule.zyx.myshedule.utils.Utils.Companion.getKeyByName
 import kotlinx.android.synthetic.main.discussion_activity_layout.*
@@ -71,7 +71,7 @@ class DiscussionActivity : AppCompatActivity(), CommentsAdapter.OnCommentClickLi
     }
 
     setSupportActionBar(discussion_toolbar)
-    supportActionBar?.title = "Коментарии"
+    supportActionBar?.title = getString(R.string.comments)
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setDisplayShowHomeEnabled(true)
     supportActionBar?.setHomeButtonEnabled(true)
@@ -106,16 +106,16 @@ class DiscussionActivity : AppCompatActivity(), CommentsAdapter.OnCommentClickLi
   fun toggleReply(isReply: Boolean) {
     isReplying = isReply
     if (!isReply) commentET.setText("")
-    post_btn?.text = if (isReply) "Ответить" else "Отправить"
-    commentET.hint = if (isReply) "Ответить" else "Отправить коментарий"
+    post_btn?.text = if (isReply) getString(R.string.reply) else getString(R.string.send_comment)
+    commentET.hint = if (isReply) getString(R.string.reply) else getString(R.string.send_comment_to)
   }
 
   override fun onCommentClicked(commentRef: DatabaseReference, comment: Comment) {
     val likeId = comment.isLikedByUser(deviceToken)
     val isLiked = likeId != null
-    val likeText = if (!isLiked) "Нравиться" else "Не нравиться"
+    val likeText = if (!isLiked) getString(R.string.like) else getString(R.string.dislike)
 
-    selector(items = listOf(likeText, "Ответить")) {
+    selector(items = listOf(likeText, getString(R.string.reply))) {
       when (it) {
         0 -> if (isLiked) removeLike(commentRef, likeId) else pushLike(commentRef)
         else -> replyComment(commentRef)

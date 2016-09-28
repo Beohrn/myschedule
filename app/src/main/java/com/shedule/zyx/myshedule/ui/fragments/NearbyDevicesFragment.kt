@@ -1,5 +1,6 @@
 package com.shedule.zyx.myshedule.ui.fragments
 
+import android.app.ProgressDialog
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -11,21 +12,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.managers.BluetoothManager
 import kotlinx.android.synthetic.main.fragment_list_of_devices.*
 import org.jetbrains.anko.onItemClick
+import org.jetbrains.anko.support.v4.indeterminateProgressDialog
+import org.jetbrains.anko.support.v4.selector
 import javax.inject.Inject
 
 /**
  * Created by Alexander on 20.08.2016.
  */
-class NearbyDevicesFragment : Fragment() {
+class NearbyDevicesFragment: Fragment() {
 
   @Inject
   lateinit var bluetoothManager: BluetoothManager
-
+  lateinit var progressDialog: ProgressDialog
   lateinit var adapter: ArrayAdapter<String>
   val nearbyDevicesList = arrayListOf<String>()
   var devices = arrayListOf<Pair<String, String>>()
@@ -55,6 +59,21 @@ class NearbyDevicesFragment : Fragment() {
 
     list_of_devices.onItemClick { adapterView, view, i, l ->
       bluetoothManager.connect(devices[i].first)
+      progressDialog = indeterminateProgressDialog(getString(R.string.connecting))
+      bluetoothManager.setStateListener(BluetoothSPP.BluetoothStateListener { state ->
+        if (state == bluetoothManager.STATE_CONNECTED) {
+          progressDialog.hide()
+          if (isAdded)
+            selector("", listOf(getString(R.string.send), getString(R.string.cancel))) {
+              when (it) {
+                0 -> { bluetoothManager.send(); bluetoothManager.disconnect() }
+                1 -> { bluetoothManager.disconnect() }
+              }
+            }
+        } else if (state == bluetoothManager.STATE_CONNECTING)
+          progressDialog.show()
+      })
+
       nearbyDevicesList.removeAt(i)
       adapter.notifyDataSetChanged()
     }
@@ -81,5 +100,4 @@ class NearbyDevicesFragment : Fragment() {
 
     }
   }
-
 }

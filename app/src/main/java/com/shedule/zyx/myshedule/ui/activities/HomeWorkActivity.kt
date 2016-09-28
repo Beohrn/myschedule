@@ -19,6 +19,7 @@ import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.ui.activities.CreateHomeWorkActivity.Companion.CREATE_HOMEWORK_REQUEST
 import com.shedule.zyx.myshedule.ui.activities.CreateHomeWorkActivity.Companion.DATE_ON_TITLE
 import com.shedule.zyx.myshedule.ui.activities.CreateHomeWorkActivity.Companion.EDIT_HOMEWORK_REQUEST
+import com.shedule.zyx.myshedule.utils.Utils
 import com.shedule.zyx.myshedule.widget.HomeWorkView
 import kotlinx.android.synthetic.main.home_work_activity.*
 import org.jetbrains.anko.alert
@@ -47,6 +48,8 @@ class HomeWorkActivity : AppCompatActivity(),
     val SCHEDULE_HOMEWORK_REQUEST = 3923
     val HOMEWORK_BY_DATE = "homework_by_date"
     val ALL_HOMEWORK = "all_homework"
+    val HOMEWORK_NAME = "name"
+    val HOMEWORK_DESCRIPTION = "description"
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,18 +121,18 @@ class HomeWorkActivity : AppCompatActivity(),
 
   override fun onHomeWorkClick(homeWork: HomeWork) {
     scheduleManager.editHomework = homeWork
-    startActivityForResult<CreateHomeWorkActivity>(EDIT_HOMEWORK_REQUEST, DATE_ON_TITLE to date)
+    startActivityForResult<CreateHomeWorkActivity>(EDIT_HOMEWORK_REQUEST, DATE_ON_TITLE to homeWork.deadLine)
   }
 
   override fun onLongClick(homeWork: HomeWork) {
     alert("", getString(R.string.delete)) {
       positiveButton(getString(R.string.yes)) {
         schedule?.homework?.remove(homeWork)
+        Utils.deleteHomeWorkDirectory(applicationContext, homeWork.taskName)
         dismiss()
         homework.clear()
         schedule?.let { loadData(it) }
         adapter.notifyDataSetChanged()
-
       }
       negativeButton(getString(R.string.no)) { dismiss() }
     }.show()
@@ -139,8 +142,8 @@ class HomeWorkActivity : AppCompatActivity(),
     super.onActivityResult(requestCode, resultCode, data)
     if (resultCode == Activity.RESULT_OK) {
       if (requestCode == CREATE_HOMEWORK_REQUEST) {
-        val homework = HomeWork(data?.getStringExtra("name").toString(), false)
-        homework.taskDescription = data?.getStringExtra("description").toString()
+        val homework = HomeWork(data?.getStringExtra(HOMEWORK_NAME).toString(), false)
+        homework.taskDescription = data?.getStringExtra(HOMEWORK_DESCRIPTION).toString()
         homework.deadLine = date
         schedule?.homework?.add(homework)
         update(homework)

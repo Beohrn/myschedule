@@ -4,12 +4,18 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import com.shedule.zyx.myshedule.R
+import com.shedule.zyx.myshedule.utils.Constants.Companion.ABILITY_TO_INFORMATION
+import com.shedule.zyx.myshedule.utils.Constants.Companion.COMPETENCE
+import com.shedule.zyx.myshedule.utils.Constants.Companion.DEMANDING
+import com.shedule.zyx.myshedule.utils.Constants.Companion.DESIRE_TO_LEARN
+import com.shedule.zyx.myshedule.utils.Constants.Companion.TEACHER_CULTURE
 import kotlinx.android.synthetic.main.teacher_assessment_view.view.*
 
 /**
  * Created by alexkowlew on 13.09.2016.
  */
 class TeacherAssessmentView: FrameLayout {
+
   constructor(context: Context?) : super(context) {
     init(context)
   }
@@ -30,9 +36,9 @@ class TeacherAssessmentView: FrameLayout {
     inflate(context, R.layout.teacher_assessment_view, this)
   }
 
-  fun getValues() = hashMapOf("competence" to competence.progress,
-      "demanding" to demanding.progress,
-      "ability_to_information" to ability_to_information.progress,
-      "desire_to_learn" to desire_to_learn.progress,
-      "teacher_culture" to teacher_culture.progress)
+  fun getValues() = hashMapOf(COMPETENCE to competence.progress,
+      DEMANDING to demanding.progress,
+      ABILITY_TO_INFORMATION to ability_to_information.progress,
+      DESIRE_TO_LEARN to desire_to_learn.progress,
+      TEACHER_CULTURE to teacher_culture.progress)
 }

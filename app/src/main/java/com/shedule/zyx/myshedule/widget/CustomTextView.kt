@@ -41,7 +41,5 @@ class CustomTextView : FrameLayout {
     time_text.text = timeText
   }
 
-  fun getText() = time_text.text.toString()
-
   fun setText(text: String) { time_text.text = text }
 }

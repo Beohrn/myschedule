@@ -22,12 +22,12 @@ import javax.inject.Inject
 /**
  * Created by alexkowlew on 21.09.2016.
  */
-class AllHomeWorksActivity : AppCompatActivity(), AllHomeWorkItemsAdapter.OnItemClick {
+class AllHomeWorksActivity: AppCompatActivity(), AllHomeWorkItemsAdapter.OnItemClick {
 
   @Inject
   lateinit var scheduleManager: ScheduleManager
 
-  var list = listOf<Schedule>()
+  var list = arrayListOf<Schedule>()
   lateinit var adapter: AllHomeWorkItemsAdapter
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,14 +36,15 @@ class AllHomeWorksActivity : AppCompatActivity(), AllHomeWorkItemsAdapter.OnItem
     ScheduleApplication.getComponent().inject(this)
 
     setSupportActionBar(ah_toolbar)
-    supportActionBar?.title = getString(R.string.homework)
-    ah_toolbar.setTitleTextColor(Color.WHITE)
-
-    setSupportActionBar(ah_toolbar)
-    supportActionBar?.let { with(it) { setHomeButtonEnabled(true); setDisplayHomeAsUpEnabled(true) } }
+    supportActionBar?.let {
+      with(it) {
+        setHomeButtonEnabled(true)
+        setDisplayHomeAsUpEnabled(true)
+        title = getString(R.string.task)
+      }
+    }
 
     with(ah_toolbar) {
-      title = getString(R.string.task)
       setTitleTextColor(Color.WHITE)
       setNavigationOnClickListener { finish() }
     }
@@ -52,7 +53,7 @@ class AllHomeWorksActivity : AppCompatActivity(), AllHomeWorkItemsAdapter.OnItem
     list_of_homeworks.itemAnimator = DefaultItemAnimator()
 
     update()
-    adapter = AllHomeWorkItemsAdapter(this, list as ArrayList<Schedule>)
+    adapter = AllHomeWorkItemsAdapter(this, list)
     list_of_homeworks.adapter = adapter
   }
 
@@ -67,13 +68,15 @@ class AllHomeWorksActivity : AppCompatActivity(), AllHomeWorkItemsAdapter.OnItem
   }
 
   fun update() {
-    list = scheduleManager.getAllHomework()
+    list.addAll(scheduleManager.getAllHomework())
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
     if (resultCode == RESULT_OK) {
       if (requestCode == SCHEDULE_HOMEWORK_REQUEST) {
+        list.clear()
+        update()
         adapter.notifyDataSetChanged()
       }
     }

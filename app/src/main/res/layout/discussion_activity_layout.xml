@@ -15,7 +15,6 @@
             android:id="@+id/discussion_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:title="@string/add_schedule_toolbar_title"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:theme="@style/ToolbarColoredBackArrow"
             app:titleTextColor="@color/white">
@@ -45,7 +44,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@null"
-            android:hint="введите текст"
+            android:hint="@string/input_text"
             android:paddingLeft="20dp"/>
 
         <TextView
@@ -53,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="15dp"
-            android:text="отправить"
+            android:text="@string/send_comment"
             android:textStyle="bold"/>
 
     </LinearLayout>

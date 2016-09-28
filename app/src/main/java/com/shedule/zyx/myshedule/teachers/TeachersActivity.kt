@@ -45,15 +45,15 @@ class TeachersActivity : AppCompatActivity(), OnRatingClickListener, OnTeacherCl
     ScheduleApplication.getComponent().inject(this)
 
     setSupportActionBar(teachers_toolbar)
-    supportActionBar?.title = "Преподаватели"
+    supportActionBar?.title = getString(R.string.teachers)
     teachers_toolbar.setTitleTextColor(Color.WHITE)
     supportActionBar?.setHomeButtonEnabled(true)
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
     teachers_toolbar.setNavigationOnClickListener { finish() }
 
-    if (auth.currentUser?.uid == null) replaceFragment("Анонимная авторизация", CreateAccountFragment())
-    else replaceFragment("Преподаватели", TeachersRatingFragment())
+    if (auth.currentUser?.uid == null) replaceFragment(getString(R.string.anonymous_authentication), CreateAccountFragment())
+    else replaceFragment(getString(R.string.teachers), TeachersRatingFragment())
   }
 
   private fun replaceFragment(title: String, fragment: Fragment?) {

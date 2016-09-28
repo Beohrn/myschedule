@@ -5,11 +5,11 @@
     <item
         android:id="@+id/add_item"
         android:icon="@drawable/ic_done_white_24px"
-        android:title="Approve"
+        android:title="@string/approve"
         app:showAsAction="always"
         android:orderInCategory="100"/>
 
     <item
         android:id="@+id/add_schedule_menu"
-        android:title="Произвольные даты"/>
+        android:title="@string/random_dates"/>
 </menu>

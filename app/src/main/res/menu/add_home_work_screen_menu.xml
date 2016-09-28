@@ -7,13 +7,13 @@
         android:id="@+id/add_homework_photo"
         android:icon="@drawable/add_photo"
         android:orderInCategory="100"
-        android:title="Добавить фото"
+        android:title="@string/add_photo"
         app:showAsAction="always"/>
 
     <item
         android:id="@+id/add_homework"
         android:icon="@drawable/ic_done_white_24px"
         android:orderInCategory="100"
-        android:title="Принять"
+        android:title="@string/approve"
         app:showAsAction="always"/>
 </menu>

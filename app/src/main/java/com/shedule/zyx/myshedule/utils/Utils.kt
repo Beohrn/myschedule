@@ -67,62 +67,62 @@ class Utils {
         return "E"
     }
 
-    fun saveAccountImage(context: Context, bitmap: Bitmap) {
-      val mediaFile = getMediaFile(context)
-      mediaFile?.let {
-        val fos = FileOutputStream(it)
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-        fos.close()
-      } ?: return
-    }
-
-    fun getMediaFile(context: Context): File? {
-      val mediaStorageDir = File("${Environment.getExternalStorageDirectory()}/Android/data/ ${context.packageName}/Files")
-
-      if (!mediaStorageDir.exists())
-        if (mediaStorageDir.mkdirs())
-          return null
-
-      val imageName = "Sch_account_photo.jpg"
-      return File("${mediaStorageDir.path}${File.separator}$imageName")
-    }
-
-    fun getAccountPhoto(context: Context): Bitmap? {
-      val image = File("${Environment.getExternalStorageDirectory()}/Android/data/ ${context.packageName}/Files/Sch_account_photo.jpg")
-      return BitmapFactory.decodeFile(image.toString())
-    }
-
     fun getNormalizedDate(date: Date) =
         if (date.dayOfMonth < 10 && date.monthOfYear < 9)
           "0${date.dayOfMonth}.0${date.monthOfYear + 1}.${date.year}"
         else if (date.dayOfMonth > 10 && date.monthOfYear < 9)
           "${date.dayOfMonth}.0${date.monthOfYear + 1}.${date.year}"
         else "${date.dayOfMonth}.${date.monthOfYear + 1}.${date.year}"
-
-    fun getHomeWorkImagePath(context: Context, homeWork: String) = File("${Environment.getExternalStorageDirectory()}/Android/data/ " +
-          "${context.packageName}/Files/HomeWork/$homeWork").listFiles()
-
-    fun saveHomeWorkImage(context: Context, bitmap: Bitmap, imageName: String) {
-      val photo = getHomeWorkFile(context, imageName)
-      photo?.let {
-        val fos = FileOutputStream(it)
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-        fos.close()
+    
+    fun saveAccountImage(context: Context, bitmap: Bitmap) {
+      val mediaFile = getMediaFile(context, "", false)
+      mediaFile?.let {
+        savePhoto(bitmap, it)
       } ?: return
     }
 
-    fun getHomeWorkFile(context: Context, homeWorkName: String): File? {
-      val storageDir = File("${Environment.getExternalStorageDirectory()}/Android/data/ ${context.packageName}/Files/HomeWork/$homeWorkName")
+    fun getMediaFile(context: Context, nameDir: String, isDifferent: Boolean): File? {
+      val storageDir: File
+      if (nameDir.isNullOrBlank()) storageDir = File(defaultDirectory(context))
+      else storageDir = File("${defaultDirectory(context)}/HomeWork/$nameDir")
 
       if (!storageDir.exists())
         storageDir.mkdirs()
 
       val timeStamp = SimpleDateFormat("ddMMyyyy_HHmmss").format(Date())
-      val image = "HomeWork_${timeStamp}_photo.jpg"
+      val image: String
+
+      if (isDifferent) image = "HomeWork_${timeStamp}_photo.jpg"
+      else image = "Sch_account_photo.jpg"
+
       return File("${storageDir.path}${File.separator}$image")
     }
 
+    fun getAccountPhoto(context: Context): Bitmap? {
+      val image = File("${defaultDirectory(context)}/Sch_account_photo.jpg")
+      return BitmapFactory.decodeFile(image.toString())
+    }
+
+    fun getHomeWorkImagePath(context: Context, homeWork: String) = File("${defaultDirectory(context)}/HomeWork/$homeWork").listFiles()
+
+    fun saveHomeWorkImage(context: Context, bitmap: Bitmap, homeworkName: String) {
+      val photo = getMediaFile(context, homeworkName, true)
+      photo?.let {
+        savePhoto(bitmap, it)
+      } ?: return
+    }
+
     fun deleteHomeWorkPhoto(path: String) = File(path).delete()
+
+    fun deleteHomeWorkDirectory(context: Context, path: String) {
+      val dir = File("${Environment.getExternalStorageDirectory()}/Android/data/ ${context.packageName}/Files/HomeWork/$path")
+      if (dir.isDirectory) {
+        dir.list().map {
+          File(dir, it).delete()
+        }
+      }
+      dir.delete()
+    }
 
     fun convertDateString(dateString: String): String {
       val day = dateString.split("-")[0]
@@ -130,5 +130,13 @@ class Utils {
       return "$day $month"
     }
 
+    fun defaultDirectory(context: Context) =
+        "${Environment.getExternalStorageDirectory()}/Android/data/ ${context.packageName}/Files"
+
+    fun savePhoto(bitmap: Bitmap, file: File) {
+      val fos = FileOutputStream(file)
+      bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+      fos.close()
+    }
   }
 }
