@@ -21,6 +21,7 @@
 
     <color name="indigo">#536dfe</color>
     <color name="pink">#e91e63</color>
+    <color name="pure">#8A63B3</color>
 
     <!--colors for types-->
     <color name="dark_cyan">#00b669</color>
@@ -43,7 +44,7 @@
 
     <color name="hw_title">#595959</color>
 
-    <color name="sch_green">#4CAF50</color>
+    <color name="sch_green">#49a44c</color>
     <color name="sch_dark_green">#247c2b</color>
 
 

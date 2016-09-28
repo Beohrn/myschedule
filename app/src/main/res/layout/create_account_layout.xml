@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="#FDBD57"
               android:gravity="center"
               android:orientation="vertical">
 
@@ -16,18 +17,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:hint="Университет"
-            android:padding="7dp"
-            android:inputType="textPersonName|textMultiLine"
             android:dropDownHeight="wrap_content"
-            android:textColor="@color/black"
+            android:hint="Университет"
+            android:inputType="textPersonName|textMultiLine"
+            android:padding="7dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
             android:textCursorDrawable="@null"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:alpha="0.3"
-            android:background="@color/black"/>
+            android:background="@color/white"/>
 
         <EditText
             android:id="@+id/faculty_ET"
@@ -36,14 +38,15 @@
             android:background="@null"
             android:hint="Факультет (абривиаура)"
             android:padding="7dp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
             android:textCursorDrawable="@null"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:alpha="0.3"
-            android:background="@color/black"/>
+            android:background="@color/white"/>
 
     </LinearLayout>
 
