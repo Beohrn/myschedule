@@ -36,8 +36,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:gravity="center">
 
         <EditText
             android:id="@+id/commentET"
@@ -57,6 +56,5 @@
             android:textStyle="bold"/>
 
     </LinearLayout>
-
 
 </LinearLayout>

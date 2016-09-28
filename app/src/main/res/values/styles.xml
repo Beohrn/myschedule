@@ -5,7 +5,18 @@
         <item name="colorPrimary">@color/sch_green</item>
         <item name="colorPrimaryDark">@color/sch_dark_green</item>
         <item name="colorAccent">@color/yellow</item>
-        <item name="android:backgroundStacked">@color/white</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
+    <style name="TeacherStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/sch_green</item>
+        <item name="colorPrimaryDark">@color/sch_dark_green</item>
+        <item name="colorAccent">@color/yellow</item>
+    </style>
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_image</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 
     <style name="TutorialTheme" parent="Theme.AppCompat.Light.NoActionBar">

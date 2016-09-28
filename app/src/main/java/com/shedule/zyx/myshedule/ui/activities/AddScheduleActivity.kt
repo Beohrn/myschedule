@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.TextView
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
+import com.shedule.zyx.myshedule.FirebaseWrapper
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.add_schedule_activity
 import com.shedule.zyx.myshedule.ScheduleApplication
@@ -26,6 +27,8 @@ import kotlinx.android.synthetic.main.add_schedule_activity.*
 import kotlinx.android.synthetic.main.add_schedule_screen.*
 import kotlinx.android.synthetic.main.number_layout.*
 import org.jetbrains.anko.*
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
 
@@ -36,6 +39,9 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
 
   @Inject
   lateinit var scheduleManager: ScheduleManager
+
+  @Inject
+  lateinit var firebaseWrapper: FirebaseWrapper
 
   companion object {
     val ADD_SCHEDULE_REQUEST = 5555
@@ -109,6 +115,24 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     }
 
     begin_period.onClick { showDateDialog(); switcher = 1 }
+    teachers_list.onClick {
+      val dialog = indeterminateProgressDialog("Загрузка")
+      firebaseWrapper.getTeachers()
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe({ teachers ->
+            dialog.dismiss()
+            if (teachers != null) {
+              selector(null, teachers.map { it.teacherName }) {
+                name_of_teacher.setText(teachers[it].teacherName)
+              }
+            } else toast("нету преподов")
+          }, {
+            dialog.dismiss()
+          })
+    }
+
+    begin_period.onClick { showDateDialog() }
 
     end_period.onClick { showDateDialog(); switcher = 2 }
 
@@ -141,15 +165,9 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
                   getString(R.string.on_second_week))) {
             position ->
             when (position) {
-              0 -> {
-                setListOfDates(BOTH_WEEKS)
-              }
-              1 -> {
-                setListOfDates(FIRST_WEEK)
-              }
-              2 -> {
-                setListOfDates(SECOND_WEEK)
-              }
+              0 -> { setListOfDates(BOTH_WEEKS) }
+              1 -> { setListOfDates(FIRST_WEEK) }
+              2 -> { setListOfDates(SECOND_WEEK) }
             }
           }
         } ?: toast(getString(R.string.set_date_of_end_period))
@@ -324,6 +342,9 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       TypeLesson.SEMINAR else TypeLesson.LECTURE
     schedule.category = category
     schedule.week = week
+
+    if (!name_of_teacher.getText().toString().isNullOrEmpty())
+      firebaseWrapper.pushTeacher(listOf(schedule.teacher!!)).subscribe({}, {})
 
     if (schedule.dates.size != 0)
       schedule.dates.clear()

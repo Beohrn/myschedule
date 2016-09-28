@@ -14,18 +14,36 @@
         android:paddingBottom="10dp">
 
         <com.shedule.zyx.myshedule.widget.CustomEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/name_of_lesson"
-            app:hint="@string/name_of_lesson"
-            android:layout_marginLeft="20dp"/>
-
-        <com.shedule.zyx.myshedule.widget.CustomEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/name_of_teacher"
-            app:hint="@string/name_of_teacher"
-            android:layout_marginLeft="20dp"/>
+            android:layout_marginLeft="20dp"
+            app:hint="@string/name_of_lesson"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:paddingRight="10dp"
+            android:weightSum="1">
+
+            <com.shedule.zyx.myshedule.widget.CustomEditText
+                android:id="@+id/name_of_teacher"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.9"
+                app:hint="@string/name_of_teacher"/>
+
+            <ImageView
+                android:layout_width="0dp"
+                android:id="@+id/teachers_list"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:src="@drawable/list"/>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -49,9 +67,10 @@
                     android:src="@drawable/housing"/>
 
                 <com.shedule.zyx.myshedule.widget.CustomEditText
+                    android:id="@+id/housing"
                     android:layout_width="0dp"
-                    android:layout_marginLeft="10dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
                     android:layout_weight="0.8"
                     android:paddingRight="10dp"
                     app:hint="@string/housing_hint"
@@ -64,8 +83,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.6"
-                android:weightSum="1"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:weightSum="1">
 
                 <ImageView
                     android:layout_width="0dp"
@@ -75,9 +94,9 @@
                     android:src="@drawable/classroom"/>
 
                 <com.shedule.zyx.myshedule.widget.CustomEditText
+                    android:id="@+id/classroom"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/classroom"
                     android:layout_weight="0.7"
                     app:hint="@string/classroom_hint"
                     app:maxLength="10"/>
@@ -87,11 +106,13 @@
 
         <com.shedule.zyx.myshedule.widget.CustomTextView
             android:id="@+id/begin_time"
-            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:time_text="@string/time_reduction"
             app:title_text="@string/begin_of_lesson"/>
+            android:clickable="true"
+            app:time_text="чч:мм"
+            app:title_text="Начало пары"/>
 
         <com.shedule.zyx.myshedule.widget.CustomTextView
             android:id="@+id/end_time"
@@ -133,12 +154,13 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/repeat_dates"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:id="@+id/repeat_dates"
+            android:orientation="horizontal"
             android:padding="10dp"
             android:weightSum="1">
 
@@ -163,6 +185,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.6"
+                android:gravity="right"
                 android:paddingLeft="5dp"
                 android:paddingRight="30dp"
                 android:paddingTop="5dp"
@@ -176,18 +199,18 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:alpha="0.1"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="3dp"
+            android:alpha="0.1"
             android:background="@color/sch_green"/>
 
         <LinearLayout
+            android:id="@+id/type_and_number_of_lesson"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:id="@+id/type_and_number_of_lesson"
+            android:orientation="horizontal"
             android:padding="10dp"
             android:weightSum="1">
 

@@ -1,54 +1,106 @@
 package com.shedule.zyx.myshedule
 
+import android.util.Log
+import app.voter.xyz.RxFirebase
+import app.voter.xyz.utils.Constants.Companion.RATINGS
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.models.Teacher
-import com.shedule.zyx.myshedule.utils.Constants.Companion.RATINGS
 import com.shedule.zyx.myshedule.utils.Utils.Companion.getKeyByName
+import rx.Observable
 import java.util.*
 
 /**
  * Created by bogdan on 16.09.16.
  */
-class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val token: String) {
+class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val auth: FirebaseAuth) {
 
-  var teachersRef = createTeacherRef()
+  fun createTeacherRef() = facultyRef().child("teachers")
 
-  private fun createTeacherRef(): DatabaseReference {
+  private fun facultyRef(): DatabaseReference {
     return ref.child(getKeyByName(prefs.getUniverName() ?: ""))
         .child(getKeyByName(prefs.getFacultyName() ?: ""))
-        .child("teachers")
   }
 
-  fun updateTeacherRef() {
-    teachersRef = createTeacherRef()
-  }
-
-  fun pushTeacher(teacher: Teacher) {
-    teachersRef.child(getKeyByName(teacher.teacherName)).addListenerForSingleValueEvent(object : ValueEventListener {
-      override fun onCancelled(p0: DatabaseError?) {
+  fun createAccount(): Observable<Void> {
+    return Observable.create {
+      auth.signInAnonymously().addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+          it.onNext(null)
+          it.onCompleted()
+        } else it.onError(task.exception)
       }
+    }
+  }
 
-      override fun onDataChange(data: DataSnapshot?) {
-        if (data?.value == null) {
-          teachersRef.child(getKeyByName(teacher.teacherName)).setValue(teacher)
-        } else {
-          (data?.value as HashMap<String, Any>).keys.toList()
-              .filter { it.equals(getKeyByName(teacher.teacherName)) }
-              .firstOrNull()?.let {
-            teachersRef.child(it)
-                .updateChildren(mapOf(Pair("", ObjectMapper().convertValue(teacher, Map::class.java))))
+  fun getTeachers(): Observable<List<Teacher>?> {
+    return Observable.create { sub ->
+
+      RxFirebase.observe(facultyRef())
+          .subscribe({
+            if (it.value != null) {
+              RxFirebase.observeChildAdded(facultyRef())
+                  .subscribe({
+                    sub.onNext(it.snapshot?.children?.map { it.getValue(Teacher::class.java) })
+                    sub.onCompleted()
+                  }, {
+                    sub.onError(it)
+                    sub.onCompleted()
+                  })
+            } else {
+              sub.onNext(null)
+              sub.onCompleted()
+            }
+          }, {
+            sub.onError(it)
+            sub.onCompleted()
+          })
+    }
+  }
+
+  fun pushTeacher(teachers: List<Teacher>): Observable<Void> {
+
+    return Observable.create { subscriber ->
+      teachers.map { teacher ->
+        createTeacherRef().child(getKeyByName(teacher.teacherName)).addListenerForSingleValueEvent(object : ValueEventListener {
+          override fun onCancelled(p0: DatabaseError?) {
+            Log.d("", "")
           }
-        }
+
+          override fun onDataChange(data: DataSnapshot?) {
+            if (data?.value == null) {
+              createTeacherRef().child(getKeyByName(teacher.teacherName)).setValue(teacher)
+            } else {
+              (data?.value as HashMap<String, Any>).keys.toList()
+                  .filter { it.equals(getKeyByName(teacher.teacherName)) }
+                  .firstOrNull()?.let {
+                createTeacherRef().child(it)
+                    .updateChildren(mapOf(Pair("", ObjectMapper().convertValue(teacher, Map::class.java))))
+              }
+            }
+
+            subscriber.onNext(null)
+            subscriber.onCompleted()
+          }
+        })
       }
-    })
+
+      RxFirebase.observeChildAdded(facultyRef())
+          .subscribe({
+            subscriber.onNext(null)
+            subscriber.onCompleted()
+          }, {
+            subscriber.onError(it)
+          })
+    }
   }
 
   fun pushRating(rating: Double, teacherName: String) {
-    teachersRef.child(getKeyByName(teacherName)).child(RATINGS).child(token).setValue(rating)
+    createTeacherRef().child(getKeyByName(teacherName)).child(RATINGS).child(auth.currentUser?.uid).setValue(rating)
   }
 }

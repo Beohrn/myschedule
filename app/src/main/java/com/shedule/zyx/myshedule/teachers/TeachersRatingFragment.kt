@@ -16,6 +16,10 @@ import com.shedule.zyx.myshedule.teachers.TeachersAdapter
 import com.shedule.zyx.myshedule.teachers.TeachersAdapter.OnTeacherClickListener
 import com.shedule.zyx.myshedule.widget.TeacherView.OnRatingClickListener
 import kotlinx.android.synthetic.main.teachers_rating_layout.*
+import org.jetbrains.anko.support.v4.indeterminateProgressDialog
+import org.jetbrains.anko.support.v4.toast
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -36,19 +40,34 @@ class TeachersRatingFragment : Fragment() {
 
   override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
     ScheduleApplication.getComponent().inject(this)
-
-    scheduleManager.getTeachers().map { firebase.pushTeacher(it) }
     return inflater!!.inflate(R.layout.teachers_rating_layout, container, false)
   }
 
   override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    RxFirebase.observeChildAdded(firebase.teachersRef).subscribe({
+    if (scheduleManager.getTeachers().size != 0) {
+      val dialog = indeterminateProgressDialog("Загрузка")
+      dialog.setCanceledOnTouchOutside(false)
+      dialog.show()
+      firebase.pushTeacher(scheduleManager.getTeachers())
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe({
+            dialog.dismiss()
+          }, {
+            dialog.dismiss()
+            toast("Ошибка загрузки")
+          })
+    } else {
+      toast("Нету преподавателей")
+    }
+
+    RxFirebase.observeChildAdded(firebase.createTeacherRef()).subscribe({
       teachers_recycle_view.smoothScrollToPosition(teachersAdapter.itemCount)
     }, {})
 
-    teachersAdapter = TeachersAdapter(context, firebase.teachersRef,
+    teachersAdapter = TeachersAdapter(context, firebase.createTeacherRef(),
         activity as OnTeacherClickListener, activity as OnRatingClickListener)
     teachers_recycle_view.layoutManager = LinearLayoutManager(context)
     teachers_recycle_view.adapter = teachersAdapter

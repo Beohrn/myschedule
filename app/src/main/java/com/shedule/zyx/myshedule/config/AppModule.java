@@ -106,8 +106,8 @@ public class AppModule {
 
     @Singleton
     @Provides
-    FirebaseWrapper provideFirebaseWrapper(DatabaseReference ref, AppPreference prefs, String token) {
-        return new FirebaseWrapper(ref, prefs, token);
+    FirebaseWrapper provideFirebaseWrapper(DatabaseReference ref, AppPreference prefs, FirebaseAuth auth) {
+        return new FirebaseWrapper(ref, prefs, auth);
     }
 
     @Singleton
