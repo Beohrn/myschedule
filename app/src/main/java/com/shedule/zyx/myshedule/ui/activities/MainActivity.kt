@@ -199,7 +199,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       .subject("Feedback")
       .build())
 
-
   override fun onScheduleReceived(schedules: ArrayList<Schedule>) {
     alert("", getString(R.string.receive_single_schedule)) {
       positiveButton(getString(R.string.yes)) {
