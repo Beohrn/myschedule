@@ -4,9 +4,7 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
     <string name="action_settings">Settings</string>
-
     <string name="name_of_lesson">Name of lesson</string>
     <string name="name_of_teacher">Teacher name</string>
     <string name="start_period_of_lesson">Start period of lesson</string>
@@ -25,10 +23,8 @@
     <string name="wednesday">Wednesday</string>
     <string name="thursday">Thursday</string>
     <string name="friday">Friday</string>
-
     <string name="add_schedule_toolbar_title">Create lesson</string>
     <string name="homework_activity_title">Homework</string>
-
     <string name="calendar">Calendar</string>
 
     <string name="banner_ad_unit_id">ca-app-pub-7743911822125060/2694759036</string>
@@ -485,18 +481,14 @@
     <string name="description">Description</string>
     <string name="done_tasks">Fulfilled task:</string>
     <string name="not_done_tasks">Unfulfilled task:</string>
-
     <string name="demands">Demanding</string>
     <string name="competence">Competence</string>
     <string name="ability_to_information">Ability to convey information</string>
     <string name="desire_to_learn">The desire to learn</string>
     <string name="teacher_culture">Culture teacher</string>
-
     <string name="add_photo">Add a photo</string>
     <string name="approve">Accept</string>
-
     <string name="random_dates">Arbitrary dates</string>
-
     <string name="bonded_devices">Connected\n devices</string>
     <string name="nearby_devices">Available\n devices</string>
 
@@ -548,16 +540,13 @@
     <string name="ok">OK</string>
     <string name="connecting">Connecting</string>
     <string name="input_text">Enter the text</string>
-
     <string name="lesson_delete">Delete lesson</string>
     <string name="in_single_day">Only on this day</string>
     <string name="in_others_day">On the other days</string>
 
     <string name="no_permission_for_camera">No permission to access the camera</string>
     <string name="no_permission_for_storage">No permission to access the Memory</string>
-
     <string name="teachers">Teachers</string>
-
     <string name="receive_single_schedule">Take?</string>
     <string name="merge_schedule">To merge schedules</string>
     <string name="override_schedule">Change schedule</string>
