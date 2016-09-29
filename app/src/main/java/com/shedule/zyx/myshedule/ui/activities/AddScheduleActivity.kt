@@ -62,6 +62,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   val FIRST_WEEK = 1
   val SECOND_WEEK = 2
   val BOTH_WEEKS = 0
+  val RANDOM_DATES = 3
   var numberOfLesson = 1
   var isScheduleEdit = false
   var schedule: Schedule? = null
@@ -164,15 +165,42 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     repeat_dates.onClick {
       startPeriod?.let {
         endPeriod?.let {
-          selector(getString(R.string.repeat_of_lesson),
+          selector(null,
               listOf(getString(R.string.every_week),
                   getString(R.string.on_first_week),
-                  getString(R.string.on_second_week))) {
+                  getString(R.string.on_second_week),
+                  getString(R.string.random_dates))) {
             position ->
             when (position) {
               0 -> { setListOfDates(BOTH_WEEKS) }
               1 -> { setListOfDates(FIRST_WEEK) }
               2 -> { setListOfDates(SECOND_WEEK) }
+              3 -> {
+                alert {
+                  customView {
+                    include<View>(R.layout.calendar_layout) {
+                      val calendarView = find<MaterialCalendarView>(R.id.calendarView)
+
+                      calendarView.selectionMode = MaterialCalendarView.SELECTION_MODE_MULTIPLE
+                      calendarView.state().edit()
+                          .setMinimumDate(startPeriod?.let { CalendarDay(it.year, it.monthOfYear, it.dayOfMonth) })
+                          .setMaximumDate(endPeriod?.let { CalendarDay(it.year, it.monthOfYear, it.dayOfMonth) })
+                          .commit()
+
+                      find<TextView>(R.id.clear_dates).onClick { calendarView.clearSelection() }
+                      find<TextView>(R.id.cancel_dates).onClick { dismiss() }
+                      find<TextView>(R.id.approve_dates).onClick {
+                        if (listOfDates.size != 0)
+                          listOfDates.clear()
+
+                        listOfDates.addAll(calendarView.selectedDates.map { "${it.day}-${it.month}-${it.year}" })
+                        setListOfDates(RANDOM_DATES)
+                        dismiss()
+                      }
+                    }
+                  }
+                }.show()
+              }
             }
           }
         } ?: toast(getString(R.string.set_date_of_end_period))
@@ -216,7 +244,8 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     repeat_value.text = when (week) {
       1 -> "(${getString(R.string.on_first_week)})"
       2 -> "(${getString(R.string.on_second_week)})"
-      else -> "(${getString(R.string.every_week)})"
+      0 -> "(${getString(R.string.every_week)})"
+      else -> "(${getString(R.string.random_dates)})"
     }
 
     this.week = week
@@ -272,40 +301,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
 
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {
     when (item?.itemId) {
-      R.id.add_item -> {
-        changeSchedule(); return true
-      }
-      R.id.add_schedule_menu -> {
-        startPeriod?.let {
-          endPeriod?.let {
-            alert {
-              customView {
-                include<View>(R.layout.calendar_layout) {
-                  val calendarView = find<MaterialCalendarView>(R.id.calendarView)
-
-                  calendarView.selectionMode = MaterialCalendarView.SELECTION_MODE_MULTIPLE
-                  calendarView.state().edit()
-                      .setMinimumDate(startPeriod?.let { CalendarDay(it.year, it.monthOfYear, it.dayOfMonth) })
-                      .setMaximumDate(endPeriod?.let { CalendarDay(it.year, it.monthOfYear, it.dayOfMonth) })
-                      .commit()
-
-                  find<TextView>(R.id.clear_dates).onClick { calendarView.clearSelection() }
-                  find<TextView>(R.id.cancel_dates).onClick { dismiss() }
-                  find<TextView>(R.id.approve_dates).onClick {
-                    if (listOfDates.size != 0)
-                      listOfDates.clear()
-
-                    listOfDates.addAll(calendarView.selectedDates.map { "${it.day}-${it.month}-${it.year}" })
-                    repeat_value.text = "(${getString(R.string.random_dates)})"
-                    dismiss()
-                  }
-                }
-              }
-            }.show()
-          } ?: toast(getString(R.string.set_date_of_end_period))
-        } ?: toast(getString(R.string.set_date_of_begin_period))
-        return true
-      }
+      R.id.add_item -> { changeSchedule(); return true }
       else -> return super.onOptionsItemSelected(item)
     }
   }
@@ -352,7 +348,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     schedule.startTime = startTime
     schedule.endTime = endTime
     schedule.teacher = Teacher(name_of_teacher.getText().toString(), name_of_lesson.getText().toString())
-    schedule.typeLesson = if (spinner_type_of_lesson.selectedItem.toString().equals(getString(R.string.practice)))
+    schedule.typeLesson = if (spinner_type_of_lesson.selectedItem.toString() == getString(R.string.practice))
       TypeLesson.SEMINAR else TypeLesson.LECTURE
     schedule.category = category
     schedule.week = week

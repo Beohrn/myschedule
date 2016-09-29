@@ -8,8 +8,4 @@
         android:title="@string/approve"
         app:showAsAction="always"
         android:orderInCategory="100"/>
-
-    <item
-        android:id="@+id/add_schedule_menu"
-        android:title="@string/random_dates"/>
 </menu>
