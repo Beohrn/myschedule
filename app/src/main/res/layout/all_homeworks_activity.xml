@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
@@ -30,5 +31,11 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:id="@+id/list_of_homeworks"/>
 
+    <com.shedule.zyx.myshedule.widget.EmptyContentView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:overview_text="@string/no_schedules_with_homework_yet"
+        android:id="@+id/empty_homeworks"/>
 
 </android.support.design.widget.CoordinatorLayout>

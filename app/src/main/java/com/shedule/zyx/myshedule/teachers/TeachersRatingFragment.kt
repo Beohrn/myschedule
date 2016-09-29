@@ -1,4 +1,4 @@
-package app.voter.xyz.auth.fragments
+package com.shedule.zyx.myshedule.teachers
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -12,7 +12,6 @@ import com.shedule.zyx.myshedule.FirebaseWrapper
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.managers.ScheduleManager
-import com.shedule.zyx.myshedule.teachers.TeachersAdapter
 import com.shedule.zyx.myshedule.teachers.TeachersAdapter.OnTeacherClickListener
 import com.shedule.zyx.myshedule.widget.TeacherView.OnRatingClickListener
 import kotlinx.android.synthetic.main.teachers_rating_layout.*
@@ -45,6 +44,8 @@ class TeachersRatingFragment : Fragment() {
 
   override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    teachers_recycle_view.visibility = View.VISIBLE
+    no_teachers_yet.visibility = View.GONE
 
     if (scheduleManager.getTeachers().size != 0) {
       val dialog = indeterminateProgressDialog(getString(R.string.load))
@@ -60,16 +61,23 @@ class TeachersRatingFragment : Fragment() {
             toast(getString(R.string.download_error))
           })
     } else {
-      toast(getString(R.string.notting_teachers))
     }
 
     RxFirebase.observeChildAdded(firebase.createTeacherRef()).subscribe({
       teachers_recycle_view.smoothScrollToPosition(teachersAdapter.itemCount)
     }, {})
-
     teachersAdapter = TeachersAdapter(context, firebase.createTeacherRef(),
         activity as OnTeacherClickListener, activity as OnRatingClickListener)
     teachers_recycle_view.layoutManager = LinearLayoutManager(context)
     teachers_recycle_view.adapter = teachersAdapter
+
+    firebase.getTeachers().subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe({ teachers ->
+          if (teachers == null) {
+            teachers_recycle_view.visibility = View.GONE
+            no_teachers_yet.visibility = View.VISIBLE
+          }
+        }, {})
   }
 }

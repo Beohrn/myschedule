@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView
-    android:id="@+id/teachers_recycle_view"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/teachers_recycle_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.shedule.zyx.myshedule.widget.EmptyContentView
+        android:id="@+id/no_teachers_yet"
+        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        app:overview_text="@string/no_teachers_yet"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>
+

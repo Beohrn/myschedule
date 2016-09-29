@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
@@ -45,5 +46,12 @@
         app:rippleColor="@color/mark_orange_dark"
         android:nestedScrollingEnabled="true"
         app:layout_behavior="com.shedule.zyx.myshedule.widget.FabNestedScrollBehavior"/>
+
+    <com.shedule.zyx.myshedule.widget.EmptyContentView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:overview_text="@string/no_homework_yet"
+        android:id="@+id/empty_homework"/>
 
 </android.support.design.widget.CoordinatorLayout>
