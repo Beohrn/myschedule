@@ -165,7 +165,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   }
 
   private fun openDataPicker() {
-    val now = dateManager.resetCalendar()
+    val now = Calendar.getInstance()
     val picker = DatePickerDialog.newInstance(
         this@MainActivity, now.get(Calendar.YEAR), now.get(Calendar.MONTH),
         now.get(Calendar.DAY_OF_MONTH))
