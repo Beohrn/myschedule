@@ -56,7 +56,5 @@ class DateManager(var calendar: Calendar) {
     return dates
   }
 
-  fun resetCalendar() = calendar.apply { Calendar.getInstance() }
-
   fun getMonthName(month: Int) = DateFormatSymbols().months[month]
 }
