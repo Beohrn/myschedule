@@ -63,6 +63,7 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
   }
 
   fun pushTeacher(teachers: List<Teacher>): Observable<Boolean> {
+    var loaded = false
 
     return Observable.create { subscriber ->
       teachers.map { teacher ->
@@ -70,6 +71,7 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
           override fun onCancelled(p0: DatabaseError?) { }
 
           override fun onDataChange(data: DataSnapshot?) {
+            loaded = true
             if (data?.value == null) {
               createTeacherRef().child(getKeyByName(teacher.teacherName)).setValue(teacher)
               teacherCallback()
@@ -105,6 +107,27 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
           }
         })
       }
+
+      getTeachers().subscribe({
+        if (it == null) {
+          if (!loaded) {
+            subscriber.onNext(false)
+            subscriber.onCompleted()
+          }
+        } else {
+          RxFirebase.observeChildAdded(facultyRef())
+              .subscribe({
+                if (!loaded) {
+                  subscriber.onNext(true)
+                  subscriber.onCompleted()
+                }
+              }, {
+                subscriber.onError(it)
+              })
+        }
+      }, {
+        subscriber.onError(it)
+      })
     }
   }
 
