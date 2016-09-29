@@ -4,14 +4,14 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/sch_green</item>
         <item name="colorPrimaryDark">@color/sch_dark_green</item>
-        <item name="colorAccent">@color/mark_orange_dark</item>
+        <item name="colorAccent">@color/yellow</item>
         <item name="android:fitsSystemWindows">true</item>
     </style>
 
     <style name="TeacherStyle" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/sch_green</item>
         <item name="colorPrimaryDark">@color/sch_dark_green</item>
-        <item name="colorAccent">@color/mark_orange_dark</item>
+        <item name="colorAccent">@color/yellow</item>
     </style>
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
