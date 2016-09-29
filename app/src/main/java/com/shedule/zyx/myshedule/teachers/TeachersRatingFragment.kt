@@ -50,7 +50,7 @@ class TeachersRatingFragment : Fragment() {
       val dialog = indeterminateProgressDialog(getString(R.string.load))
       dialog.setCanceledOnTouchOutside(false)
       dialog.show()
-      firebase.pushTeacher(scheduleManager.getTeachers())
+      firebase.pushTeacher(scheduleManager.getTeachers().filter { it.teacherName.isNullOrEmpty() })
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread())
           .subscribe({
