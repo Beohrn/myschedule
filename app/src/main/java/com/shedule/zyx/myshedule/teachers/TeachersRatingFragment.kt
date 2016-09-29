@@ -44,28 +44,28 @@ class TeachersRatingFragment : Fragment() {
 
   override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    teachers_recycle_view.visibility = View.VISIBLE
-    no_teachers_yet.visibility = View.GONE
+    toggleEmptyTeachers(false)
 
-    if (scheduleManager.getTeachers().size != 0) {
-      val dialog = indeterminateProgressDialog(getString(R.string.load))
-      dialog.setCanceledOnTouchOutside(false)
-      dialog.show()
-      firebase.pushTeacher(scheduleManager.getTeachers())
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe({
-            dialog.dismiss()
-          }, {
-            dialog.dismiss()
-            toast(getString(R.string.download_error))
-          })
-    } else {
-    }
+    val dialog = indeterminateProgressDialog(getString(R.string.load))
+    dialog.setCanceledOnTouchOutside(false)
+    dialog.show()
+    firebase.pushTeacher(scheduleManager.getTeachers().filter { it.teacherName.isNotEmpty() })
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe({
+          if (it) toggleEmptyTeachers(false) else
+            toggleEmptyTeachers(true)
+
+          dialog.dismiss()
+        }, {
+          dialog.dismiss()
+          toast(getString(R.string.download_error))
+        })
 
     RxFirebase.observeChildAdded(firebase.createTeacherRef()).subscribe({
       teachers_recycle_view.smoothScrollToPosition(teachersAdapter.itemCount)
     }, {})
+
     teachersAdapter = TeachersAdapter(context, firebase.createTeacherRef(),
         activity as OnTeacherClickListener, activity as OnRatingClickListener)
     teachers_recycle_view.layoutManager = LinearLayoutManager(context)
@@ -79,5 +79,10 @@ class TeachersRatingFragment : Fragment() {
             no_teachers_yet.visibility = View.VISIBLE
           }
         }, {})
+  }
+
+  fun toggleEmptyTeachers(isEmpty: Boolean) {
+    teachers_recycle_view.visibility = if (isEmpty) View.GONE else View.VISIBLE
+    no_teachers_yet.visibility = if (isEmpty) View.VISIBLE else View.GONE
   }
 }

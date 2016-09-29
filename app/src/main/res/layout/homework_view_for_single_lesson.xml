@@ -16,8 +16,8 @@
         card_view:cardUseCompatPadding="true">
 
         <LinearLayout
-            xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/home_task_container"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
@@ -38,11 +38,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:paddingLeft="10dp"
                     android:layout_weight="0.9"
-                    tools:text="Home Task"
+                    android:paddingLeft="10dp"
                     android:textColor="@color/hw_title"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp"
+                    tools:text="Home Task"/>
 
             </LinearLayout>
 
@@ -65,8 +65,8 @@
                     xmlns:tools="http://schemas.android.com/tools"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.9"
                     android:layout_gravity="center_horizontal|center"
+                    android:layout_weight="0.9"
                     android:orientation="vertical"
                     android:paddingTop="6dp"
                     android:weightSum="1">
@@ -77,12 +77,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="0.7"
-                        android:paddingLeft="7dp"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        tools:text="Some desfgbfdgbdf bfdb dfbdf bdfb fdb dfbdfb  dfbfd fdb dfb dbf fb cription"
+                        android:paddingLeft="7dp"
                         android:textColor="@color/text_color"
-                        app:animation_duration="1000"/>
+                        app:animation_duration="1000"
+                        tools:text="Some desfgbfdgbdf bfdb dfbdf bdfb fdb dfbdfb  dfbfd fdb dfb dbf fb cription"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -94,19 +94,19 @@
                         <View
                             android:layout_width="0dp"
                             android:layout_height="0.2dp"
-                            android:layout_weight="0.9"
                             android:layout_gravity="center_vertical|top"
+                            android:layout_weight="0.9"
                             android:alpha="0.9"
                             android:background="@color/white"
                             android:padding="10dp"/>
 
                         <ImageView
+                            android:id="@+id/expand"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.1"
                             android:layout_gravity="right"
-                            android:src="@drawable/arrow_down"
-                            android:id="@+id/expand"/>
+                            android:layout_weight="0.1"
+                            android:src="@drawable/arrow_down"/>
 
                     </LinearLayout>
 
@@ -115,12 +115,12 @@
             </LinearLayout>
 
             <TextView
-                android:layout_width="match_parent"
-                tools:text="13.07.2016"
                 android:id="@+id/dead_line"
-                android:paddingLeft="10dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/red"/>
+                android:paddingLeft="10dp"
+                android:textColor="@color/red"
+                tools:text="13.07.2016"/>
 
         </LinearLayout>
 

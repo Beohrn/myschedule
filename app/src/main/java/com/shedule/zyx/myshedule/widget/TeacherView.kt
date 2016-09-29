@@ -60,6 +60,10 @@ class TeacherView : FrameLayout {
       setColorByRating(mediumRating)
       teacher_rating.text = getLetterByRating(mediumRating)
       rating.text = "$mediumRating"
+    } else {
+      setColorByRating(60.toDouble())
+      teacher_rating.text = getLetterByRating(60.toDouble())
+      rating.text = "60.0"
     }
   }
 

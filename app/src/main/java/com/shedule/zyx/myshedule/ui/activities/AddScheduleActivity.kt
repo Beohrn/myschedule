@@ -353,8 +353,10 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     schedule.category = category
     schedule.week = week
 
-    if (!name_of_teacher.getText().toString().isNullOrEmpty())
+    if (!name_of_teacher.getText().toString().isNullOrEmpty()) {
+      schedule.teacher
       firebaseWrapper.pushTeacher(listOf(schedule.teacher!!)).subscribe({}, {})
+    }
 
     if (schedule.dates.size != 0)
       schedule.dates.clear()
