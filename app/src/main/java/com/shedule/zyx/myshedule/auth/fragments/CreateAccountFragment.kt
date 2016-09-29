@@ -40,7 +40,8 @@ class CreateAccountFragment : Fragment() {
   @Inject
   lateinit var firebaseWrapper: FirebaseWrapper
 
-  lateinit var textWatcher: TextWatcher
+  lateinit var facultyWatcher: TextWatcher
+  lateinit var univerWatcher: TextWatcher
 
   override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
     ScheduleApplication.getComponent().inject(this)
@@ -60,7 +61,7 @@ class CreateAccountFragment : Fragment() {
       univer_ET.setText(adapter.getItem(i))
     }
 
-    textWatcher = object : TextWatcher {
+    univerWatcher = object : TextWatcher {
       override fun afterTextChanged(s: Editable?) {
 
       }
@@ -69,15 +70,33 @@ class CreateAccountFragment : Fragment() {
       }
 
       override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        faculty_ET.removeTextChangedListener(textWatcher)
-        faculty_ET.setText(faculty_ET.text.toString().replace("Ы", "І"))
+        univer_ET.removeTextChangedListener(univerWatcher)
+        univer_ET.setText(univer_ET.text.toString().replace("Ы", "І").replace("Э", "Е")
+            .replace("ы", "і").replace("э", "е"))
+        univer_ET.setSelection(univer_ET.text.toString().length)
+        univer_ET.addTextChangedListener(univerWatcher)
+      }
+    }
+
+    facultyWatcher = object : TextWatcher {
+      override fun afterTextChanged(s: Editable?) {
+
+      }
+
+      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+      }
+
+      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        faculty_ET.removeTextChangedListener(facultyWatcher)
+        faculty_ET.setText(faculty_ET.text.toString().replace("Ы", "І").replace("Э", "Е"))
         faculty_ET.setSelection(faculty_ET.text.toString().length)
-        faculty_ET.addTextChangedListener(textWatcher)
+        faculty_ET.addTextChangedListener(facultyWatcher)
       }
     }
 
     faculty_ET.filters = arrayOf<InputFilter>(android.text.InputFilter.AllCaps())
-    faculty_ET.addTextChangedListener(textWatcher)
+    faculty_ET.addTextChangedListener(facultyWatcher)
+    univer_ET.addTextChangedListener(univerWatcher)
 
     create_account_btn.onClick {
       if (!checkEdiTextIsEmpty(univer_ET) && !checkEdiTextIsEmpty(faculty_ET)) {
