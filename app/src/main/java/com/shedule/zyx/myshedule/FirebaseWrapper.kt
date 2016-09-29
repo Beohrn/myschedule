@@ -72,6 +72,7 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
           override fun onDataChange(data: DataSnapshot?) {
             if (data?.value == null) {
               createTeacherRef().child(getKeyByName(teacher.teacherName)).setValue(teacher)
+              teacherCallback()
             } else {
               (data?.value as HashMap<String, Any>).keys.toList()
                   .filter { it.equals(getKeyByName(teacher.teacherName)) }
@@ -79,25 +80,31 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
                 createTeacherRef().child(it)
                     .updateChildren(mapOf(Pair("", ObjectMapper().convertValue(teacher, Map::class.java))))
               }
+
+              teacherCallback()
             }
+          }
+
+          private fun teacherCallback() {
+            getTeachers().subscribe({
+              if (it == null) {
+                subscriber.onNext(false)
+                subscriber.onCompleted()
+              } else {
+                RxFirebase.observeChildAdded(facultyRef())
+                    .subscribe({
+                      subscriber.onNext(true)
+                      subscriber.onCompleted()
+                    }, {
+                      subscriber.onError(it)
+                    })
+              }
+            }, {
+              subscriber.onError(it)
+            })
           }
         })
       }
-
-      getTeachers().subscribe({
-        subscriber.onNext(false)
-        subscriber.onCompleted()
-      }, {
-        subscriber.onError(it)
-      })
-
-      RxFirebase.observeChildAdded(facultyRef())
-          .subscribe({
-            subscriber.onNext(true)
-            subscriber.onCompleted()
-          }, {
-            subscriber.onError(it)
-          })
     }
   }
 

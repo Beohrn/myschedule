@@ -12,7 +12,6 @@ import com.shedule.zyx.myshedule.FirebaseWrapper
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.managers.ScheduleManager
-import com.shedule.zyx.myshedule.teachers.TeachersAdapter
 import com.shedule.zyx.myshedule.teachers.TeachersAdapter.OnTeacherClickListener
 import com.shedule.zyx.myshedule.widget.TeacherView.OnRatingClickListener
 import kotlinx.android.synthetic.main.teachers_rating_layout.*
@@ -45,22 +44,23 @@ class TeachersRatingFragment : Fragment() {
 
   override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    teachers_recycle_view.visibility = View.VISIBLE
-    no_teachers_yet.visibility = View.GONE
+    toggleEmptyTeachers(false)
 
-      val dialog = indeterminateProgressDialog(getString(R.string.load))
-      dialog.setCanceledOnTouchOutside(false)
-      dialog.show()
-      firebase.pushTeacher(scheduleManager.getTeachers().filter { it.teacherName.isNotEmpty() })
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe({
-            if (it) toast("true") else toast("false")
-            dialog.dismiss()
-          }, {
-            dialog.dismiss()
-            toast(getString(R.string.download_error))
-          })
+    val dialog = indeterminateProgressDialog(getString(R.string.load))
+    dialog.setCanceledOnTouchOutside(false)
+    dialog.show()
+    firebase.pushTeacher(scheduleManager.getTeachers().filter { it.teacherName.isNotEmpty() })
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe({
+          if (it) toggleEmptyTeachers(false) else
+            toggleEmptyTeachers(true)
+
+          dialog.dismiss()
+        }, {
+          dialog.dismiss()
+          toast(getString(R.string.download_error))
+        })
 
     RxFirebase.observeChildAdded(firebase.createTeacherRef()).subscribe({
       teachers_recycle_view.smoothScrollToPosition(teachersAdapter.itemCount)
@@ -79,5 +79,10 @@ class TeachersRatingFragment : Fragment() {
             no_teachers_yet.visibility = View.VISIBLE
           }
         }, {})
+  }
+
+  fun toggleEmptyTeachers(isEmpty: Boolean) {
+    teachers_recycle_view.visibility = if (isEmpty) View.GONE else View.VISIBLE
+    no_teachers_yet.visibility = if (isEmpty) View.VISIBLE else View.GONE
   }
 }
