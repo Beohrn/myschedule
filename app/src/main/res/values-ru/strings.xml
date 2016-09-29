@@ -584,4 +584,8 @@
     <string name="delete_schedule">Удалить расписание</string>
     <string name="schedules_is_no">Расписания пока нет</string>
 
+    <string name="no_homework_yet">Для этого предмета нет домашних заданий</string>
+    <string name="no_schedules_with_homework_yet">Нет предметов, у которых есть домашние задания</string>
+    <string name="no_teachers_yet">Преподавателей пока нет</string>
+
 </resources>

@@ -40,4 +40,8 @@
         <attr name="title_text" format="string"/>
         <attr name="time_text" format="string"/>
     </declare-styleable>
+
+    <declare-styleable name="EmptyContentView">
+        <attr name="overview_text" format="string"/>
+    </declare-styleable>
 </resources>

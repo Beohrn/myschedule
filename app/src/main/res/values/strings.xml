@@ -584,4 +584,8 @@
     <string name="delete_schedule">Delete schedule</string>
     <string name="schedules_is_no">No schedules yet</string>
 
+    <string name="no_homework_yet">For this subject is no homework</string>
+    <string name="no_schedules_with_homework_yet">No subjects that have a homework</string>
+    <string name="no_teachers_yet">No teachers yet</string>
+
 </resources>
