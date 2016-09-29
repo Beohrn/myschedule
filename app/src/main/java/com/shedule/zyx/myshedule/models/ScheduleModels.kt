@@ -39,7 +39,7 @@ enum class TypeLesson: Serializable { SEMINAR, LECTURE }
 
 data class Date(val dayOfMonth: Int, val monthOfYear: Int, val year: Int): Serializable
 
-enum class Category: Serializable { EXAM, COURSE_WORK, STANDINGS, HOME_EXAM }
+enum class Category: Serializable { EXAM, COURSE_WORK, STANDINGS, HOME_EXAM, SIMPLE_LESSON }
 
 class Teacher {
   var teacherName = ""

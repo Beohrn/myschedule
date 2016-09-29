@@ -508,6 +508,7 @@
     <string name="course_work">Курсова робота</string>
     <string name="standings">Залік</string>
     <string name="home_exam">Розрахункова</string>
+    <string name="simple_lesson">Проста пара</string>
 
     <string name="e">E</string>
     <string name="d">D</string>
@@ -576,5 +577,10 @@
     <string name="like">Подобається</string>
     <string name="dislike">Не подобається</string>
     <string name="input_data">Введіть дані</string>
+
+    <string name="feedback">Зворотній зв’язок</string>
+    <string name="email">yourschedule.info@gmail.com</string>
+    <string name="delete_schedule">Видалити розклад</string>
+    <string name="schedules_is_no">Розкладу поки немає</string>
 
 </resources>

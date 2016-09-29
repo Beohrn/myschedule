@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import app.voter.xyz.auth.ReplaceFragmentListener
-import app.voter.xyz.auth.fragments.CreateAccountFragment
 import app.voter.xyz.auth.fragments.TeachersRatingFragment
 import app.voter.xyz.comments.DiscussionActivity
 import app.voter.xyz.comments.DiscussionActivity.Companion.TEACHER_REQUEST
@@ -14,6 +13,7 @@ import com.google.firebase.database.DatabaseReference
 import com.shedule.zyx.myshedule.FirebaseWrapper
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.ScheduleApplication
+import com.shedule.zyx.myshedule.auth.fragments.CreateAccountFragment
 import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.models.Teacher
 import com.shedule.zyx.myshedule.teachers.TeachersAdapter.OnTeacherClickListener

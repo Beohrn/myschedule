@@ -1,4 +1,4 @@
-package app.voter.xyz.auth.fragments
+package com.shedule.zyx.myshedule.auth.fragments
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -51,7 +51,7 @@ class CreateAccountFragment : Fragment() {
     super.onViewCreated(view, savedInstanceState)
 
     val adapter = ArrayAdapter(context, R.layout.single_text_view, R.id.single_text,
-        getString(R.string.universities).split(";").map { it.trim() })
+        getString(R.string.universities).split(";").map(String::trim))
 
     univer_ET.setAdapter(adapter)
     univer_ET.threshold = 1
@@ -76,7 +76,7 @@ class CreateAccountFragment : Fragment() {
       }
     }
 
-    faculty_ET.filters = arrayOf<InputFilter>(InputFilter.AllCaps())
+    faculty_ET.filters = arrayOf<InputFilter>(android.text.InputFilter.AllCaps())
     faculty_ET.addTextChangedListener(textWatcher)
 
     create_account_btn.onClick {
