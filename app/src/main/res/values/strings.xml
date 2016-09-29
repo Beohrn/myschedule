@@ -509,6 +509,7 @@
     <string name="course_work">Coursework</string>
     <string name="standings">Passed</string>
     <string name="home_exam">The calculated work</string>
+    <string name="simple_lesson">Simple lesson</string>
 
     <string name="e">E</string>
     <string name="d">D</string>
@@ -577,5 +578,10 @@
     <string name="like">Like</string>
     <string name="dislike">Dislike</string>
     <string name="input_data">Input data</string>
+
+    <string name="feedback">Feedback</string>
+    <string name="email">yourschedule.info@gmail.com</string>
+    <string name="delete_schedule">Delete schedule</string>
+    <string name="schedules_is_no">No schedules yet</string>
 
 </resources>

@@ -1,11 +1,9 @@
 package com.shedule.zyx.myshedule.managers
 
-import app.voter.xyz.comments.Comment
 import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.models.Date
 import com.shedule.zyx.myshedule.models.HomeWork
 import com.shedule.zyx.myshedule.models.Schedule
-import com.shedule.zyx.myshedule.utils.Utils.Companion.getKeyByName
 import java.util.*
 
 /**
@@ -74,11 +72,13 @@ class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPrefere
     for (i in 1..weeksCount) {
       val day = startCalendar.get(Calendar.DAY_OF_MONTH)
 
-      if (endDate.monthOfYear < startCalendar.get(Calendar.MONTH) || endDate.year < startCalendar.get(Calendar.YEAR))
-        break
-      else if (endDate.monthOfYear == startCalendar.get(Calendar.MONTH))
-        if (endDate.dayOfMonth < day)
+      if (endDate.year < startCalendar.get(Calendar.YEAR)) {
+        if (endDate.monthOfYear < startCalendar.get(Calendar.MONTH)) {
           break
+        }
+      }else if (endDate.monthOfYear == startCalendar.get(Calendar.MONTH))
+          if (endDate.dayOfMonth < day)
+            break
 
       result.add("$day-${startCalendar.get(Calendar.MONTH)}-${startCalendar.get(Calendar.YEAR)}")
       startCalendar.add(Calendar.WEEK_OF_MONTH, range)
@@ -118,16 +118,11 @@ class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPrefere
 
   fun getHomeWork(schedule: Schedule) = schedule.homework
 
-  fun getHomeWorkByDate(schedule: Schedule, date: String) = schedule.homework.map { it }.filter { it.deadLine.equals(date)  }
+  fun getHomeWorkByDate(schedule: Schedule, date: String) = schedule.homework.map { it }.filter { it.deadLine.equals(date) }
 
   var editSchedule: Schedule? = null
 
-  fun setCommentToTeacher(keyToComment: String, comment: Comment, teacherName: String) {
-    val teacher = getTeachers().filter { getKeyByName(it.teacherName).equals(teacherName) }
-        .firstOrNull()
-
-    teacher?.let { it.comments.put(keyToComment, comment) }
-  }
+  fun deleteSchedule() = globalList.clear()
 
   var editHomework: HomeWork? = null
 }

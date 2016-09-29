@@ -18,6 +18,7 @@ import com.shedule.zyx.myshedule.R.layout.add_schedule_activity
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.models.*
+import com.shedule.zyx.myshedule.models.Category.*
 import com.shedule.zyx.myshedule.models.Date
 import com.shedule.zyx.myshedule.utils.Utils
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
@@ -74,11 +75,13 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     supportActionBar?.title = getString(R.string.add_schedule_toolbar_title)
     add_schedule_toolbar.setTitleTextColor(Color.WHITE)
 
-    category = Category.HOME_EXAM
+    category = SIMPLE_LESSON
 
     categoriesColors()
-
+    setPeriods(Date(1, 8, 2016), Date(31, 11, 2016))
+    setTime(Time(8, 30), Time(10, 5))
     schedule = scheduleManager.editSchedule
+
     schedule?.let {
       isScheduleEdit = true
       supportActionBar?.title = getString(R.string.set_lesson)
@@ -93,10 +96,11 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       spinner_type_of_lesson.setSelection(if (it.typeLesson == TypeLesson.SEMINAR) 0 else 1)
 
       when (it.category) {
-        Category.EXAM -> setColor(Category.EXAM, 0, R.color.mark_red)
-        Category.COURSE_WORK -> setColor(Category.COURSE_WORK, 1, R.color.mark_orange)
-        Category.STANDINGS -> setColor(Category.STANDINGS, 2, R.color.mark_yellow)
-        Category.HOME_EXAM -> setColor(Category.HOME_EXAM, 3, R.color.dark_cyan)
+        EXAM -> setColor(EXAM, 0, R.color.mark_red)
+        COURSE_WORK -> setColor(COURSE_WORK, 1, R.color.mark_orange)
+        STANDINGS -> setColor(STANDINGS, 2, R.color.mark_yellow)
+        HOME_EXAM -> setColor(HOME_EXAM, 3, R.color.dark_cyan)
+        SIMPLE_LESSON -> setColor(SIMPLE_LESSON, 4, R.color.silver)
       }
 
       name_of_lesson.setText(it.nameLesson)
@@ -140,10 +144,11 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
 
     end_time.onClick { showTimeDialog(); switcher = 4 }
 
-    exam.onClick { setColor(Category.EXAM, 0, R.color.mark_red) }
-    course_work.onClick { setColor(Category.COURSE_WORK, 1, R.color.mark_orange) }
-    standings.onClick { setColor(Category.STANDINGS, 2, R.color.mark_yellow) }
-    home_exam.onClick { setColor(Category.HOME_EXAM, 3, R.color.dark_cyan) }
+    exam.onClick { setColor(EXAM, 0, R.color.mark_red) }
+    course_work.onClick { setColor(COURSE_WORK, 1, R.color.mark_orange) }
+    standings.onClick { setColor(STANDINGS, 2, R.color.mark_yellow) }
+    home_exam.onClick { setColor(HOME_EXAM, 3, R.color.dark_cyan) }
+    simple_lesson.onClick { setColor(SIMPLE_LESSON, 4, R.color.silver) }
 
     spinner_number_of_lesson.onItemSelectedListener {
       onItemSelected { adapterView, view, i, l ->
@@ -181,6 +186,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
 
     this.startPeriod = startPeriod
     this.endPeriod = endPeriod
+    setListOfDates(BOTH_WEEKS)
   }
 
   private fun setTime(startTime: Time?, endTime: Time?) {
@@ -223,24 +229,35 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
         course_work.setColor(R.color.nb_mark_orange)
         standings.setColor(R.color.nb_mark_yellow)
         home_exam.setColor(R.color.nb_dark_cyan)
+        simple_lesson.setColor(R.color.silver_white)
       }
       1 -> {
         exam.setColor(R.color.nb_mark_red)
         course_work.setColor(color)
         standings.setColor(R.color.nb_mark_yellow)
         home_exam.setColor(R.color.nb_dark_cyan)
+        simple_lesson.setColor(R.color.silver_white)
       }
       2 -> {
         exam.setColor(R.color.nb_mark_red)
         course_work.setColor(R.color.nb_mark_orange)
         standings.setColor(color)
         home_exam.setColor(R.color.nb_dark_cyan)
+        simple_lesson.setColor(R.color.silver_white)
       }
       3 -> {
         exam.setColor(R.color.nb_mark_red)
         course_work.setColor(R.color.nb_mark_orange)
         standings.setColor(R.color.nb_mark_yellow)
         home_exam.setColor(color)
+        simple_lesson.setColor(R.color.silver_white)
+      }
+      4 -> {
+        exam.setColor(R.color.nb_mark_red)
+        course_work.setColor(R.color.nb_mark_orange)
+        standings.setColor(R.color.nb_mark_yellow)
+        home_exam.setColor(R.color.nb_dark_cyan)
+        simple_lesson.setColor(color)
       }
     }
     category = cat
@@ -300,11 +317,10 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   private fun changeSchedule() {
     startPeriod?.let { start ->
       endPeriod?.let { end ->
+        val begin = "${start.year}${start.monthOfYear}${start.dayOfMonth}".toLong()
+        val theEnd = "${end.year}${end.monthOfYear}${end.dayOfMonth}".toLong()
 
-        if (start.dayOfMonth <= end.dayOfMonth &&
-            start.monthOfYear <= end.monthOfYear &&
-            start.year <= end.year) {
-
+        if (begin <= theEnd) {
           if (!isScheduleEdit) {
             schedule = Schedule(numberOfLesson.toString(),
                 if (name_of_lesson.getText().toString().isEmpty()) "" else name_of_lesson.getText().toString(),
@@ -325,10 +341,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
             setResult(Activity.RESULT_OK)
             finish()
           }
-        } else {
-          toast(getString(R.string.dates_more))
-        }
-
+        } else toast(getString(R.string.dates_more))
       } ?: toast(getString(R.string.set_date_of_end_period))
     } ?: toast(getString(R.string.set_date_of_begin_period))
   }
@@ -359,7 +372,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
         now.get(Calendar.HOUR_OF_DAY),
         now.get(Calendar.MINUTE),
         true)
-    dialog.accentColor = Color.RED
+    dialog.accentColor = getColor(R.color.sch_green)
     dialog.show(fragmentManager, "")
   }
 
@@ -370,7 +383,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
         now.get(Calendar.YEAR),
         now.get(Calendar.MONTH),
         now.get(Calendar.DAY_OF_MONTH))
-    dialog.accentColor = Color.BLUE
+    dialog.accentColor = getColor(R.color.sch_green)
     dialog.show(fragmentManager, "")
   }
 

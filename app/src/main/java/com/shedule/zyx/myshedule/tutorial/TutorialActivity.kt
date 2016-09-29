@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v7.app.AppCompatActivity
-import app.voter.xyz.auth.fragments.CreateAccountFragment
+import com.shedule.zyx.myshedule.auth.fragments.CreateAccountFragment
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.tutorial.tutorial_pager.FirstPagerFragment
 import com.shedule.zyx.myshedule.tutorial.tutorial_pager.SecondPagerFragment

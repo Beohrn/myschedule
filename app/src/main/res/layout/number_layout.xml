@@ -86,6 +86,12 @@
             android:layout_height="wrap_content"
             app:text="@string/home_exam"/>
 
+        <com.shedule.zyx.myshedule.widget.MarkView
+            android:id="@+id/simple_lesson"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:text="@string/simple_lesson"/>
+
     </LinearLayout>
 
 </LinearLayout>
