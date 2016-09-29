@@ -46,22 +46,19 @@ class TeachersRatingFragment : Fragment() {
   override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    if (scheduleManager.getTeachers().size != 0) {
       val dialog = indeterminateProgressDialog(getString(R.string.load))
       dialog.setCanceledOnTouchOutside(false)
       dialog.show()
-      firebase.pushTeacher(scheduleManager.getTeachers().filter { it.teacherName.isNullOrEmpty() })
+      firebase.pushTeacher(scheduleManager.getTeachers().filter { it.teacherName.isNotEmpty() })
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread())
           .subscribe({
+            if (it) toast("true") else toast("false")
             dialog.dismiss()
           }, {
             dialog.dismiss()
             toast(getString(R.string.download_error))
           })
-    } else {
-      toast(getString(R.string.notting_teachers))
-    }
 
     RxFirebase.observeChildAdded(firebase.createTeacherRef()).subscribe({
       teachers_recycle_view.smoothScrollToPosition(teachersAdapter.itemCount)

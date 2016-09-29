@@ -1,6 +1,5 @@
 package com.shedule.zyx.myshedule
 
-import android.util.Log
 import app.voter.xyz.RxFirebase
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.firebase.auth.FirebaseAuth
@@ -63,14 +62,12 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
     }
   }
 
-  fun pushTeacher(teachers: List<Teacher>): Observable<Void> {
+  fun pushTeacher(teachers: List<Teacher>): Observable<Boolean> {
 
     return Observable.create { subscriber ->
       teachers.map { teacher ->
         createTeacherRef().child(getKeyByName(teacher.teacherName)).addListenerForSingleValueEvent(object : ValueEventListener {
-          override fun onCancelled(p0: DatabaseError?) {
-            Log.d("", "")
-          }
+          override fun onCancelled(p0: DatabaseError?) { }
 
           override fun onDataChange(data: DataSnapshot?) {
             if (data?.value == null) {
@@ -83,16 +80,20 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
                     .updateChildren(mapOf(Pair("", ObjectMapper().convertValue(teacher, Map::class.java))))
               }
             }
-
-            subscriber.onNext(null)
-            subscriber.onCompleted()
           }
         })
       }
 
+      getTeachers().subscribe({
+        subscriber.onNext(false)
+        subscriber.onCompleted()
+      }, {
+        subscriber.onError(it)
+      })
+
       RxFirebase.observeChildAdded(facultyRef())
           .subscribe({
-            subscriber.onNext(null)
+            subscriber.onNext(true)
             subscriber.onCompleted()
           }, {
             subscriber.onError(it)
