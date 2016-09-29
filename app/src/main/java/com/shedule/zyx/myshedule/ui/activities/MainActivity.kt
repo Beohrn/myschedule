@@ -21,6 +21,7 @@ import com.shedule.zyx.myshedule.R.layout.activity_navigation
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.adapters.ScheduleItemsAdapter
 import com.shedule.zyx.myshedule.adapters.ViewPagerAdapter
+import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.interfaces.ChangeStateFragmentListener
 import com.shedule.zyx.myshedule.interfaces.DataChangeListener
 import com.shedule.zyx.myshedule.managers.BluetoothManager
@@ -62,6 +63,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   @Inject
   lateinit var scheduleManager: ScheduleManager
 
+  @Inject
+  lateinit var appPreference: AppPreference
+
   val listenerList = arrayListOf<DataChangeListener>()
   private val CAMERA_REQUEST = 1888
   private val GALLERY_REQUEST = 2888
@@ -92,6 +96,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     val nav = nav_view.inflateHeaderView(R.layout.nav_header_navigation)
+    nav.faculty_name.text = appPreference.getFacultyName()
     Utils.getAccountPhoto(applicationContext)?.let { nav.circleView.setImageBitmap(it) }
     Glide.with(this).load(R.drawable.univer_image)
         .bitmapTransform(BlurTransformation(this, 10))

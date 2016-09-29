@@ -70,15 +70,6 @@ class TeachersRatingFragment : Fragment() {
         activity as OnTeacherClickListener, activity as OnRatingClickListener)
     teachers_recycle_view.layoutManager = LinearLayoutManager(context)
     teachers_recycle_view.adapter = teachersAdapter
-
-    firebase.getTeachers().subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe({ teachers ->
-          if (teachers == null) {
-            teachers_recycle_view.visibility = View.GONE
-            no_teachers_yet.visibility = View.VISIBLE
-          }
-        }, {})
   }
 
   fun toggleEmptyTeachers(isEmpty: Boolean) {

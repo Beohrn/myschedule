@@ -1,5 +1,6 @@
 package com.shedule.zyx.myshedule.teachers
 
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -40,6 +41,7 @@ class TeachersActivity : AppCompatActivity(), OnRatingClickListener, OnTeacherCl
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     setContentView(R.layout.teachers_activity)
     ScheduleApplication.getComponent().inject(this)
 
