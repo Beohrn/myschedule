@@ -14,7 +14,8 @@
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        app:mcv_selectionColor="#00F"
+        app:mcv_arrowColor="@color/sch_dark_green"
+        app:mcv_selectionColor="@color/sch_green"
         app:mcv_showOtherDates="all" />
 
     <LinearLayout

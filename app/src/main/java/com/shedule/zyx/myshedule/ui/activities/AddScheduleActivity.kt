@@ -296,6 +296,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
                       listOfDates.clear()
 
                     listOfDates.addAll(calendarView.selectedDates.map { "${it.day}-${it.month}-${it.year}" })
+                    repeat_value.text = "(${getString(R.string.random_dates)})"
                     dismiss()
                   }
                 }
