@@ -509,6 +509,7 @@
     <string name="course_work">Курсовая работа</string>
     <string name="standings">Зачёт</string>
     <string name="home_exam">Расчётка</string>
+    <string name="simple_lesson">Простая пара</string>
 
     <string name="e">E</string>
     <string name="d">D</string>
@@ -577,5 +578,10 @@
     <string name="like">Нравиться</string>
     <string name="dislike">Не нравиться</string>
     <string name="input_data">Введите данные</string>
+
+    <string name="feedback">Обратная связь</string>
+    <string name="email">yourschedule.info@gmail.com</string>
+    <string name="delete_schedule">Удалить расписание</string>
+    <string name="schedules_is_no">Расписания пока нет</string>
 
 </resources>

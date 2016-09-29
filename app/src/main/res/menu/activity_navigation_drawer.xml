@@ -18,6 +18,11 @@
             android:title="@string/task"/>
 
         <item
+            android:id="@+id/nav_delete_schedule"
+            android:icon="@drawable/delete"
+            android:title="@string/delete_schedule"/>
+
+        <item
             android:id="@+id/nav_write_to_us"
             android:icon="@drawable/manage"
             android:title="@string/write_to_us"/>

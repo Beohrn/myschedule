@@ -39,9 +39,9 @@
         app:layout_anchorGravity="bottom|right|end"
         android:layout_margin="16dp"
         android:src="@drawable/ic_add_white_24px"
-        app:backgroundTint="@color/colorAccent"
+        app:backgroundTint="@color/mark_orange"
         android:clickable="true"
-        app:rippleColor="@color/pink"
+        app:rippleColor="@color/mark_orange_dark"
         android:nestedScrollingEnabled="true"
         app:layout_behavior="com.shedule.zyx.myshedule.widget.FabNestedScrollBehavior"/>
 

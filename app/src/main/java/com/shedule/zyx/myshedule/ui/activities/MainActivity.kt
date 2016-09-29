@@ -6,7 +6,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.design.widget.NavigationView
@@ -166,11 +165,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   }
 
   private fun openDataPicker() {
-    val now = dateManager.resetCalendar()
+    val now = Calendar.getInstance()
     val picker = DatePickerDialog.newInstance(
         this@MainActivity, now.get(Calendar.YEAR), now.get(Calendar.MONTH),
         now.get(Calendar.DAY_OF_MONTH))
-    picker.accentColor = Color.GRAY
+    picker.accentColor = getColor(R.color.sch_green)
     picker.show(fragmentManager, "")
   }
 
@@ -187,16 +186,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       R.id.nav_teachers -> startActivity<TeachersActivity>()
       R.id.nav_tasks -> startActivity<AllHomeWorksActivity>()
       R.id.nav_write_to_us -> { sendEmail() }
+      R.id.nav_delete_schedule -> { deleteSchedule() }
     }
 
     drawer_layout?.closeDrawer(GravityCompat.START)
     return true
   }
 
+  fun deleteSchedule() {
+    if (scheduleManager.globalList.size != 0) {
+      alert(getString(R.string.delete), null) {
+        positiveButton(getString(R.string.yes)) {
+          scheduleManager.deleteSchedule()
+          listenerList.map { it.updateData() }
+        }
+        negativeButton(getString(R.string.no))
+      }.show()
+    } else toast(getString(R.string.schedules_is_no))
+  }
+
   fun sendEmail() =
     startActivity(EmailIntentBuilder.from(this)
-      .to("yourschedule.info@gmail.com")
-      .subject("Feedback")
+      .to(getString(R.string.email))
+      .subject(getString(R.string.feedback))
       .build())
 
   override fun onScheduleReceived(schedules: ArrayList<Schedule>) {
@@ -307,10 +319,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
               Pair(DAY_OF_WEEK_KEY, main_viewpager.currentItem + 2))
         }
         3 -> {
-          alert("", getString(R.string.delete)) {
+          alert(getString(R.string.delete), null) {
             positiveButton(getString(R.string.yes)) {
               scheduleManager.removeSchedule(schedule)
               listenerList.map { it.updateData() }
+              add_schedule_button.show()
             }
             negativeButton(getString(R.string.no))
           }.show()

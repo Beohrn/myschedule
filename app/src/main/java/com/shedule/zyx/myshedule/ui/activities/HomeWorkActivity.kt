@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
-import android.view.View
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.home_work_activity
 import com.shedule.zyx.myshedule.ScheduleApplication
@@ -76,7 +75,7 @@ class HomeWorkActivity : AppCompatActivity(),
     }
 
     if (isAllHomework)
-      add_homework_fab.visibility = View.GONE
+      add_homework_fab.hide()
 
     adapter = HomeWorkItemsAdapter(this@HomeWorkActivity, homework, this)
     homework_list.layoutManager = LinearLayoutManager(applicationContext)
@@ -116,7 +115,7 @@ class HomeWorkActivity : AppCompatActivity(),
   }
 
   override fun onChangeStatus(status: Boolean, taskName: String) {
-    schedule?.homework?.map { it }?.find { it.taskName.equals(taskName) }?.status = status
+    schedule?.homework?.map { it }?.find { it.taskName == taskName }?.status = status
   }
 
   override fun onHomeWorkClick(homeWork: HomeWork) {
@@ -133,6 +132,8 @@ class HomeWorkActivity : AppCompatActivity(),
         homework.clear()
         schedule?.let { loadData(it) }
         adapter.notifyDataSetChanged()
+        if (!isAllHomework)
+          add_homework_fab.show()
       }
       negativeButton(getString(R.string.no)) { dismiss() }
     }.show()
