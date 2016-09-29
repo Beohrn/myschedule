@@ -1,4 +1,4 @@
-package app.voter.xyz.auth.fragments
+package com.shedule.zyx.myshedule.teachers
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -45,6 +45,8 @@ class TeachersRatingFragment : Fragment() {
 
   override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    teachers_recycle_view.visibility = View.VISIBLE
+    no_teachers_yet.visibility = View.GONE
 
       val dialog = indeterminateProgressDialog(getString(R.string.load))
       dialog.setCanceledOnTouchOutside(false)
@@ -68,5 +70,14 @@ class TeachersRatingFragment : Fragment() {
         activity as OnTeacherClickListener, activity as OnRatingClickListener)
     teachers_recycle_view.layoutManager = LinearLayoutManager(context)
     teachers_recycle_view.adapter = teachersAdapter
+
+    firebase.getTeachers().subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe({ teachers ->
+          if (teachers == null) {
+            teachers_recycle_view.visibility = View.GONE
+            no_teachers_yet.visibility = View.VISIBLE
+          }
+        }, {})
   }
 }

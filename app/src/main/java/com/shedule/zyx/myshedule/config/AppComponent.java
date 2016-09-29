@@ -15,7 +15,7 @@ import com.shedule.zyx.myshedule.ui.fragments.ScheduleFragment;
 import javax.inject.Singleton;
 
 import com.shedule.zyx.myshedule.auth.fragments.CreateAccountFragment;
-import app.voter.xyz.auth.fragments.TeachersRatingFragment;
+import com.shedule.zyx.myshedule.teachers.TeachersRatingFragment;
 import app.voter.xyz.comments.DiscussionActivity;
 import dagger.Component;
 

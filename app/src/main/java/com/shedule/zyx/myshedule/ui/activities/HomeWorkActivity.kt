@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
+import android.view.View
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.home_work_activity
 import com.shedule.zyx.myshedule.ScheduleApplication
@@ -64,7 +65,6 @@ class HomeWorkActivity : AppCompatActivity(),
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     homework_toolbar.setNavigationOnClickListener { activityFinish() }
 
-
     date = intent.getStringExtra(HOMEWORK_BY_DATE) ?: ""
     isAllHomework = intent.getBooleanExtra(ALL_HOMEWORK, false)
 
@@ -82,9 +82,21 @@ class HomeWorkActivity : AppCompatActivity(),
     homework_list.itemAnimator = DefaultItemAnimator()
     homework_list.adapter = adapter
 
+    checkHomework()
+
     add_homework_fab.onClick {
       scheduleManager.editHomework = null
       startActivityForResult<CreateHomeWorkActivity>(CREATE_HOMEWORK_REQUEST, DATE_ON_TITLE to date)
+    }
+  }
+
+  fun checkHomework() {
+    if (homework.size != 0) {
+      empty_homework.visibility = View.GONE
+      homework_list.visibility = View.VISIBLE
+    } else {
+      empty_homework.visibility = View.VISIBLE
+      homework_list.visibility = View.GONE
     }
   }
 
@@ -93,6 +105,8 @@ class HomeWorkActivity : AppCompatActivity(),
       homework.addAll(scheduleManager.getHomeWork(schedule))
     else
       homework.addAll(scheduleManager.getHomeWorkByDate(schedule, date))
+
+    checkHomework()
   }
 
   override fun onBackPressed() {
@@ -106,6 +120,10 @@ class HomeWorkActivity : AppCompatActivity(),
 
   fun update(homeWork: HomeWork) {
     homework.add(homeWork)
+    if (homework_list.visibility == View.GONE) {
+      empty_homework.visibility = View.GONE
+      homework_list.visibility = View.VISIBLE
+    }
   }
 
   override fun onDestroy() {

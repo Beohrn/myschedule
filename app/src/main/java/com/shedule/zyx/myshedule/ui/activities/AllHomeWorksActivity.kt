@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
+import android.view.View
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.all_homeworks_activity
 import com.shedule.zyx.myshedule.ScheduleApplication
@@ -16,7 +17,6 @@ import com.shedule.zyx.myshedule.ui.activities.HomeWorkActivity.Companion.ALL_HO
 import com.shedule.zyx.myshedule.ui.activities.HomeWorkActivity.Companion.SCHEDULE_HOMEWORK_REQUEST
 import kotlinx.android.synthetic.main.all_homeworks_activity.*
 import org.jetbrains.anko.startActivityForResult
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -55,6 +55,18 @@ class AllHomeWorksActivity: AppCompatActivity(), AllHomeWorkItemsAdapter.OnItemC
     update()
     adapter = AllHomeWorkItemsAdapter(this, list)
     list_of_homeworks.adapter = adapter
+    checkHomeworks()
+
+  }
+
+  fun checkHomeworks() {
+    if (list.size != 0) {
+      empty_homeworks.visibility = View.GONE
+      list_of_homeworks.visibility = View.VISIBLE
+    } else {
+      empty_homeworks.visibility = View.VISIBLE
+      list_of_homeworks.visibility = View.GONE
+    }
   }
 
   override fun onDestroy() {
@@ -77,6 +89,7 @@ class AllHomeWorksActivity: AppCompatActivity(), AllHomeWorkItemsAdapter.OnItemC
       if (requestCode == SCHEDULE_HOMEWORK_REQUEST) {
         list.clear()
         update()
+        checkHomeworks()
         adapter.notifyDataSetChanged()
       }
     }
