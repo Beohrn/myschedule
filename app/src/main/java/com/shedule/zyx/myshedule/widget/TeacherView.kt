@@ -10,6 +10,7 @@ import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.models.Teacher
 import com.shedule.zyx.myshedule.utils.Utils
 import com.shedule.zyx.myshedule.utils.Utils.Companion.getLetterByRating
+import com.shedule.zyx.myshedule.utils.Utils.Companion.getRatingByData
 import kotlinx.android.synthetic.main.teacher_view.view.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.find
@@ -59,7 +60,7 @@ class TeacherView : FrameLayout {
 
       setColorByRating(mediumRating)
       teacher_rating.text = getLetterByRating(mediumRating)
-      rating.text = "$mediumRating"
+      rating.text = "${Math.floor(mediumRating * 10) / 10}"
     } else {
       setColorByRating(60.toDouble())
       teacher_rating.text = getLetterByRating(60.toDouble())
@@ -78,7 +79,7 @@ class TeacherView : FrameLayout {
         include<View>(R.layout.teacher_rating_dialog) {
           val view = find<TeacherAssessmentView>(R.id.teacher_assessment_view)
           find<TextView>(R.id.at_ok).onClick {
-            ratingClickListener.onRatingClick(teacher.teacherName, Utils.getRatingByData(view.getValues()))
+            ratingClickListener.onRatingClick(teacher.teacherName, getRatingByData(view.getValues()))
             dismiss()
           }
           find<TextView>(R.id.at_cancel).onClick { dismiss() }

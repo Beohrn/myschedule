@@ -174,7 +174,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     val picker = DatePickerDialog.newInstance(
         this@MainActivity, now.get(Calendar.YEAR), now.get(Calendar.MONTH),
         now.get(Calendar.DAY_OF_MONTH))
-    picker.accentColor = getColor(R.color.sch_green)
+    picker.setAccentColor("#49a44c")
     picker.show(fragmentManager, "")
   }
 
@@ -190,8 +190,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       }
       R.id.nav_teachers -> startActivity<TeachersActivity>()
       R.id.nav_tasks -> startActivity<AllHomeWorksActivity>()
-      R.id.nav_write_to_us -> { sendEmail() }
-      R.id.nav_delete_schedule -> { deleteSchedule() }
+      R.id.nav_write_to_us -> {
+        sendEmail()
+      }
+      R.id.nav_delete_schedule -> {
+        deleteSchedule()
+      }
     }
 
     drawer_layout?.closeDrawer(GravityCompat.START)
@@ -211,10 +215,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   }
 
   fun sendEmail() =
-    startActivity(EmailIntentBuilder.from(this)
-      .to(getString(R.string.email))
-      .subject(getString(R.string.feedback))
-      .build())
+      startActivity(EmailIntentBuilder.from(this)
+          .to(getString(R.string.email))
+          .subject(getString(R.string.feedback))
+          .build())
 
   override fun onScheduleReceived(schedules: ArrayList<Schedule>) {
     alert("", getString(R.string.receive_single_schedule)) {

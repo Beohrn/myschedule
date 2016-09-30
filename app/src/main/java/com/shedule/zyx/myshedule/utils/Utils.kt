@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Environment
-import com.amazonaws.util.Base64
 import com.google.gson.Gson
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.models.Category
@@ -42,14 +41,6 @@ class Utils {
       else -> 0
     }
 
-    fun getUniversities(context: Context) = context.getString(R.string.universities).split(";")
-
-    fun getKeyByName(name: String) = String(Base64.encode(name.toByteArray()))
-
-    fun getNameByKey(key: String) = String(Base64.decode(key))
-
-    fun decoder(text: String) = text.replace("і", "и")
-
     fun getRatingByData(assessments: HashMap<String, Int>): Double {
       var result = 0.0
       assessments.map { result += it.value }
@@ -75,7 +66,7 @@ class Utils {
         else if (date.dayOfMonth > 10 && date.monthOfYear < 9)
           "${date.dayOfMonth}.0${date.monthOfYear + 1}.${date.year}"
         else "${date.dayOfMonth}.${date.monthOfYear + 1}.${date.year}"
-    
+
     fun saveAccountImage(context: Context, bitmap: Bitmap) {
       val mediaFile = getMediaFile(context, "", false)
       mediaFile?.let {
