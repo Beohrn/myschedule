@@ -105,7 +105,7 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.makeramen:roundedimageview:2.2.1'
     compile 'joda-time:joda-time:2.9.4'
-    compile 'com.wdullaer:materialdatetimepicker:2.4.0'
+    compile 'com.wdullaer:materialdatetimepicker:2.5.0'
     compile 'com.akexorcist:bluetoothspp:1.0.0'
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar'
     compile 'de.hdodenhof:circleimageview:2.1.0'

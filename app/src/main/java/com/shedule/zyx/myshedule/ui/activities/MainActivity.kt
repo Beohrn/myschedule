@@ -174,7 +174,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     val picker = DatePickerDialog.newInstance(
         this@MainActivity, now.get(Calendar.YEAR), now.get(Calendar.MONTH),
         now.get(Calendar.DAY_OF_MONTH))
-    picker.accentColor = getColor(R.color.sch_green)
+    // for meizu
+    picker.setAccentColor("#49a44c")
     picker.show(fragmentManager, "")
   }
 
