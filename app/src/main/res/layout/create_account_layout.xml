@@ -3,7 +3,8 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="#FDBD57"
-              android:gravity="center"
+              android:gravity="top|center"
+              android:paddingTop="150dp"
               android:orientation="vertical">
 
     <LinearLayout

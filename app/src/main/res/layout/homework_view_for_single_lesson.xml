@@ -43,7 +43,6 @@
                     android:textColor="@color/hw_title"
                     android:textSize="18sp"
                     tools:text="Home Task"/>
-
             </LinearLayout>
 
             <LinearLayout

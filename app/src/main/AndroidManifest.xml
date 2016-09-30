@@ -22,7 +22,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ui.activities.MainActivity"/>
         <activity android:name=".ui.activities.AddScheduleActivity"/>
-        <activity android:name="app.voter.xyz.comments.DiscussionActivity"
+        <activity android:name=".comments.DiscussionActivity"
                   android:theme="@style/TeacherStyle"/>
         <activity android:name=".teachers.TeachersActivity"
             android:theme="@style/TeacherStyle"/>

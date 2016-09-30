@@ -16,7 +16,7 @@ import javax.inject.Singleton;
 
 import com.shedule.zyx.myshedule.auth.fragments.CreateAccountFragment;
 import com.shedule.zyx.myshedule.teachers.TeachersRatingFragment;
-import app.voter.xyz.comments.DiscussionActivity;
+import com.shedule.zyx.myshedule.comments.DiscussionActivity;
 import dagger.Component;
 
 @Singleton
