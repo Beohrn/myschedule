@@ -41,6 +41,12 @@ class Utils {
       else -> 0
     }
 
+    fun getKeyByName(name: String) = name.replace(".", " ")
+        .replace("[", "")
+        .replace("]", "")
+        .replace("$", "")
+        .replace("#", "")
+
     fun getRatingByData(assessments: HashMap<String, Int>): Double {
       var result = 0.0
       assessments.map { result += it.value }

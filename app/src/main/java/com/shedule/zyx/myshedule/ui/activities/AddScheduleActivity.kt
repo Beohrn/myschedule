@@ -1,7 +1,6 @@
 package com.shedule.zyx.myshedule.ui.activities
 
 import android.app.Activity
-import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
@@ -69,7 +68,6 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     setContentView(add_schedule_activity)
     ScheduleApplication.getComponent().inject(this)
     setSupportActionBar(add_schedule_toolbar)

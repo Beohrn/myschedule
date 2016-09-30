@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "515794523373-emo7ps9c4vdqjr0s0cfftphs4d8hra30.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shedule.zyx.myshedule",
+            "certificate_hash": "AF5CD09358BB7EF1569A9149A4A29E5D071E3DF1"
+          }
+        },
+        {
           "client_id": "515794523373-3ufpfmh4vv4ro2uppsq70258kub7tmc2.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -16,6 +16,7 @@ import com.shedule.zyx.myshedule.utils.Constants
 import com.shedule.zyx.myshedule.utils.Constants.Companion.COMMENTS
 import com.shedule.zyx.myshedule.utils.Constants.Companion.LIKES
 import com.shedule.zyx.myshedule.utils.Constants.Companion.REPLIES
+import com.shedule.zyx.myshedule.utils.Utils.Companion.getKeyByName
 import kotlinx.android.synthetic.main.discussion_activity_layout.*
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.onClick
@@ -54,7 +55,7 @@ class DiscussionActivity : AppCompatActivity(), CommentsAdapter.OnCommentClickLi
     setContentView(R.layout.discussion_activity_layout)
     ScheduleApplication.getComponent().inject(this)
 
-    whichId = intent.getStringExtra(TEACHER_REQUEST)
+    whichId = getKeyByName(intent.getStringExtra(TEACHER_REQUEST))
 
     ref = firebaseRef.child(prefs.getUniverName())
         .child(prefs.getFacultyName())

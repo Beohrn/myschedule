@@ -10,6 +10,7 @@ import com.google.firebase.database.ValueEventListener
 import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.models.Teacher
 import com.shedule.zyx.myshedule.utils.Constants.Companion.RATINGS
+import com.shedule.zyx.myshedule.utils.Utils.Companion.getKeyByName
 import rx.Observable
 import java.util.*
 
@@ -66,17 +67,17 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
 
     return Observable.create { subscriber ->
       teachers.map { teacher ->
-        createTeacherRef().child(teacher.teacherName).addListenerForSingleValueEvent(object : ValueEventListener {
+        createTeacherRef().child(getKeyByName(teacher.teacherName)).addListenerForSingleValueEvent(object : ValueEventListener {
           override fun onCancelled(p0: DatabaseError?) { }
 
           override fun onDataChange(data: DataSnapshot?) {
             loaded = true
             if (data?.value == null) {
-              createTeacherRef().child(teacher.teacherName).setValue(teacher)
+              createTeacherRef().child(getKeyByName(teacher.teacherName)).setValue(teacher)
               teacherCallback()
             } else {
               (data?.value as HashMap<String, Any>).keys.toList()
-                  .filter { it.equals(teacher.teacherName) }
+                  .filter { it.equals(getKeyByName(teacher.teacherName)) }
                   .firstOrNull()?.let {
                 createTeacherRef().child(it)
                     .updateChildren(mapOf(Pair("", ObjectMapper().convertValue(teacher, Map::class.java))))
@@ -131,6 +132,6 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
   }
 
   fun pushRating(rating: Double, teacherName: String) {
-    createTeacherRef().child(teacherName).child(RATINGS).child(auth.currentUser?.uid).setValue(rating)
+    createTeacherRef().child(getKeyByName(teacherName)).child(RATINGS).child(auth.currentUser?.uid).setValue(rating)
   }
 }

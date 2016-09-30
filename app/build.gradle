@@ -54,7 +54,7 @@ android {
     }
     buildTypes {
 
-        releas {
+        release {
             minifyEnabled false
         }
 
