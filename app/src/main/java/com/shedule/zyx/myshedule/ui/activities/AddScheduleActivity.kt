@@ -88,6 +88,9 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       supportActionBar?.title = getString(R.string.set_lesson)
       setPeriods(it.startPeriod, it.endPeriod)
       setListOfDates(it.week)
+      if (it.week == RANDOM_DATES)
+        listOfDates.addAll(it.dates.map { it })
+
       numberOfLesson = it.numberLesson.toInt()
 
       housing.setText("${it.location?.housing}")
@@ -236,11 +239,13 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   }
 
   private fun setListOfDates(week: Int) {
-    if (listOfDates.size != 0)
-      listOfDates.clear()
+    if (week != RANDOM_DATES) {
+      if (listOfDates.size != 0)
+        listOfDates.clear()
 
-    listOfDates.addAll(scheduleManager.getScheduleByDate(startPeriod ?: null!!, endPeriod ?: null!!,
-        intent.getIntExtra(DAY_OF_WEEK_KEY, 0), week).map { it })
+      listOfDates.addAll(scheduleManager.getScheduleByDate(startPeriod ?: null!!, endPeriod ?: null!!,
+          intent.getIntExtra(DAY_OF_WEEK_KEY, 0), week).map { it })
+    }
     repeat_value.text = when (week) {
       1 -> "(${getString(R.string.on_first_week)})"
       2 -> "(${getString(R.string.on_second_week)})"
@@ -371,7 +376,8 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
         now.get(Calendar.HOUR_OF_DAY),
         now.get(Calendar.MINUTE),
         true)
-    dialog.accentColor = getColor(R.color.sch_green)
+    // for meizu
+    dialog.setAccentColor("#49a44c")
     dialog.show(fragmentManager, "")
   }
 
@@ -382,7 +388,8 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
         now.get(Calendar.YEAR),
         now.get(Calendar.MONTH),
         now.get(Calendar.DAY_OF_MONTH))
-    dialog.accentColor = getColor(R.color.sch_green)
+    // for meizu
+    dialog.setAccentColor("#49a44c")
     dialog.show(fragmentManager, "")
   }
 
