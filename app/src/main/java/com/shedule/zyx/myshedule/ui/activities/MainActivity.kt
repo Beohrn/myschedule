@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.design.widget.NavigationView
@@ -38,7 +39,7 @@ import com.shedule.zyx.myshedule.ui.fragments.BluetoothDialog
 import com.shedule.zyx.myshedule.utils.Utils
 import com.tbruyelle.rxpermissions.RxPermissions
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
-import de.cketti.mailto.EmailIntentBuilder
+import de.cketti.mailto.EmailIntentBuilder.from
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_navigation.*
@@ -191,13 +192,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       }
       R.id.nav_teachers -> startActivity<TeachersActivity>()
       R.id.nav_tasks -> startActivity<AllHomeWorksActivity>()
-      R.id.nav_write_to_us -> { sendEmail() }
-      R.id.nav_delete_schedule -> { deleteSchedule() }
+      R.id.nav_write_to_us -> sendEmail()
+      R.id.open_group -> openGroup()
+      R.id.nav_delete_schedule -> deleteSchedule()
     }
 
     drawer_layout?.closeDrawer(GravityCompat.START)
     return true
   }
+
+  fun openGroup() = startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://vk.com/club129716882")))
 
   fun deleteSchedule() {
     if (scheduleManager.globalList.size != 0) {
@@ -212,10 +216,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   }
 
   fun sendEmail() =
-    startActivity(EmailIntentBuilder.from(this)
-      .to(getString(R.string.email))
-      .subject(getString(R.string.feedback))
-      .build())
+      startActivity(from(this)
+          .to(getString(R.string.email))
+          .subject(getString(R.string.feedback))
+          .build())
 
   override fun onScheduleReceived(schedules: ArrayList<Schedule>) {
     alert("", getString(R.string.receive_single_schedule)) {

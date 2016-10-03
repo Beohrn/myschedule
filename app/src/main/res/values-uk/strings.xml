@@ -25,6 +25,7 @@
     <string name="add_schedule_toolbar_title">Створити заняття</string>
     <string name="homework_activity_title">Домашнє завдання</string>
     <string name="calendar">Календар</string>
+    <string name="open_group">Відкрити групу</string>
 
     <string-array name="type_of_lesson">
         <item>Практика</item>
