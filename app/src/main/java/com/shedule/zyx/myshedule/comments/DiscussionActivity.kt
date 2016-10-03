@@ -57,8 +57,8 @@ class DiscussionActivity : AppCompatActivity(), CommentsAdapter.OnCommentClickLi
 
     whichId = getKeyByName(intent.getStringExtra(TEACHER_REQUEST))
 
-    ref = firebaseRef.child(prefs.getUniverName())
-        .child(prefs.getFacultyName())
+    ref = firebaseRef.child(getKeyByName(prefs.getUniverName()))
+        .child(getKeyByName(prefs.getFacultyName()))
         .child(Constants.TEACHERS)
         .child(whichId)
         .child(COMMENTS)
