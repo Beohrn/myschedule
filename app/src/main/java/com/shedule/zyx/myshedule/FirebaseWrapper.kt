@@ -3,6 +3,7 @@ package com.shedule.zyx.myshedule
 import app.voter.xyz.RxFirebase
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.crash.FirebaseCrash
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -22,8 +23,8 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
   fun createTeacherRef() = facultyRef().child("teachers")
 
   private fun facultyRef(): DatabaseReference {
-    return ref.child(prefs.getUniverName() ?: "")
-        .child(prefs.getFacultyName() ?: "")
+    return ref.child(getKeyByName(prefs.getUniverName() ?: ""))
+        .child(getKeyByName(prefs.getFacultyName() ?: ""))
   }
 
   fun createAccount(): Observable<Void> {
@@ -68,7 +69,8 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
     return Observable.create { subscriber ->
       teachers.map { teacher ->
         createTeacherRef().child(getKeyByName(teacher.teacherName)).addListenerForSingleValueEvent(object : ValueEventListener {
-          override fun onCancelled(p0: DatabaseError?) { }
+          override fun onCancelled(p0: DatabaseError?) {
+          }
 
           override fun onDataChange(data: DataSnapshot?) {
             loaded = true
@@ -98,10 +100,12 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
                       subscriber.onNext(true)
                       subscriber.onCompleted()
                     }, {
+                      FirebaseCrash.report(it)
                       subscriber.onError(it)
                     })
               }
             }, {
+              FirebaseCrash.report(it)
               subscriber.onError(it)
             })
           }
@@ -122,10 +126,12 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
                   subscriber.onCompleted()
                 }
               }, {
+                FirebaseCrash.report(it)
                 subscriber.onError(it)
               })
         }
       }, {
+        FirebaseCrash.report(it)
         subscriber.onError(it)
       })
     }

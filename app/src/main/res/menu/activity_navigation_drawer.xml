@@ -26,5 +26,10 @@
             android:id="@+id/nav_write_to_us"
             android:icon="@drawable/manage"
             android:title="@string/write_to_us"/>
+
+        <item
+            android:id="@+id/open_group"
+            android:icon="@drawable/vkontacte"
+            android:title="@string/open_group"/>
     </group>
 </menu>

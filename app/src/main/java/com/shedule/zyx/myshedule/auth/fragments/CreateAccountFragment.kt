@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.crash.FirebaseCrash
 import com.shedule.zyx.myshedule.FirebaseWrapper
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.ScheduleApplication
@@ -111,6 +112,7 @@ class CreateAccountFragment : Fragment() {
               prefs.saveFacultyName(faculty_ET.text.toString().trim())
               startActivity<MainActivity>()
             }, {
+              FirebaseCrash.report(it)
               toast(getString(R.string.authentication_error))
             })
       } else if (checkEdiTextIsEmpty(univer_ET)) {

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import app.voter.xyz.RxFirebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.crash.FirebaseCrash
 import com.shedule.zyx.myshedule.FirebaseWrapper
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.ScheduleApplication
@@ -58,6 +59,7 @@ class TeachersRatingFragment : Fragment() {
 
           dialog.dismiss()
         }, {
+          FirebaseCrash.report(it)
           dialog.dismiss()
           toast(getString(R.string.download_error))
         })
