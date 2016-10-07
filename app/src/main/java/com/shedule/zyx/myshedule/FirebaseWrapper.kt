@@ -100,12 +100,12 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
                       subscriber.onNext(true)
                       subscriber.onCompleted()
                     }, {
-                      FirebaseCrash.report(it)
+                      7
                       subscriber.onError(it)
                     })
               }
             }, {
-              FirebaseCrash.report(it)
+              7
               subscriber.onError(it)
             })
           }
@@ -126,12 +126,14 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
                   subscriber.onCompleted()
                 }
               }, {
-                FirebaseCrash.report(it)
+                if (BuildConfig.DEBOUG_ENABLED)
+                  FirebaseCrash.report(it)
                 subscriber.onError(it)
               })
         }
       }, {
-        FirebaseCrash.report(it)
+        if (BuildConfig.DEBOUG_ENABLED)
+          FirebaseCrash.report(it)
         subscriber.onError(it)
       })
     }

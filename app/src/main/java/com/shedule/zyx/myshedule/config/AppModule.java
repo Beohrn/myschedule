@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.shedule.zyx.myshedule.BuildConfig;
 import com.shedule.zyx.myshedule.FirebaseWrapper;
 import com.shedule.zyx.myshedule.managers.BluetoothManager;
 import com.shedule.zyx.myshedule.managers.DateManager;
@@ -101,7 +102,7 @@ public class AppModule {
     @Singleton
     @Provides
     DatabaseReference provideDatabaseReference() {
-        return FirebaseDatabase.getInstance().getReference();
+        return FirebaseDatabase.getInstance().getReference().child(BuildConfig.FIREBASE_URL);
     }
 
     @Singleton
