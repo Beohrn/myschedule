@@ -27,5 +27,10 @@ class Constants {
     val SIMPLE_LESSON = "SIMPLE_LESSON"
     val SEMINAR = "SEMINAR"
     val LECTURE = "LECTURE"
+
+    val ADMINS = "admins"
+    val CHANGES_COUNT = "changesCount"
+    val SCHEDULE = "schedule"
+
   }
 }

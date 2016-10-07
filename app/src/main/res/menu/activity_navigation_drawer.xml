@@ -31,5 +31,11 @@
             android:id="@+id/open_group"
             android:icon="@drawable/vkontacte"
             android:title="@string/open_group"/>
+
+        <item
+            android:id="@+id/nav_log_out"
+            android:icon="@drawable/log_out"
+            android:title="@string/log_out"/>
+
     </group>
 </menu>

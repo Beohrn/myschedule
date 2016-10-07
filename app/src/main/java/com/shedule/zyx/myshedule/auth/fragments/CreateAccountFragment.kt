@@ -1,6 +1,5 @@
 package com.shedule.zyx.myshedule.auth.fragments
 
-import android.R.layout.simple_list_item_1
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
@@ -24,8 +23,13 @@ import com.shedule.zyx.myshedule.ui.activities.MainActivity
 import com.shedule.zyx.myshedule.utils.Utils
 import com.shedule.zyx.myshedule.utils.Utils.Companion.isOnline
 import kotlinx.android.synthetic.main.create_account_layout.*
-import org.jetbrains.anko.*
-import org.jetbrains.anko.support.v4.*
+import org.jetbrains.anko.onClick
+import org.jetbrains.anko.onItemClick
+import org.jetbrains.anko.support.v4.indeterminateProgressDialog
+import org.jetbrains.anko.support.v4.selector
+import org.jetbrains.anko.support.v4.startActivity
+import org.jetbrains.anko.support.v4.toast
+import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject
@@ -45,6 +49,8 @@ class CreateAccountFragment : Fragment() {
   lateinit var firebaseWrapper: FirebaseWrapper
 
   lateinit var facultyWatcher: TextWatcher
+
+  var subscription: Subscription? = null
 
   override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
     ScheduleApplication.getComponent().inject(this)
@@ -67,30 +73,20 @@ class CreateAccountFragment : Fragment() {
     remote_list.onClick {
       if (isOnline(context)) {
         val dialog = indeterminateProgressDialog(getString(R.string.load))
-        firebaseWrapper.getUniversity()
+        subscription = firebaseWrapper.getUniversity()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ universities ->
               dialog.dismiss()
               if (universities != null) {
-                alert {
-                  customView {
-                    verticalLayout {
-                      listView {
-                        setAdapter(ArrayAdapter(context, simple_list_item_1, universities))
-                        lparams {
-                          height = dip(400)
-                        }
-                      }.onItemClick { adapterView, view, i, l ->
-                        univer_ET.setText(universities[i])
-                        faculty_ET.setText("")
-                        dismiss()
-                      }
-                    }
-                  }
-                }.show()
+                selector(null, universities) {
+                  univer_ET.setText(universities[it])
+                  faculty_ET.setText("")
+                }
               } else toast(getString(no_universities))
             }, {
+              if (BuildConfig.DEBOUG_ENABLED)
+                FirebaseCrash.report(it)
               dialog.dismiss()
             })
       } else toast(getString(R.string.connection_is_failed))
@@ -100,7 +96,7 @@ class CreateAccountFragment : Fragment() {
       if (isOnline(context)) {
         if (!univer_ET.text.isNullOrBlank()) {
           val dialog = indeterminateProgressDialog(getString(R.string.load))
-          firebaseWrapper.getFaculty(univer_ET.text.toString())
+          subscription = firebaseWrapper.getFaculty(univer_ET.text.toString())
               .subscribeOn(Schedulers.io())
               .observeOn(AndroidSchedulers.mainThread())
               .subscribe({ faculty ->
@@ -109,8 +105,9 @@ class CreateAccountFragment : Fragment() {
                   selector(null, faculty) { faculty_ET.setText(faculty[it]) }
                 } else toast(getString(no_faculties))
               }, {
+                if (BuildConfig.DEBOUG_ENABLED)
+                  FirebaseCrash.report(it)
                 dialog.dismiss()
-                toast(getString(no_faculties))
               })
         } else toast(getString(type_the_university_name))
       } else toast(getString(R.string.connection_is_failed))
@@ -120,7 +117,7 @@ class CreateAccountFragment : Fragment() {
       if (isOnline(context)) {
         if (!faculty_ET.text.isNullOrBlank() && !univer_ET.text.isNullOrBlank()) {
           val dialog = indeterminateProgressDialog(getString(R.string.load))
-          firebaseWrapper.getGroups(faculty_ET.text.toString(),
+          subscription = firebaseWrapper.getGroups(faculty_ET.text.toString(),
               univer_ET.text.toString())
               .subscribeOn(Schedulers.io())
               .observeOn(AndroidSchedulers.mainThread())
@@ -136,8 +133,9 @@ class CreateAccountFragment : Fragment() {
                   } else toast(getString(groups_not_found))
                 } ?: toast(getString(groups_not_found))
               }, {
+                if (BuildConfig.DEBOUG_ENABLED)
+                  FirebaseCrash.report(it)
                 dialog.dismiss()
-                toast(getString(groups_not_found))
               })
         } else if (faculty_ET.text.isNullOrBlank()) toast(getString(R.string.type_the_faculty_name))
         else if (univer_ET.text.isNullOrBlank()) toast(getString(type_the_university_name))
@@ -176,6 +174,10 @@ class CreateAccountFragment : Fragment() {
               prefs.saveFacultyName(faculty_ET.text.toString().trim())
               prefs.saveGroupName(group_ET.text.toString().trim())
               prefs.saveAdminRights(admin.isChecked)
+
+              if (admin.isChecked)
+                createGroup()
+
               startActivity<MainActivity>()
             }, {
               if (BuildConfig.DEBOUG_ENABLED)
@@ -188,6 +190,21 @@ class CreateAccountFragment : Fragment() {
         faculty_ET.error = getString(R.string.input_data)
       }
     }
+  }
+
+  private fun createGroup() {
+    firebaseWrapper.pushGroup()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe({}, {
+          if (BuildConfig.DEBOUG_ENABLED)
+            FirebaseCrash.report(it)
+        })
+  }
+
+  override fun onStop() {
+    super.onStop()
+    subscription?.unsubscribe()
   }
 
   private fun checkAdmins() {

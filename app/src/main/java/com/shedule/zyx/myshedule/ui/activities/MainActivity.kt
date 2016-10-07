@@ -17,7 +17,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.bumptech.glide.Glide
+import com.google.firebase.crash.FirebaseCrash
 import com.google.gson.Gson
+import com.shedule.zyx.myshedule.BuildConfig
 import com.shedule.zyx.myshedule.FirebaseWrapper
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.activity_navigation
@@ -31,9 +33,9 @@ import com.shedule.zyx.myshedule.interfaces.DataChangeListener
 import com.shedule.zyx.myshedule.managers.BluetoothManager
 import com.shedule.zyx.myshedule.managers.DateManager
 import com.shedule.zyx.myshedule.managers.ScheduleManager
-import com.shedule.zyx.myshedule.models.Group
 import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.teachers.TeachersActivity
+import com.shedule.zyx.myshedule.tutorial.TutorialActivity
 import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity.Companion.ADD_SCHEDULE_REQUEST
 import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity.Companion.DAY_OF_WEEK_KEY
 import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity.Companion.EDIT_SCHEDULE_REQUEST
@@ -53,6 +55,7 @@ import kotlinx.android.synthetic.main.nav_header_navigation.*
 import kotlinx.android.synthetic.main.nav_header_navigation.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.onPageChangeListener
+import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.*
@@ -79,6 +82,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   @Inject
   lateinit var gson: Gson
+  lateinit var update: MenuItem
+
+  var subscription: Subscription? = null
 
   val listenerList = arrayListOf<DataChangeListener>()
   private val CAMERA_REQUEST = 1888
@@ -135,6 +141,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
       }
     }
+
+
+  }
+
+  override fun onPause() {
+    super.onPause()
+    subscription?.unsubscribe()
   }
 
   private fun convertDateString(dateString: String): String {
@@ -164,6 +177,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
   }
 
+  override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+    update = menu?.findItem(R.id.update)!!
+
+    subscription = firebaseWraper.getChangesCount()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe({
+          if (it > appPreference.getChangesCount()) {
+            update.icon = resources.getDrawable(R.drawable.notification)
+          }
+        }, {
+          if (BuildConfig.DEBOUG_ENABLED)
+            FirebaseCrash.report(it)
+        })
+    return super.onPrepareOptionsMenu(menu)
+  }
+
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {
     menuInflater.inflate(R.menu.calendar_menu, menu)
     return true
@@ -173,51 +203,54 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     when (item?.itemId) {
       R.id.calendar -> openDataPicker()
       R.id.update -> {
-        if (isOnline(applicationContext)) pullGroup()
-        else toast(getString(connection_is_failed))
+        if (isOnline(applicationContext)) {
+          pullSchedule()
+        } else toast(getString(connection_is_failed))
       }
     }
     return true
   }
 
-  private fun pushGroup() {
+  private fun pushSchedule() {
     val dialog = indeterminateProgressDialog(getString(R.string.load))
-    val group = Group(appPreference.getGroupName())
-    group.schedule = scheduleManager.globalList
-    group.countChange++
-    appPreference.saveChangesCount(group.countChange)
-    group.admins.add(firebaseWraper.auth.currentUser?.uid.toString())
-    firebaseWraper.pushGroup(group)
+    var changes = appPreference.getChangesCount()
+    changes++
+    firebaseWraper.pushSchedule(scheduleManager.globalList, changes)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe({ done ->
           if (done) {
             dialog.dismiss()
+            appPreference.saveChangesCount(changes)
             toast(getString(R.string.schedule_was_sent))
           }
         }, {
+          if (BuildConfig.DEBOUG_ENABLED)
+            FirebaseCrash.report(it)
           dialog.dismiss()
-          toast(getString(R.string.download_error))
         })
+
   }
 
-  private fun pullGroup() {
+  private fun pullSchedule() {
     val dialog = indeterminateProgressDialog(getString(R.string.load))
-    firebaseWraper.getGroupInformation()
+    subscription = firebaseWraper.getSchedule()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe({ group ->
+        .subscribe({ schedule ->
           dialog.dismiss()
-          group?.let {
+          schedule?.let {
             scheduleManager.globalList.clear()
-            scheduleManager.globalList.addAll(it.schedule)
-            appPreference.saveChangesCount(it.countChange)
+            scheduleManager.globalList.addAll(it)
             listenerList.map { it.updateData() }
+            update.icon = resources.getDrawable(R.drawable.alarm)
             toast(getString(schedule_was_updated))
           } ?: toast(getString(group_has_not_been_created))
         }, {
-          dialog.dismiss()
+          if (BuildConfig.DEBOUG_ENABLED)
+            FirebaseCrash.report(it)
           toast(getString(no_data))
+          dialog.dismiss()
         })
   }
 
@@ -241,26 +274,42 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   override fun onNavigationItemSelected(item: MenuItem): Boolean {
     when (item.itemId) {
       R.id.nav_share -> {
-        selector(null, listOf(getString(via_bluetooth), getString(via_server))) {
-          when(it) {
-            0 -> startBluetooth()
-            1 -> {
-              if (isOnline(applicationContext))
-                pushGroup()
-              else toast(getString(connection_is_failed))
+        if (appPreference.getAdminRight()) {
+          selector(null, listOf(getString(via_bluetooth), getString(via_server))) {
+            when (it) {
+              0 -> startBluetooth()
+              1 -> {
+                if (isOnline(applicationContext)) pushSchedule()
+                else toast(getString(connection_is_failed))
+              }
             }
           }
-        }
+        } else startBluetooth()
       }
       R.id.nav_teachers -> startActivity<TeachersActivity>()
       R.id.nav_tasks -> startActivity<AllHomeWorksActivity>()
       R.id.nav_write_to_us -> sendEmail()
       R.id.open_group -> openGroup()
       R.id.nav_delete_schedule -> deleteSchedule()
+      R.id.nav_log_out -> logOut()
     }
 
     drawer_layout?.closeDrawer(GravityCompat.START)
     return true
+  }
+
+  fun logOut() {
+    firebaseWraper.logOut()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe({
+          scheduleManager.globalList.clear()
+          startActivity<TutorialActivity>()
+        }, {
+          if (BuildConfig.DEBOUG_ENABLED)
+            FirebaseCrash.report(it)
+          toast(getString(R.string.authentication_error))
+        })
   }
 
   fun startBluetooth() {

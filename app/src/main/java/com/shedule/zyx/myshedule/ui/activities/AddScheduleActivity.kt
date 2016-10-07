@@ -34,6 +34,7 @@ import kotlinx.android.synthetic.main.add_schedule_activity.*
 import kotlinx.android.synthetic.main.add_schedule_screen.*
 import kotlinx.android.synthetic.main.number_layout.*
 import org.jetbrains.anko.*
+import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.*
@@ -72,6 +73,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   var numberOfLesson = 1
   var isScheduleEdit = false
   var schedule: Schedule? = null
+  var subscription: Subscription? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -131,13 +133,11 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
 
     subjects_list.onClick {
       val dialog = indeterminateProgressDialog(getString(R.string.load))
-      firebaseWrapper.getSubjects()
+      subscription = firebaseWrapper.getSubjects()
           .subscribe({
             dialog.dismiss()
             it?.let { subjects ->
-              selector(null, subjects) {
-                name_of_lesson.setText(subjects[it])
-              }
+              selector(null, subjects) { name_of_lesson.setText(subjects[it]) }
             } ?: toast(getString(R.string.notting_subjects))
           }, {
             dialog.dismiss()
@@ -147,7 +147,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
 
     teachers_list.onClick {
       val dialog = indeterminateProgressDialog(getString(R.string.load))
-      firebaseWrapper.getTeachers()
+      subscription = firebaseWrapper.getTeachers()
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread())
           .subscribe({ teachers ->
@@ -199,15 +199,9 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
                   getString(R.string.random_dates))) {
             position ->
             when (position) {
-              0 -> {
-                setListOfDates(BOTH_WEEKS)
-              }
-              1 -> {
-                setListOfDates(FIRST_WEEK)
-              }
-              2 -> {
-                setListOfDates(SECOND_WEEK)
-              }
+              0 -> setListOfDates(BOTH_WEEKS)
+              1 -> setListOfDates(FIRST_WEEK)
+              2 -> setListOfDates(SECOND_WEEK)
               3 -> {
                 alert {
                   customView {
@@ -239,6 +233,11 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
         } ?: toast(getString(R.string.set_date_of_end_period))
       } ?: toast(getString(R.string.set_date_of_begin_period))
     }
+  }
+
+  override fun onStop() {
+    super.onStop()
+    subscription?.unsubscribe()
   }
 
   private fun setPeriods(startPeriod: Date, endPeriod: Date) {

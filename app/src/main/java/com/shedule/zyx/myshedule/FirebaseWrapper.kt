@@ -10,8 +10,12 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.models.Group
+import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.models.Teacher
+import com.shedule.zyx.myshedule.utils.Constants.Companion.ADMINS
+import com.shedule.zyx.myshedule.utils.Constants.Companion.CHANGES_COUNT
 import com.shedule.zyx.myshedule.utils.Constants.Companion.RATINGS
+import com.shedule.zyx.myshedule.utils.Constants.Companion.SCHEDULE
 import com.shedule.zyx.myshedule.utils.Utils.Companion.getKeyByName
 import rx.Observable
 import java.util.*
@@ -45,6 +49,17 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
     }
   }
 
+  fun logOut(): Observable<Void> {
+    return Observable.create {
+      auth.currentUser?.delete()?.addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+          it.onNext(null)
+          it.onCompleted()
+        } else it.onError(task.exception)
+      }
+    }
+  }
+
   fun getGroups(faculty: String, university: String): Observable<List<String>?> {
     return RxFirebase.observe(ref.child(university).child(faculty)).map { it.children?.map { it.key }?.filter { it != "teachers" } }
   }
@@ -57,8 +72,6 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
     return RxFirebase.observe(ref).map { it.children?.map { it.key } }
   }
 
-  fun getAdmins() = getGroupInformation().map { it?.admins?.map { it } }
-
   fun getSubjects() = getTeachers().map { it?.map { it.lessonName.toString() } }
 
   fun getTeachers(): Observable<List<Teacher>?> {
@@ -68,10 +81,47 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
         .map { it.children.map { it.getValue(Teacher::class.java) } }
   }
 
+  fun getSchedule(): Observable<List<Schedule>?> {
+    return RxFirebase.observe(groupRef().child(SCHEDULE))
+        .filter { it != null }
+        .filter { it.value != null }.map { it.children.map { it.getValue(Schedule::class.java) } }
+  }
+
+  fun pushSchedule(list: List<Schedule>, change: Int): Observable<Boolean> {
+    groupRef().child(SCHEDULE).setValue(list)
+    groupRef().child(CHANGES_COUNT).setValue(change)
+    return RxFirebase.observe(groupRef())
+        .flatMap { if (getSchedule() != null) Observable.just(true) else Observable.just(false) }
+  }
+
+  fun getAdmins(): Observable<List<String>?> {
+    return RxFirebase.observe(groupRef().child(ADMINS))
+        .filter { it != null }
+        .filter { it.value != null }.map { it.children.map { it.getValue(String::class.java) } }
+  }
+
+  fun pushAdmin(): Observable<Boolean> {
+    groupRef().child(ADMINS).setValue(auth.currentUser?.uid)
+    return RxFirebase.observe(groupRef().child(ADMINS))
+        .flatMap { if (getAdmins() != null) Observable.just(true) else Observable.just(false) }
+  }
+
+  fun pushChangesCount(count: Int): Observable<Boolean> {
+    groupRef().child(CHANGES_COUNT).setValue(count)
+    return RxFirebase.observe(groupRef().child(CHANGES_COUNT))
+        .flatMap { Observable.just(true) }
+  }
+
+  fun getChangesCount(): Observable<Int> {
+    return RxFirebase.observe(groupRef().child(CHANGES_COUNT))
+        .map { it.getValue(Int::class.java) }
+  }
+
   fun getGroupInformation() = RxFirebase.observe(groupRef()).map { it.getValue(Group::class.java) }
 
-  fun pushGroup(group: Group): Observable<Boolean> {
-    groupRef().setValue(group)
+  fun pushGroup(): Observable<Boolean> {
+    groupRef().child(CHANGES_COUNT).setValue(0)
+    groupRef().child(ADMINS).push().setValue(auth.currentUser?.uid)
     return RxFirebase.observe(groupRef())
         .flatMap { if (getGroupInformation() != null ) Observable.just(true) else Observable.just(false) }
   }
@@ -113,12 +163,14 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
                       subscriber.onNext(true)
                       subscriber.onCompleted()
                     }, {
-                      7
+                      if (BuildConfig.DEBOUG_ENABLED)
+                        FirebaseCrash.report(it)
                       subscriber.onError(it)
                     })
               }
             }, {
-              7
+              if (BuildConfig.DEBOUG_ENABLED)
+                FirebaseCrash.report(it)
               subscriber.onError(it)
             })
           }

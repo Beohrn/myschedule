@@ -53,6 +53,7 @@
     <string name="teacher_culture">Культура викладача</string>
     <string name="add_photo">Додати фото</string>
     <string name="approve">Прийняти</string>
+    <string name="log_out">Вийти</string>
 
     <string name="random_dates">Довільні дати</string>
     <string name="bonded_devices">Підключені\n пристрої</string>
