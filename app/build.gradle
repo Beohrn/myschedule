@@ -30,7 +30,8 @@ repositories {
 
 android {
     signingConfigs {
-        config {
+        debug {}
+        release {
             keyAlias 'yourschedule'
             keyPassword 'yourschedule'
             storeFile file('/Users/bogdan/Work/myschedule/file_jks/yourschedule.jks')
@@ -56,11 +57,17 @@ android {
 
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
+            buildConfigField 'String', 'FIREBASE_URL', '\"production\"'
+            buildConfigField 'boolean', 'DEBOUG_ENABLED', 'false'
         }
 
         debug {
             minifyEnabled false
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
+            applicationIdSuffix ".dev"
+            buildConfigField 'String', 'FIREBASE_URL', '\"develop\"'
+            buildConfigField 'boolean', 'DEBOUG_ENABLED', 'true'
         }
     }
     lintOptions {

@@ -44,6 +44,50 @@
           "status": 2
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:515794523373:android:973b75a304fba5da",
+        "android_client_info": {
+          "package_name": "com.shedule.zyx.myshedule.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "515794523373-k2vhnm13b769d2anu5r4bipo0lujdr9s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shedule.zyx.myshedule.dev",
+            "certificate_hash": "34D8DBC3A437E74138AEECBA6A95C13BD8732CF4"
+          }
+        },
+        {
+          "client_id": "515794523373-3ufpfmh4vv4ro2uppsq70258kub7tmc2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpWuRDbjQ4sfLkfTIgqaMfKwIY-PyPF1s"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "515794523373-3ufpfmh4vv4ro2uppsq70258kub7tmc2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
     }
   ],
   "configuration_version": "1"
