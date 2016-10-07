@@ -26,6 +26,7 @@
     <string name="add_schedule_toolbar_title">Create lesson</string>
     <string name="homework_activity_title">Homework</string>
     <string name="calendar">Calendar</string>
+    <string name="push">Push</string>
 
     <string name="banner_ad_unit_id" translatable="false">ca-app-pub-7743911822125060/2694759036</string>
 
@@ -497,8 +498,8 @@
     <string name="repeat_of_lesson">Repetition of lesson:</string>
     <string name="every_week">Weekly</string>
     <string name="every_week_brc">(Weekly)</string>
-    <string name="on_first_week">On first week</string>
-    <string name="on_second_week">On second week</string>
+    <string name="on_first_week">Even weeks</string>
+    <string name="on_second_week">Odd weeks</string>
     <string name="practice">Practice</string>
     <string name="lecture">Lecture</string>
     <string name="repeat">Repetition</string>
@@ -543,6 +544,13 @@
     <string name="lesson_delete">Delete lesson</string>
     <string name="in_single_day">Only on this day</string>
     <string name="in_others_day">On the other days</string>
+    <string name="schedule_was_sent">The schedule successfully sent</string>
+    <string name="schedule_was_updated">The schedule successfully updated</string>
+    <string name="update">Update</string>
+    <string name="group_has_not_been_created">The group has not been created</string>
+    <string name="via_bluetooth">Via Bluetooth</string>
+    <string name="via_server">With group</string>
+    <string name="no_data">No data</string>
 
     <string name="no_permission_for_camera">No permission to access the camera</string>
     <string name="no_permission_for_storage">No permission to access the Memory</string>
@@ -557,11 +565,19 @@
     <string name="classroom_hint">Audience</string>
     <string name="university">University</string>
     <string name="faculty">Department (abbreviated)</string>
+    <string name="group">Group</string>
+    <string name="admin">Administrator</string>
     <string name="authorize">Authorize</string>
+    <string name="no_faculties">No faculties</string>
+    <string name="type_the_university_name">Type university name</string>
+    <string name="type_the_faculty_name">Type faculty name</string>
+    <string name="groups_not_found">Groups not found</string>
+    <string name="connection_is_failed">Connection is failed</string>
 
     <string name="authentication">Authentication</string>
     <string name="authentication_error">Authentication error</string>
     <string name="download_error">Load error</string>
+    <string name="notting_subjects">Subjects do not have</string>
     <string name="notting_teachers">Teacher do not have</string>
     <string name="load">Load</string>
     <string name="create">Create</string>
@@ -587,5 +603,7 @@
     <string name="no_homework_yet">For this subject is no homework</string>
     <string name="no_schedules_with_homework_yet">No subjects that have a homework</string>
     <string name="no_teachers_yet">No teachers yet</string>
+
+    <string name="no_universities">No universities</string>
 
 </resources>

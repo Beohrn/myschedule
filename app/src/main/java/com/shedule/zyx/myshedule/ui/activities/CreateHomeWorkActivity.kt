@@ -1,5 +1,6 @@
 package com.shedule.zyx.myshedule.ui.activities
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -24,6 +25,7 @@ import com.shedule.zyx.myshedule.ui.activities.PhotoActivity.Companion.BITMAP
 import com.shedule.zyx.myshedule.ui.activities.PhotoActivity.Companion.BITMAP_NAME
 import com.shedule.zyx.myshedule.ui.activities.PhotoActivity.Companion.PHOTO_ACTIVITY_REQUEST
 import com.shedule.zyx.myshedule.utils.Utils
+import com.tbruyelle.rxpermissions.RxPermissions
 import kotlinx.android.synthetic.main.add_home_work_activity.*
 import kotlinx.android.synthetic.main.create_home_work_screen.*
 import org.jetbrains.anko.onItemClick
@@ -51,6 +53,8 @@ class CreateHomeWorkActivity : AppCompatActivity() {
     val CREATE_HOMEWORK_REQUEST = 1239
     val EDIT_HOMEWORK_REQUEST = 3928
     val DATE_ON_TITLE = "date_on_title"
+    val CAMERA_REQUEST = 9393
+    val STORAGE_REQUEST = 3288
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,14 +114,22 @@ class CreateHomeWorkActivity : AppCompatActivity() {
               getString(R.string.gallery))) { i ->
             when (i) {
               0 -> {
-                val intent = Intent(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
-                val uri = Uri.fromFile(Utils.getMediaFile(this, home_work_name.getText(), true)/*Utils.getHomeWorkFile(this, home_work_name.getText())*/)
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-                startActivityForResult(intent, 9393)
+                checkPermission(Manifest.permission.CAMERA).subscribe({
+                  if (it) {
+                    val intent = Intent(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
+                    val uri = Uri.fromFile(Utils.getMediaFile(this, home_work_name.getText(), true))
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+                    startActivityForResult(intent, CAMERA_REQUEST)
+                  } else toast(getString(R.string.no_permission_for_camera))
+                }, {})
               }
               else -> {
-                startActivityForResult(Intent(Intent.ACTION_PICK,
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI), 3288)
+                checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE).subscribe({
+                  if (it)
+                    startActivityForResult(Intent(Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI), STORAGE_REQUEST)
+                  else toast(getString(R.string.no_permission_for_storage))
+                }, {})
               }
             }
           }
@@ -142,14 +154,16 @@ class CreateHomeWorkActivity : AppCompatActivity() {
     return super.onOptionsItemSelected(item)
   }
 
+  private fun checkPermission(permission: String) = RxPermissions.getInstance(this)
+      .request(permission)
+
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
     if (resultCode == Activity.RESULT_OK) {
-      if (requestCode == 9393) {
-
+      if (requestCode == CAMERA_REQUEST) {
         updatePhotos(Utils.getHomeWorkImagePath(this, home_work_name.getText()))
         photosAdapter.notifyDataSetChanged()
-      } else if (requestCode == 3288) {
+      } else if (requestCode == STORAGE_REQUEST) {
         val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
         data?.let {
           val cursor = contentResolver.query(it.data, filePathColumn, null, null, null)

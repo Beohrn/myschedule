@@ -47,7 +47,7 @@ class BluetoothManager(val context: Context, val bt: BluetoothSPP, val gson: Gso
     this.onScheduleReceiveListener = listener
   }
 
-  fun getPairedDevices() = btAdapter.bondedDevices.map { Pair(it.address, it.name.toString()) }
+  fun getPairedDevices() = btAdapter.bondedDevices.map { Pair(it.address, it.name) }
 
   fun connect(address: String) = bt.connect(address)
 
@@ -88,7 +88,6 @@ class BluetoothManager(val context: Context, val bt: BluetoothSPP, val gson: Gso
         if (it.toGenericString() == VALUE_FOR_SCAN_MODE)
           method = it
       }
-
       method?.invoke(btAdapter, SCAN_MODE_CONNECTABLE_DISCOVERABLE, 300)
     } else {
       val intentFilter = Intent(ACTION_REQUEST_DISCOVERABLE)

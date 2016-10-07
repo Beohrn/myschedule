@@ -16,7 +16,9 @@ class AppPreference(val context: Context, val gson: Gson) {
   private val KEY = "schedule"
   private val UNIVER_NAME = "univer_name"
   private val FACULTY_NAME = "facylty_name"
-  private val IS_FIRST_TIME_LAUNCH = "is_first_time_launch"
+  private val GROUP = "group_name"
+  private val ADMIN = "admin"
+  private val CHANGES_COUNT = "changes_count"
   private val prefs: SharedPreferences
 
   init {
@@ -45,4 +47,16 @@ class AppPreference(val context: Context, val gson: Gson) {
   fun saveFacultyName(name: String) = prefs.edit().putString(FACULTY_NAME, name).apply()
 
   fun getFacultyName() = prefs.getString(FACULTY_NAME, null)
+
+  fun saveGroupName(group: String) = prefs.edit().putString(GROUP, group).apply()
+
+  fun getGroupName() = prefs.getString(GROUP, null)
+
+  fun saveAdminRights(isAdmin: Boolean) = prefs.edit().putBoolean(ADMIN, isAdmin).apply()
+
+  fun getAdminRight() = prefs.getBoolean(ADMIN, false)
+
+  fun saveChangesCount(count: Int) = prefs.edit().putInt(CHANGES_COUNT, count)
+
+  fun getChangesCount() = prefs.getInt(CHANGES_COUNT, 0)
 }

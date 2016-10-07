@@ -9,6 +9,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.shedule.zyx.myshedule.config.AppPreference
+import com.shedule.zyx.myshedule.models.Group
 import com.shedule.zyx.myshedule.models.Teacher
 import com.shedule.zyx.myshedule.utils.Constants.Companion.RATINGS
 import com.shedule.zyx.myshedule.utils.Utils.Companion.getKeyByName
@@ -27,6 +28,12 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
         .child(getKeyByName(prefs.getFacultyName() ?: ""))
   }
 
+  private fun groupRef(): DatabaseReference {
+    return ref.child(getKeyByName(prefs.getUniverName() ?: ""))
+        .child(getKeyByName(prefs.getFacultyName() ?: ""))
+        .child(getKeyByName(prefs.getGroupName() ?: ""))
+  }
+
   fun createAccount(): Observable<Void> {
     return Observable.create {
       auth.signInAnonymously().addOnCompleteListener { task ->
@@ -38,29 +45,35 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
     }
   }
 
-  fun getTeachers(): Observable<List<Teacher>?> {
-    return Observable.create { sub ->
+  fun getGroups(faculty: String, university: String): Observable<List<String>?> {
+    return RxFirebase.observe(ref.child(university).child(faculty)).map { it.children?.map { it.key }?.filter { it != "teachers" } }
+  }
 
-      RxFirebase.observe(facultyRef())
-          .subscribe({
-            if (it.value != null) {
-              RxFirebase.observeChildAdded(facultyRef())
-                  .subscribe({
-                    sub.onNext(it.snapshot?.children?.map { it.getValue(Teacher::class.java) })
-                    sub.onCompleted()
-                  }, {
-                    sub.onError(it)
-                    sub.onCompleted()
-                  })
-            } else {
-              sub.onNext(null)
-              sub.onCompleted()
-            }
-          }, {
-            sub.onError(it)
-            sub.onCompleted()
-          })
-    }
+  fun getFaculty(university: String): Observable<List<String>?> {
+    return RxFirebase.observe(ref.child(university)).map { it.children?.map { it.key } }
+  }
+
+  fun getUniversity(): Observable<List<String>?> {
+    return RxFirebase.observe(ref).map { it.children?.map { it.key } }
+  }
+
+  fun getAdmins() = getGroupInformation().map { it?.admins?.map { it } }
+
+  fun getSubjects() = getTeachers().map { it?.map { it.lessonName.toString() } }
+
+  fun getTeachers(): Observable<List<Teacher>?> {
+    return RxFirebase.observe(createTeacherRef())
+        .filter { it != null }
+        .filter { it.value != null }
+        .map { it.children.map { it.getValue(Teacher::class.java) } }
+  }
+
+  fun getGroupInformation() = RxFirebase.observe(groupRef()).map { it.getValue(Group::class.java) }
+
+  fun pushGroup(group: Group): Observable<Boolean> {
+    groupRef().setValue(group)
+    return RxFirebase.observe(groupRef())
+        .flatMap { if (getGroupInformation() != null ) Observable.just(true) else Observable.just(false) }
   }
 
   fun pushTeacher(teachers: List<Teacher>): Observable<Boolean> {
@@ -95,7 +108,7 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
                 subscriber.onNext(false)
                 subscriber.onCompleted()
               } else {
-                RxFirebase.observeChildAdded(facultyRef())
+                RxFirebase.observeChildAdded(createTeacherRef())
                     .subscribe({
                       subscriber.onNext(true)
                       subscriber.onCompleted()
@@ -119,7 +132,7 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
             subscriber.onCompleted()
           }
         } else {
-          RxFirebase.observeChildAdded(facultyRef())
+          RxFirebase.observeChildAdded(createTeacherRef())
               .subscribe({
                 if (!loaded) {
                   subscriber.onNext(true)
