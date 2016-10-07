@@ -14,6 +14,7 @@ import android.widget.EditText
 import android.widget.MultiAutoCompleteTextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crash.FirebaseCrash
+import com.shedule.zyx.myshedule.BuildConfig
 import com.shedule.zyx.myshedule.FirebaseWrapper
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.string.*
@@ -177,7 +178,8 @@ class CreateAccountFragment : Fragment() {
               prefs.saveAdminRights(admin.isChecked)
               startActivity<MainActivity>()
             }, {
-              FirebaseCrash.report(it)
+              if (BuildConfig.DEBOUG_ENABLED)
+                FirebaseCrash.report(it)
               toast(getString(R.string.authentication_error))
             })
       } else if (checkEdiTextIsEmpty(univer_ET)) {
