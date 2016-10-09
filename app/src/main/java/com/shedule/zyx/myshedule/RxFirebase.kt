@@ -64,7 +64,8 @@ object RxFirebase {
         }
 
         override fun onDataChange(dataSnapshot: DataSnapshot) {
-          subscriber.onNext(dataSnapshot)
+          if (dataSnapshot.value == null) subscriber.onError(Exception("Empty data"))
+          else subscriber.onNext(dataSnapshot)
         }
       })
 

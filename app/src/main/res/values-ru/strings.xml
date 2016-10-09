@@ -25,7 +25,10 @@
     <string name="add_schedule_toolbar_title">Создать занятие</string>
     <string name="homework_activity_title">Домашнее задание</string>
     <string name="calendar">Календарь</string>
+    <string name="push">Поделиться</string>
+    <string name="update">Обновить</string>
     <string name="open_group">Открить группу</string>
+    <string name="group_has_not_been_created">Группа еще не создана</string>
 
     <string-array name="type_of_lesson">
         <item>Практика</item>
@@ -50,6 +53,7 @@
     <string name="ability_to_information">Умение донести информацию</string>
     <string name="desire_to_learn">Желание учить</string>
     <string name="teacher_culture">Культура преподавателя</string>
+    <string name="log_out">Выйти</string>
 
     <string name="add_photo">Добавить фото</string>
     <string name="approve">Принять</string>
@@ -63,8 +67,8 @@
     <string name="repeat_of_lesson">Повторение занятия:</string>
     <string name="every_week">Каждую неделю</string>
     <string name="every_week_brc">(Каждую неделю)</string>
-    <string name="on_first_week">По первой неделе</string>
-    <string name="on_second_week">По второй неделе</string>
+    <string name="on_first_week">По нечетной неделе</string>
+    <string name="on_second_week">По четной неделе</string>
     <string name="practice">Практика</string>
     <string name="lecture">Лекция</string>
     <string name="repeat">Повторение</string>
@@ -122,11 +126,37 @@
     <string name="classroom_hint">Аудитория</string>
     <string name="university">Университет</string>
     <string name="faculty">Факультет (аббревиатура)</string>
+    <string name="group">Группа</string>
+    <string name="admin">Администратор</string>
     <string name="authorize">Авторизоваться</string>
-    
+    <string name="no_faculties">Нет факультетов</string>
+    <string name="type_the_university_name">Введите название университета</string>
+    <string name="type_the_faculty_name">Введите название факультета</string>
+    <string name="groups_not_found">Групп пока нет</string>
+    <string name="connection_is_failed">Нет подключения к интернету</string>
+    <string name="schedule_was_sent">Расписание успешно отправлено</string>
+    <string name="schedule_was_updated">Расписание успешно обновлено</string>
+    <string name="via_bluetooth">Через Bluetooth</string>
+    <string name="via_server">С группой</string>
+    <string name="settings">Настройки</string>
+
+    <string name="admins">Администраторы</string>
+    <string name="none">Отсутствуют</string>
+    <string name="one_admin_is_missing">1 администратор отсутствует</string>
+    <string name="become_administrator">Стать администратором</string>
+    <string name="not_to_be_an_admin">Не быть администратором</string>
+    <string name="you_are_admin">Вы администратор</string>
+    <string name="you_are_not_admin">Вы не администратор</string>
+    <string name="you_not_become_admin">Вы не можете быть администратором</string>
+    <string name="you_have_become_an_admin">Вы стали администратором</string>
+    <string name="u_no_longer_admin">Вы больше не администратор</string>
+    <string name="exit">Выход</string>
+
     <string name="authentication">Авторизация</string>
     <string name="authentication_error">Ошибка авторизации</string>
+    <string name="log_out_error">Ошибка выхода</string>
     <string name="download_error">Ошибка загрузки</string>
+    <string name="notting_subjects">Предметов пока нет</string>
     <string name="notting_teachers">Нет преподавателей</string>
     <string name="load">Загрузка</string>
     <string name="create">Создавай</string>
@@ -148,9 +178,12 @@
     <string name="email">yourschedule.info@gmail.com</string>
     <string name="delete_schedule">Удалить расписание</string>
     <string name="schedules_is_no">Расписания пока нет</string>
+    <string name="no_data">Нет данных</string>
 
     <string name="no_homework_yet">Для этого предмета нет домашних заданий</string>
     <string name="no_schedules_with_homework_yet">Нет предметов, у которых есть домашние задания</string>
     <string name="no_teachers_yet">Преподавателей пока нет</string>
+
+    <string name="no_universities">Нет университетов</string>
 
 </resources>

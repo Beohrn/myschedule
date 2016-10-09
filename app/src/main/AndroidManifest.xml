@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".ScheduleApplication"
@@ -63,6 +64,10 @@
             </intent-filter>
 
         </activity>
+
+        <activity android:name=".ui.activities.SettingsActivity"
+                  android:theme="@style/AppTheme"
+                  android:screenOrientation="portrait"/>
 
     </application>
 </manifest>

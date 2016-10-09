@@ -6,8 +6,8 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v7.app.AppCompatActivity
-import com.shedule.zyx.myshedule.auth.fragments.CreateAccountFragment
 import com.shedule.zyx.myshedule.R
+import com.shedule.zyx.myshedule.auth.fragments.CreateAccountFragment
 import com.shedule.zyx.myshedule.tutorial.tutorial_pager.FirstPagerFragment
 import com.shedule.zyx.myshedule.tutorial.tutorial_pager.SecondPagerFragment
 import com.shedule.zyx.myshedule.tutorial.tutorial_pager.ThirdPagerFragment
@@ -18,6 +18,7 @@ import org.jetbrains.anko.dip
  * Created by alexkowlew on 14.09.2016.
  */
 class TutorialActivity : AppCompatActivity() {
+
 
   companion object {
     val DOT_COLOR = "#eceeef"
