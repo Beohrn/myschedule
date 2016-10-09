@@ -111,6 +111,17 @@
     <string name="in_single_day">Тільки в цей день</string>
     <string name="in_others_day">В усі інші дні</string>
 
+    <string name="settings">Налаштування</string>
+    <string name="admins">Адміністратори</string>
+    <string name="none">Відсутні</string>
+    <string name="you_not_become_admin">Ви не можете стати адміністратором</string>
+    <string name="you_are_admin">Ви адміністратор</string>
+    <string name="you_are_not_admin">Ви не адмиіністратор</string>
+    <string name="become_administrator">Стати адміністратором</string>
+    <string name="not_to_be_an_admin">Не бути адміністратором</string>
+    <string name="u_no_longer_admin">Ви більше не адміністратор</string>
+    <string name="exit">Вихід</string>
+
     <string name="no_permission_for_camera">Немає дозволу на доступ до Камери</string>
     <string name="no_permission_for_storage">Немає дозволу на доступ до Пам\'яті</string>
     <string name="teachers">Викладачі</string>
@@ -141,6 +152,7 @@
 
     <string name="authentication">Авторизація</string>
     <string name="authentication_error">Помилка авторизації</string>
+    <string name="log_out_error">Помилка виходу</string>
     <string name="download_error">Помилка завантаження</string>
     <string name="notting_subjects">Немає предметів</string>
     <string name="notting_teachers">Немає викладачів</string>

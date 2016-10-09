@@ -59,6 +59,12 @@ class Utils {
       return info != null && info.isConnectedOrConnecting
     }
 
+    fun isOnline(context: Context, action: (Boolean) -> Unit) {
+      val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+      val info = connectivityManager.activeNetworkInfo
+      action(info != null && info.isConnectedOrConnecting)
+    }
+
     fun getUniversities(context: Context) =
         context.getString(R.string.universities).replace("(", "").replace(")", "").split(";").map(String::trim)
 

@@ -552,6 +552,19 @@
     <string name="via_server">With group</string>
     <string name="no_data">No data</string>
 
+    <string name="admins">Administrators</string>
+    <string name="none">No admins</string>
+    <string name="one_admin_is_missing">1 administrator is missing</string>
+    <string name="become_administrator">Become administrator</string>
+    <string name="not_to_be_an_admin">Not to be an admin</string>
+    <string name="you_are_admin">You are administrator</string>
+    <string name="you_are_not_admin">You are not administrator</string>
+    <string name="you_not_become_admin">You can\'t become an administrator</string>
+    <string name="settings">Settings</string>
+    <string name="you_have_become_an_admin">You have become an administrator</string>
+    <string name="u_no_longer_admin">You no longer administrator</string>
+    <string name="exit">Exit</string>
+
     <string name="no_permission_for_camera">No permission to access the camera</string>
     <string name="no_permission_for_storage">No permission to access the Memory</string>
     <string name="teachers">Teachers</string>
@@ -577,6 +590,7 @@
 
     <string name="authentication">Authentication</string>
     <string name="authentication_error">Authentication error</string>
+    <string name="log_out_error">Log out error</string>
     <string name="download_error">Load error</string>
     <string name="notting_subjects">Subjects do not have</string>
     <string name="notting_teachers">Teacher do not have</string>

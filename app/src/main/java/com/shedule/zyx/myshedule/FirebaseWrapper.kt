@@ -9,13 +9,13 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.shedule.zyx.myshedule.config.AppPreference
-import com.shedule.zyx.myshedule.models.Group
 import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.models.Teacher
 import com.shedule.zyx.myshedule.utils.Constants.Companion.ADMINS
 import com.shedule.zyx.myshedule.utils.Constants.Companion.CHANGES_COUNT
 import com.shedule.zyx.myshedule.utils.Constants.Companion.RATINGS
 import com.shedule.zyx.myshedule.utils.Constants.Companion.SCHEDULE
+import com.shedule.zyx.myshedule.utils.Constants.Companion.TEACHERS
 import com.shedule.zyx.myshedule.utils.Utils.Companion.getKeyByName
 import rx.Observable
 import java.util.*
@@ -25,7 +25,7 @@ import java.util.*
  */
 class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val auth: FirebaseAuth) {
 
-  fun createTeacherRef() = facultyRef().child("teachers")
+  fun createTeacherRef() = facultyRef().child(TEACHERS)
 
   private fun facultyRef(): DatabaseReference {
     return ref.child(getKeyByName(prefs.getUniverName() ?: ""))
@@ -60,8 +60,13 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
     }
   }
 
+  fun removeAdmin(): Observable<Boolean> {
+    groupRef().child(ADMINS).child(prefs.getAdminKey()).removeValue()
+    return RxFirebase.observe(groupRef().child(ADMINS)).flatMap { Observable.just(true) }
+  }
+
   fun getGroups(faculty: String, university: String): Observable<List<String>?> {
-    return RxFirebase.observe(ref.child(university).child(faculty)).map { it.children?.map { it.key }?.filter { it != "teachers" } }
+    return RxFirebase.observe(ref.child(university).child(faculty)).map { it.children?.map { it.key }?.filter { it != TEACHERS } }
   }
 
   fun getFaculty(university: String): Observable<List<String>?> {
@@ -91,39 +96,26 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
     groupRef().child(SCHEDULE).setValue(list)
     groupRef().child(CHANGES_COUNT).setValue(change)
     return RxFirebase.observe(groupRef())
-        .flatMap { if (getSchedule() != null) Observable.just(true) else Observable.just(false) }
+        .flatMap { Observable.just(true) }
   }
 
-  fun getAdmins(): Observable<List<String>?> {
-    return RxFirebase.observe(groupRef().child(ADMINS))
+  fun getAdmins(university: String, faculty: String, group: String): Observable<List<String>?> {
+    return RxFirebase.observe(ref.child(getKeyByName(university))
+        .child(getKeyByName(faculty)).child(group).child(ADMINS))
         .filter { it != null }
         .filter { it.value != null }.map { it.children.map { it.getValue(String::class.java) } }
   }
 
-  fun pushAdmin(): Observable<Boolean> {
-    groupRef().child(ADMINS).setValue(auth.currentUser?.uid)
-    return RxFirebase.observe(groupRef().child(ADMINS))
-        .flatMap { if (getAdmins() != null) Observable.just(true) else Observable.just(false) }
-  }
-
-  fun pushChangesCount(count: Int): Observable<Boolean> {
-    groupRef().child(CHANGES_COUNT).setValue(count)
-    return RxFirebase.observe(groupRef().child(CHANGES_COUNT))
-        .flatMap { Observable.just(true) }
-  }
-
   fun getChangesCount(): Observable<Int> {
     return RxFirebase.observe(groupRef().child(CHANGES_COUNT))
+        .filter { it != null }
         .map { it.getValue(Int::class.java) }
   }
 
-  fun getGroupInformation() = RxFirebase.observe(groupRef()).map { it.getValue(Group::class.java) }
-
-  fun pushGroup(): Observable<Boolean> {
-    groupRef().child(CHANGES_COUNT).setValue(0)
+  fun pushAdmin(): Observable<String> {
     groupRef().child(ADMINS).push().setValue(auth.currentUser?.uid)
-    return RxFirebase.observe(groupRef())
-        .flatMap { if (getGroupInformation() != null ) Observable.just(true) else Observable.just(false) }
+    return RxFirebase.observe(groupRef().child(ADMINS))
+        .flatMap { Observable.from(it.children?.filter { it.value == auth.currentUser?.uid }?.map { it.key }) }
   }
 
   fun pushTeacher(teachers: List<Teacher>): Observable<Boolean> {

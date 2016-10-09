@@ -19,6 +19,7 @@ class AppPreference(val context: Context, val gson: Gson) {
   private val GROUP = "group_name"
   private val ADMIN = "admin"
   private val CHANGES_COUNT = "changes_count"
+  private val ADMIN_KEY = "admin_key"
   private val prefs: SharedPreferences
 
   init {
@@ -56,7 +57,11 @@ class AppPreference(val context: Context, val gson: Gson) {
 
   fun getAdminRight() = prefs.getBoolean(ADMIN, false)
 
-  fun saveChangesCount(count: Int) = prefs.edit().putInt(CHANGES_COUNT, count)
+  fun saveChangesCount(count: Int) = prefs.edit().putInt(CHANGES_COUNT, count).apply()
 
   fun getChangesCount() = prefs.getInt(CHANGES_COUNT, 0)
+
+  fun saveAdminKey(key: String) = prefs.edit().putString(ADMIN_KEY, key).apply()
+
+  fun getAdminKey() = prefs.getString(ADMIN_KEY, null)
 }

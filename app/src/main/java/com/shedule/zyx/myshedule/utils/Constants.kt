@@ -32,5 +32,6 @@ class Constants {
     val CHANGES_COUNT = "changesCount"
     val SCHEDULE = "schedule"
 
+    val EMPTY_DATA = "Empty data"
   }
 }
