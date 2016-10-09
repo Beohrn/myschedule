@@ -62,6 +62,11 @@ class CreateAccountFragment : Fragment() {
   override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
+    if (!prefs.getUniverName().isNullOrBlank()) {
+      univer_ET.setText(prefs.getUniverName())
+      faculty_ET.setText(prefs.getFacultyName())
+    }
+
     val adapter = ArrayAdapter(context, R.layout.single_text_view, R.id.single_text,
         Utils.getUniversities(context))
 
@@ -169,30 +174,51 @@ class CreateAccountFragment : Fragment() {
 
     create_account_btn.onClick {
       if (isOnline(context)) {
-        if (!checkEdiTextIsEmpty(univer_ET) && !checkEdiTextIsEmpty(faculty_ET)) {
-          val dialog = indeterminateProgressDialog(getString(authentication))
-          dialog.show()
-          firebaseWrapper.createAccount()
-              .doOnTerminate { dialog.dismiss() }
-              .subscribeOn(io())
-              .observeOn(mainThread())
-              .subscribe({
-                prefs.saveUniverName(univer_ET.text.toString().trim())
-                prefs.saveFacultyName(faculty_ET.text.toString().trim())
-                prefs.saveGroupName(group_ET.text.toString().trim())
-                if (admin.isChecked) createGroup()
-                startActivity<MainActivity>()
-              }, {
-                if (DEBOUG_ENABLED) report(it)
-                toast(getString(authentication_error))
-              })
-        } else if (checkEdiTextIsEmpty(univer_ET)) {
-          univer_ET.error = getString(input_data)
-        } else if (checkEdiTextIsEmpty(faculty_ET)) {
-          faculty_ET.error = getString(input_data)
+        if (!prefs.getUniverName().isNullOrBlank()) forUpdate()
+        else {
+          if (!checkEdiTextIsEmpty(univer_ET) && !checkEdiTextIsEmpty(faculty_ET)) {
+            val dialog = indeterminateProgressDialog(getString(authentication))
+            dialog.show()
+            firebaseWrapper.createAccount()
+                .doOnTerminate { dialog.dismiss() }
+                .subscribeOn(io())
+                .observeOn(mainThread())
+                .subscribe({
+                  prefs.saveUniverName(univer_ET.text.toString().trim())
+                  prefs.saveFacultyName(faculty_ET.text.toString().trim())
+                  prefs.saveGroupName(group_ET.text.toString().trim())
+                  prefs.saveLogin(true)
+                  if (admin.isChecked) createGroup()
+                  startActivity<MainActivity>()
+                }, {
+                  if (DEBOUG_ENABLED) report(it)
+                  toast(getString(authentication_error))
+                })
+          } else if (checkEdiTextIsEmpty(univer_ET)) {
+            univer_ET.error = getString(input_data)
+          } else if (checkEdiTextIsEmpty(faculty_ET)) {
+            faculty_ET.error = getString(input_data)
+          }
         }
       } else toast(getString(connection_is_failed))
     }
+  }
+
+  private fun forUpdate() {
+    val dialog = indeterminateProgressDialog(getString(authentication))
+    firebaseWrapper.pushAdmin()
+        .doOnTerminate { dialog.dismiss() }
+        .subscribeOn(io())
+        .observeOn(mainThread())
+        .subscribe({ key ->
+          key?.let {
+            prefs.saveAdminRights(true)
+            prefs.saveChangesCount(0)
+            prefs.saveAdminKey(it)
+            prefs.saveLogin(true)
+            startActivity<MainActivity>()
+          }
+        }, { if (DEBOUG_ENABLED) report(it) })
   }
 
   private fun createGroup() {
