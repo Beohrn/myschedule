@@ -20,6 +20,7 @@ class AppPreference(val context: Context, val gson: Gson) {
   private val ADMIN = "admin"
   private val CHANGES_COUNT = "changes_count"
   private val ADMIN_KEY = "admin_key"
+  private val IS_LOGIN = "is_login"
   private val prefs: SharedPreferences
 
   init {
@@ -64,4 +65,8 @@ class AppPreference(val context: Context, val gson: Gson) {
   fun saveAdminKey(key: String) = prefs.edit().putString(ADMIN_KEY, key).apply()
 
   fun getAdminKey() = prefs.getString(ADMIN_KEY, null)
+
+  fun saveLogin(isLogin: Boolean) = prefs.edit().putBoolean(IS_LOGIN, isLogin).apply()
+
+  fun isLogin() = prefs.getBoolean(IS_LOGIN, false)
 }
