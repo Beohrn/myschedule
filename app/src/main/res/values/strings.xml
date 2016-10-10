@@ -27,6 +27,7 @@
     <string name="homework_activity_title">Homework</string>
     <string name="calendar">Calendar</string>
     <string name="push">Push</string>
+    <string name="check">Checking</string>
 
     <string name="banner_ad_unit_id" translatable="false">ca-app-pub-7743911822125060/2694759036</string>
 

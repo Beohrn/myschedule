@@ -1,15 +1,22 @@
 package com.shedule.zyx.myshedule.auth.fragments
 
+import android.app.ProgressDialog
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.view.KeyEvent.KEYCODE_BACK
+import android.view.KeyEvent.KEYCODE_ENTER
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo.IME_ACTION_DONE
+import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.MultiAutoCompleteTextView
@@ -22,6 +29,7 @@ import com.shedule.zyx.myshedule.R.string.*
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.ui.activities.MainActivity
+import com.shedule.zyx.myshedule.utils.Constants.Companion.EMPTY_DATA
 import com.shedule.zyx.myshedule.utils.Utils
 import com.shedule.zyx.myshedule.utils.Utils.Companion.isOnline
 import kotlinx.android.synthetic.main.create_account_layout.*
@@ -53,6 +61,7 @@ class CreateAccountFragment : Fragment() {
   lateinit var facultyWatcher: TextWatcher
 
   var subscription: Subscription? = null
+  var adminsCount = 0
 
   override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
     ScheduleApplication.getComponent().inject(this)
@@ -139,7 +148,7 @@ class CreateAccountFragment : Fragment() {
                   if (groups.size != 0) {
                     selector(null, groups) { index ->
                       group_ET.setText(groups[index])
-                      checkAdmins()
+                      checkAdmins(false)
                       subscription?.unsubscribe()
                     }
                   } else toast(getString(groups_not_found))
@@ -151,6 +160,18 @@ class CreateAccountFragment : Fragment() {
         } else if (faculty_ET.text.isNullOrBlank()) toast(getString(type_the_faculty_name))
         else if (univer_ET.text.isNullOrBlank()) toast(getString(type_the_university_name))
       } else toast(getString(connection_is_failed))
+    }
+
+    admin.visibility = GONE
+    admin.isChecked = false
+
+    group_ET.setOnEditorActionListener { textView, i, keyEvent ->
+      if (i == IME_ACTION_SEARCH || i == IME_ACTION_DONE ||
+          keyEvent.action == KEYCODE_BACK || keyEvent.keyCode == KEYCODE_ENTER) {
+        hideKyboard()
+        checkAdmins(true)
+      }
+      true
     }
 
     facultyWatcher = object : TextWatcher {
@@ -204,6 +225,14 @@ class CreateAccountFragment : Fragment() {
     }
   }
 
+  fun hideKyboard() {
+    val view = activity.currentFocus
+    if (view != null) {
+      val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+      imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+  }
+
   private fun forUpdate() {
     val dialog = indeterminateProgressDialog(getString(authentication))
     firebaseWrapper.pushAdmin()
@@ -212,7 +241,7 @@ class CreateAccountFragment : Fragment() {
         .observeOn(mainThread())
         .subscribe({ key ->
           key?.let {
-            prefs.saveAdminRights(true)
+            prefs.saveAdminRights(admin.isChecked)
             prefs.saveChangesCount(0)
             prefs.saveAdminKey(it)
             prefs.saveLogin(true)
@@ -222,16 +251,17 @@ class CreateAccountFragment : Fragment() {
   }
 
   private fun createGroup() {
-    firebaseWrapper.pushAdmin()
-        .subscribeOn(io())
-        .observeOn(mainThread())
-        .subscribe({ key ->
-          key?.let {
-            prefs.saveAdminRights(true)
-            prefs.saveChangesCount(0)
-            prefs.saveAdminKey(it)
-          }
-        }, { if (DEBOUG_ENABLED) report(it) })
+    if (adminsCount < 2)
+      firebaseWrapper.pushAdmin()
+          .subscribeOn(io())
+          .observeOn(mainThread())
+          .subscribe({ key ->
+            key?.let {
+              prefs.saveAdminRights(true)
+              prefs.saveChangesCount(0)
+              prefs.saveAdminKey(it)
+            }
+          }, { if (DEBOUG_ENABLED) report(it) })
   }
 
   override fun onStop() {
@@ -239,22 +269,36 @@ class CreateAccountFragment : Fragment() {
     subscription?.unsubscribe()
   }
 
-  private fun checkAdmins() {
+  private fun checkAdmins(show: Boolean) {
+    var dialog: ProgressDialog? = null
+    if (show)
+      dialog = indeterminateProgressDialog(getString(check))
+
     firebaseWrapper.getAdmins(univer_ET.text.toString(),
         faculty_ET.text.toString(), group_ET.text.toString())
         .subscribeOn(io())
         .observeOn(mainThread())
         .subscribe({ admins ->
+          dialog?.dismiss()
           admins?.let {
             if (it.size < 2) {
               admin.visibility = VISIBLE
               admin.isChecked = false
+              adminsCount = it.size
             } else {
               admin.visibility = GONE
               admin.isChecked = false
+              adminsCount = it.size
             }
           }
-        }, { if (DEBOUG_ENABLED) report(it) })
+        }, {
+          if (DEBOUG_ENABLED) report(it)
+          dialog?.dismiss()
+          if (it.message == EMPTY_DATA) {
+            admin.visibility = VISIBLE
+            admin.isChecked = false
+          }
+        })
   }
 
   fun checkEdiTextIsEmpty(view: EditText) = view.text?.toString().isNullOrEmpty()
