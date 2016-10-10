@@ -25,7 +25,7 @@
     <string name="add_schedule_toolbar_title">Створити заняття</string>
     <string name="homework_activity_title">Домашнє завдання</string>
     <string name="calendar">Календар</string>
-    <string name="push">Поділитись</string>
+    <string name="events">Новини</string>
     <string name="open_group">Відкрити групу</string>
 
     <string-array name="type_of_lesson">
@@ -53,7 +53,6 @@
     <string name="teacher_culture">Культура викладача</string>
     <string name="add_photo">Додати фото</string>
     <string name="approve">Прийняти</string>
-    <string name="log_out">Вийти</string>
 
     <string name="random_dates">Довільні дати</string>
     <string name="bonded_devices">Підключені\n пристрої</string>
@@ -64,8 +63,8 @@
     <string name="repeat_of_lesson">Повторення заняття:</string>
     <string name="every_week">Щотижня</string>
     <string name="every_week_brc">(Щотижня)</string>
-    <string name="on_first_week">По непанорму тижню</string>
-    <string name="on_second_week">По парному тижню</string>
+    <string name="on_first_week">По першому тижню</string>
+    <string name="on_second_week">По другому тижню</string>
     <string name="practice">Практика</string>
     <string name="lecture">Лекція</string>
     <string name="repeat">Повторення</string>
@@ -110,18 +109,6 @@
     <string name="lesson_delete">Видалити предмет</string>
     <string name="in_single_day">Тільки в цей день</string>
     <string name="in_others_day">В усі інші дні</string>
-    <string name="check">Перевірка</string>
-
-    <string name="settings">Налаштування</string>
-    <string name="admins">Адміністратори</string>
-    <string name="none">Відсутні</string>
-    <string name="you_not_become_admin">Ви не можете стати адміністратором</string>
-    <string name="you_are_admin">Ви адміністратор</string>
-    <string name="you_are_not_admin">Ви не адмиіністратор</string>
-    <string name="become_administrator">Стати адміністратором</string>
-    <string name="not_to_be_an_admin">Не бути адміністратором</string>
-    <string name="u_no_longer_admin">Ви більше не адміністратор</string>
-    <string name="exit">Вихід</string>
 
     <string name="no_permission_for_camera">Немає дозволу на доступ до Камери</string>
     <string name="no_permission_for_storage">Немає дозволу на доступ до Пам\'яті</string>
@@ -135,27 +122,11 @@
     <string name="classroom_hint">Аудиторія</string>
     <string name="university">Університет</string>
     <string name="faculty">Факультет (абревіатура)</string>
-    <string name="group">Група</string>
-    <string name="admin">Адміністратор</string>
     <string name="authorize">Авторизуватися</string>
-    <string name="no_faculties">Немає факультетів</string>
-    <string name="type_the_university_name">Введіть назву університету</string>
-    <string name="type_the_faculty_name">Введіть назву факультету</string>
-    <string name="groups_not_found">Груп поки що немає</string>
-    <string name="connection_is_failed">Немає підключення до інтернету</string>
-    <string name="schedule_was_sent">Розклад успішно відправлений</string>
-    <string name="schedule_was_updated">Розклад успішно оновлений</string>
-    <string name="update">Оновити</string>
-    <string name="group_has_not_been_created">Група ще не створена</string>
-    <string name="via_bluetooth">Через Bluetooth</string>
-    <string name="via_server">З групою</string>
-    <string name="no_data">Немає даних</string>
 
     <string name="authentication">Авторизація</string>
     <string name="authentication_error">Помилка авторизації</string>
-    <string name="log_out_error">Помилка виходу</string>
     <string name="download_error">Помилка завантаження</string>
-    <string name="notting_subjects">Немає предметів</string>
     <string name="notting_teachers">Немає викладачів</string>
     <string name="load">Завантаження</string>
     <string name="create">Створюй</string>
@@ -181,7 +152,5 @@
     <string name="no_homework_yet">Для цього предмету немає домашніх завданнь</string>
     <string name="no_schedules_with_homework_yet">Немає предметів, у яких є домашні завдання</string>
     <string name="no_teachers_yet">Викладачів поки що немає</string>
-
-    <string name="no_universities">Немає університетів</string>
 
 </resources>

@@ -9,6 +9,7 @@ import app.voter.xyz.RxFirebase
 import app.voter.xyz.comments.Comment
 import app.voter.xyz.comments.CommentsAdapter
 import com.google.firebase.database.DatabaseReference
+import com.shedule.zyx.myshedule.BuildConfig
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.config.AppPreference
@@ -57,7 +58,7 @@ class DiscussionActivity : AppCompatActivity(), CommentsAdapter.OnCommentClickLi
 
     whichId = getKeyByName(intent.getStringExtra(TEACHER_REQUEST))
 
-    ref = firebaseRef.child(getKeyByName(prefs.getUniverName()))
+    ref = firebaseRef.child(BuildConfig.FIREBASE_URL).child(getKeyByName(prefs.getUniverName()))
         .child(getKeyByName(prefs.getFacultyName()))
         .child(Constants.TEACHERS)
         .child(whichId)

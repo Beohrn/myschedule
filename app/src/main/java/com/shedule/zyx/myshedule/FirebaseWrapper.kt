@@ -9,15 +9,13 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.shedule.zyx.myshedule.config.AppPreference
-import com.shedule.zyx.myshedule.models.Schedule
+import com.shedule.zyx.myshedule.events.Event
 import com.shedule.zyx.myshedule.models.Teacher
-import com.shedule.zyx.myshedule.utils.Constants.Companion.ADMINS
-import com.shedule.zyx.myshedule.utils.Constants.Companion.CHANGES_COUNT
 import com.shedule.zyx.myshedule.utils.Constants.Companion.RATINGS
-import com.shedule.zyx.myshedule.utils.Constants.Companion.SCHEDULE
-import com.shedule.zyx.myshedule.utils.Constants.Companion.TEACHERS
 import com.shedule.zyx.myshedule.utils.Utils.Companion.getKeyByName
 import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import java.util.*
 
 /**
@@ -25,17 +23,15 @@ import java.util.*
  */
 class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val auth: FirebaseAuth) {
 
-  fun createTeacherRef() = facultyRef().child(TEACHERS)
-
-  private fun facultyRef(): DatabaseReference {
-    return ref.child(getKeyByName(prefs.getUniverName() ?: ""))
-        .child(getKeyByName(prefs.getFacultyName() ?: ""))
+  companion object {
+    val EVENTS = "events"
   }
 
-  private fun groupRef(): DatabaseReference {
-    return ref.child(getKeyByName(prefs.getUniverName() ?: ""))
+  fun createTeacherRef() = facultyRef().child("teachers")
+
+  private fun facultyRef(): DatabaseReference {
+    return ref.child(BuildConfig.FIREBASE_URL).child(getKeyByName(prefs.getUniverName() ?: ""))
         .child(getKeyByName(prefs.getFacultyName() ?: ""))
-        .child(getKeyByName(prefs.getGroupName() ?: ""))
   }
 
   fun createAccount(): Observable<Void> {
@@ -49,73 +45,29 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
     }
   }
 
-  fun logOut(): Observable<Void> {
-    return Observable.create {
-      auth.currentUser?.delete()?.addOnCompleteListener { task ->
-        if (task.isSuccessful) {
-          it.onNext(null)
-          it.onCompleted()
-        } else it.onError(task.exception)
-      }
-    }
-  }
-
-  fun removeAdmin(): Observable<Boolean> {
-    groupRef().child(ADMINS).child(prefs.getAdminKey()).removeValue()
-    return RxFirebase.observe(groupRef().child(ADMINS)).flatMap { Observable.just(true) }
-  }
-
-  fun getGroups(faculty: String, university: String): Observable<List<String>?> {
-    return RxFirebase.observe(ref.child(university).child(faculty)).map { it.children?.map { it.key }?.filter { it != TEACHERS } }
-  }
-
-  fun getFaculty(university: String): Observable<List<String>?> {
-    return RxFirebase.observe(ref.child(university)).map { it.children?.map { it.key } }
-  }
-
-  fun getUniversity(): Observable<List<String>?> {
-    return RxFirebase.observe(ref).map { it.children?.map { it.key } }
-  }
-
-  fun getSubjects() = getTeachers().map { it?.map { it.lessonName.toString() } }
-
   fun getTeachers(): Observable<List<Teacher>?> {
-    return RxFirebase.observe(createTeacherRef())
-        .filter { it != null }
-        .filter { it.value != null }
-        .map { it.children.map { it.getValue(Teacher::class.java) } }
-  }
+    return Observable.create { sub ->
 
-  fun getSchedule(): Observable<List<Schedule>?> {
-    return RxFirebase.observe(groupRef().child(SCHEDULE))
-        .filter { it != null }
-        .filter { it.value != null }.map { it.children.map { it.getValue(Schedule::class.java) } }
-  }
-
-  fun pushSchedule(list: List<Schedule>, change: Int): Observable<Boolean> {
-    groupRef().child(SCHEDULE).setValue(list)
-    groupRef().child(CHANGES_COUNT).setValue(change)
-    return RxFirebase.observe(groupRef())
-        .flatMap { Observable.just(true) }
-  }
-
-  fun getAdmins(university: String, faculty: String, group: String): Observable<List<String>?> {
-    return RxFirebase.observe(ref.child(getKeyByName(university))
-        .child(getKeyByName(faculty)).child(group).child(ADMINS))
-        .filter { it != null }
-        .filter { it.value != null }.map { it.children.map { it.getValue(String::class.java) } }
-  }
-
-  fun getChangesCount(): Observable<Int> {
-    return RxFirebase.observe(groupRef().child(CHANGES_COUNT))
-        .filter { it != null }
-        .map { it.getValue(Int::class.java) }
-  }
-
-  fun pushAdmin(): Observable<String> {
-    groupRef().child(ADMINS).push().setValue(auth.currentUser?.uid)
-    return RxFirebase.observe(groupRef().child(ADMINS))
-        .flatMap { Observable.from(it.children?.filter { it.value == auth.currentUser?.uid }?.map { it.key }) }
+      RxFirebase.observe(facultyRef())
+          .subscribe({
+            if (it.value != null) {
+              RxFirebase.observeChildAdded(facultyRef())
+                  .subscribe({
+                    sub.onNext(it.snapshot?.children?.map { it.getValue(Teacher::class.java) })
+                    sub.onCompleted()
+                  }, {
+                    sub.onError(it)
+                    sub.onCompleted()
+                  })
+            } else {
+              sub.onNext(null)
+              sub.onCompleted()
+            }
+          }, {
+            sub.onError(it)
+            sub.onCompleted()
+          })
+    }
   }
 
   fun pushTeacher(teachers: List<Teacher>): Observable<Boolean> {
@@ -150,19 +102,17 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
                 subscriber.onNext(false)
                 subscriber.onCompleted()
               } else {
-                RxFirebase.observeChildAdded(createTeacherRef())
+                RxFirebase.observeChildAdded(facultyRef())
                     .subscribe({
                       subscriber.onNext(true)
                       subscriber.onCompleted()
                     }, {
-                      if (BuildConfig.DEBOUG_ENABLED)
-                        FirebaseCrash.report(it)
+                      7
                       subscriber.onError(it)
                     })
               }
             }, {
-              if (BuildConfig.DEBOUG_ENABLED)
-                FirebaseCrash.report(it)
+              7
               subscriber.onError(it)
             })
           }
@@ -176,7 +126,7 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
             subscriber.onCompleted()
           }
         } else {
-          RxFirebase.observeChildAdded(createTeacherRef())
+          RxFirebase.observeChildAdded(facultyRef())
               .subscribe({
                 if (!loaded) {
                   subscriber.onNext(true)
@@ -199,4 +149,9 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
   fun pushRating(rating: Double, teacherName: String) {
     createTeacherRef().child(getKeyByName(teacherName)).child(RATINGS).child(auth.currentUser?.uid).setValue(rating)
   }
+
+  fun getEvents(cityName: String) = RxFirebase.observe(ref.child(EVENTS).child(getKeyByName(cityName)))
+      .map { listOf(it.getValue(Event::class.java)).map { it } }
 }
+
+fun <T> Observable<T>.toMainThread() = this.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())

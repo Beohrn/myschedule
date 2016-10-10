@@ -42,5 +42,9 @@
             android:icon="@drawable/log_out"
             android:title="@string/log_out"/>
 
+
+        <item
+            android:id="@+id/open_events"
+            android:title="@string/events"/>
     </group>
 </menu>

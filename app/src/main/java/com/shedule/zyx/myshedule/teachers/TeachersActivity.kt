@@ -1,19 +1,18 @@
 package com.shedule.zyx.myshedule.teachers
 
-import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import app.voter.xyz.auth.ReplaceFragmentListener
-import com.shedule.zyx.myshedule.comments.DiscussionActivity
-import com.shedule.zyx.myshedule.comments.DiscussionActivity.Companion.TEACHER_REQUEST
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.shedule.zyx.myshedule.FirebaseWrapper
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.auth.fragments.CreateAccountFragment
+import com.shedule.zyx.myshedule.comments.DiscussionActivity
+import com.shedule.zyx.myshedule.comments.DiscussionActivity.Companion.TEACHER_REQUEST
 import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.models.Teacher
 import com.shedule.zyx.myshedule.teachers.TeachersAdapter.OnTeacherClickListener
@@ -41,7 +40,6 @@ class TeachersActivity : AppCompatActivity(), OnRatingClickListener, OnTeacherCl
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     setContentView(R.layout.teachers_activity)
     ScheduleApplication.getComponent().inject(this)
 

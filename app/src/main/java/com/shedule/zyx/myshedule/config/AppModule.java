@@ -1,5 +1,6 @@
 package com.shedule.zyx.myshedule.config;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.provider.Settings;
 
@@ -86,6 +87,7 @@ public class AppModule {
         return new BluetoothSPP(context);
     }
 
+    @SuppressLint("HardwareIds")
     @Provides
     @Singleton
     public String provideDeviceToken() {
@@ -102,7 +104,7 @@ public class AppModule {
     @Singleton
     @Provides
     DatabaseReference provideDatabaseReference() {
-        return FirebaseDatabase.getInstance().getReference().child(BuildConfig.FIREBASE_URL);
+        return FirebaseDatabase.getInstance().getReference();
     }
 
     @Singleton
