@@ -6,44 +6,21 @@ import java.io.Serializable
 /**
  * Created by alexkowlew on 26.08.2016.
  */
-class Schedule : Serializable {
 
-  var numberLesson = ""
-  var nameLesson = ""
-  var startPeriod: Date? = null
-  var endPeriod: Date? = null
+class Schedule(var numberLesson: String, var nameLesson: String, var startPeriod: Date, var endPeriod: Date): Serializable {
+
   var teacher: Teacher? = null
   var location: Location? = null
-  var typeLesson = ""
+  var typeLesson: TypeLesson? = null
   var startTime: Time? = null
   var endTime: Time? = null
-  var category = ""
+  var category: Category? = null
   var dates = arrayListOf<String>()
   var week = 0
   var homework = arrayListOf<HomeWork>()
-
-  constructor() {
-  }
-
-  constructor(numberLesson: String, nameLesson: String, startPeriod: Date?, endPeriod: Date?) {
-    this.numberLesson = numberLesson
-    this.nameLesson = nameLesson
-    this.startPeriod = startPeriod
-    this.endPeriod = endPeriod
-  }
 }
 
-class Time : Serializable {
-  var hour = 0
-  var minute = 0
-
-  constructor(){}
-  constructor(hour: Int, minute: Int) {
-    this.hour = hour
-    this.minute = minute
-  }
-
-
+data class Time(val hour: Int, val minute: Int): Serializable {
   override fun toString(): String {
     if (hour < 10 && minute < 10)
       return "0$hour:0$minute"
@@ -56,30 +33,13 @@ class Time : Serializable {
   }
 }
 
-class Location : Serializable {
-  var classroom = ""
-  var housing = ""
+data class Location(val classroom: String, val housing: String): Serializable
 
-  constructor() {}
-  constructor(classroom: String, housing: String) {
-    this.classroom = classroom
-    this.housing = housing
-  }
+enum class TypeLesson: Serializable { SEMINAR, LECTURE }
 
-}
+data class Date(val dayOfMonth: Int, val monthOfYear: Int, val year: Int): Serializable
 
-class Date : Serializable {
-  var dayOfMonth = 0
-  var monthOfYear = 0
-  var year = 0
-
-  constructor() {}
-  constructor(dayOfMonth: Int, monthOfYear: Int, year: Int) {
-    this.dayOfMonth = dayOfMonth
-    this.monthOfYear = monthOfYear
-    this.year = year
-  }
-}
+enum class Category: Serializable { EXAM, COURSE_WORK, STANDINGS, HOME_EXAM, SIMPLE_LESSON }
 
 class Teacher {
   var teacherName = ""
@@ -87,8 +47,7 @@ class Teacher {
   var comments = hashMapOf<String, Comment>()
   var ratings = hashMapOf<String, Double>()
 
-  constructor() {
-  }
+  constructor(){ }
 
   constructor(nameOfTeacher: String, nameOfLesson: String) {
     this.teacherName = nameOfTeacher
@@ -99,18 +58,4 @@ class Teacher {
 data class HomeWork(var taskName: String, var status: Boolean) {
   var taskDescription = ""
   var deadLine = ""
-}
-
-class Group {
-  var groupName = ""
-  var countChange = 0
-  var admins = arrayListOf<String>()
-  var schedule = arrayListOf<Schedule>()
-
-  constructor() {
-  }
-
-  constructor(groupName: String) {
-    this.groupName = groupName
-  }
 }

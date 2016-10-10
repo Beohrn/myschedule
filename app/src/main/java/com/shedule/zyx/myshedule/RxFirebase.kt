@@ -3,7 +3,6 @@ package app.voter.xyz
 
 import com.google.firebase.FirebaseException
 import com.google.firebase.database.*
-import com.shedule.zyx.myshedule.utils.Constants.Companion.EMPTY_DATA
 import rx.Observable
 import rx.functions.Func1
 import rx.subscriptions.Subscriptions
@@ -65,8 +64,7 @@ object RxFirebase {
         }
 
         override fun onDataChange(dataSnapshot: DataSnapshot) {
-          if (dataSnapshot.value == null) subscriber.onError(Exception(EMPTY_DATA))
-          else subscriber.onNext(dataSnapshot)
+          subscriber.onNext(dataSnapshot)
         }
       })
 

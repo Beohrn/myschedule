@@ -3,16 +3,13 @@ package com.shedule.zyx.myshedule.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.ConnectivityManager
 import android.os.Environment
 import com.google.gson.Gson
 import com.shedule.zyx.myshedule.R
+import com.shedule.zyx.myshedule.models.Category
+import com.shedule.zyx.myshedule.models.Category.*
 import com.shedule.zyx.myshedule.models.Date
 import com.shedule.zyx.myshedule.models.Schedule
-import com.shedule.zyx.myshedule.utils.Constants.Companion.COURSE_WORK
-import com.shedule.zyx.myshedule.utils.Constants.Companion.EXAM
-import com.shedule.zyx.myshedule.utils.Constants.Companion.HOME_EXAM
-import com.shedule.zyx.myshedule.utils.Constants.Companion.STANDINGS
 import java.io.File
 import java.io.FileOutputStream
 import java.text.DateFormatSymbols
@@ -25,7 +22,7 @@ import java.util.*
 class Utils {
 
   companion object {
-    fun getColorByCategory(context: Context, category: String) = when (category) {
+    fun getColorByCategory(context: Context, category: Category) = when (category) {
       EXAM -> context.resources.getColor(R.color.mark_red)
       STANDINGS -> context.resources.getColor(R.color.mark_yellow)
       COURSE_WORK -> context.resources.getColor(R.color.mark_orange)
@@ -49,18 +46,6 @@ class Utils {
         .replace("]", "")
         .replace("$", "")
         .replace("#", "")
-
-    fun removeSlash(json: String) =
-        json.replace("\\\"", "\"")
-
-    fun isOnline(context: Context): Boolean {
-      val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-      val info = connectivityManager.activeNetworkInfo
-      return info != null && info.isConnectedOrConnecting
-    }
-
-    fun getUniversities(context: Context) =
-        context.getString(R.string.universities).replace("(", "").replace(")", "").split(";").map(String::trim)
 
     fun getRatingByData(assessments: HashMap<String, Int>): Double {
       var result = 0.0

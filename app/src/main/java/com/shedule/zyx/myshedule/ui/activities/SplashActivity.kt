@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.shedule.zyx.myshedule.ScheduleApplication
-import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.tutorial.TutorialActivity
 import org.jetbrains.anko.startActivity
 import javax.inject.Inject
@@ -17,18 +16,12 @@ class SplashActivity : AppCompatActivity() {
   @Inject
   lateinit var auth: FirebaseAuth
 
-  @Inject
-  lateinit var appPreference: AppPreference
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     ScheduleApplication.getComponent().inject(this)
 
     if (auth.currentUser == null) {
       startActivity<TutorialActivity>()
-    } else {
-      if (appPreference.isLogin()) startActivity<MainActivity>()
-      else startActivity<TutorialActivity>()
-    }
+    } else { startActivity<MainActivity>() }
   }
 }

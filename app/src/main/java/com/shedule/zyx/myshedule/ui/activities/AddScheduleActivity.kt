@@ -14,18 +14,11 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.shedule.zyx.myshedule.FirebaseWrapper
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.add_schedule_activity
-import com.shedule.zyx.myshedule.R.string.no_data
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.models.*
+import com.shedule.zyx.myshedule.models.Category.*
 import com.shedule.zyx.myshedule.models.Date
-import com.shedule.zyx.myshedule.utils.Constants.Companion.COURSE_WORK
-import com.shedule.zyx.myshedule.utils.Constants.Companion.EXAM
-import com.shedule.zyx.myshedule.utils.Constants.Companion.HOME_EXAM
-import com.shedule.zyx.myshedule.utils.Constants.Companion.LECTURE
-import com.shedule.zyx.myshedule.utils.Constants.Companion.SEMINAR
-import com.shedule.zyx.myshedule.utils.Constants.Companion.SIMPLE_LESSON
-import com.shedule.zyx.myshedule.utils.Constants.Companion.STANDINGS
 import com.shedule.zyx.myshedule.utils.Utils
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout
@@ -34,7 +27,6 @@ import kotlinx.android.synthetic.main.add_schedule_activity.*
 import kotlinx.android.synthetic.main.add_schedule_screen.*
 import kotlinx.android.synthetic.main.number_layout.*
 import org.jetbrains.anko.*
-import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.*
@@ -62,7 +54,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   var endPeriod: Date? = null
   var startTime: Time? = null
   var endTime: Time? = null
-  var category = ""
+  var category: Category? = null
   var listOfDates = arrayListOf<String>()
   var week = 0
 
@@ -73,7 +65,6 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
   var numberOfLesson = 1
   var isScheduleEdit = false
   var schedule: Schedule? = null
-  var subscription: Subscription? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -93,7 +84,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     schedule?.let {
       isScheduleEdit = true
       supportActionBar?.title = getString(R.string.set_lesson)
-      setPeriods(it.startPeriod!!, it.endPeriod!!)
+      setPeriods(it.startPeriod, it.endPeriod)
       setListOfDates(it.week)
       if (it.week == RANDOM_DATES)
         listOfDates.addAll(it.dates.map { it })
@@ -104,7 +95,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
       classroom.setText("${it.location?.classroom}")
 
       spinner_number_of_lesson.setSelection(it.numberLesson.toInt() - 1)
-      spinner_type_of_lesson.setSelection(if (it.typeLesson == SEMINAR) 0 else 1)
+      spinner_type_of_lesson.setSelection(if (it.typeLesson == TypeLesson.SEMINAR) 0 else 1)
 
       when (it.category) {
         EXAM -> setColor(EXAM, 0, R.color.mark_red)
@@ -130,24 +121,9 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     }
 
     begin_period.onClick { showDateDialog(); switcher = 1 }
-
-    subjects_list.onClick {
-      val dialog = indeterminateProgressDialog(getString(R.string.load))
-      subscription = firebaseWrapper.getSubjects()
-          .subscribe({
-            dialog.dismiss()
-            it?.let { subjects ->
-              selector(null, subjects) { name_of_lesson.setText(subjects[it]) }
-            } ?: toast(getString(R.string.notting_subjects))
-          }, {
-            dialog.dismiss()
-            toast(getString(no_data))
-          })
-    }
-
     teachers_list.onClick {
       val dialog = indeterminateProgressDialog(getString(R.string.load))
-      subscription = firebaseWrapper.getTeachers()
+      firebaseWrapper.getTeachers()
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread())
           .subscribe({ teachers ->
@@ -155,12 +131,10 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
             if (teachers != null) {
               selector(null, teachers.map { it.teacherName }) {
                 name_of_teacher.setText(teachers[it].teacherName)
-                name_of_lesson.setText(teachers[it].lessonName)
               }
             } else toast(getString(R.string.notting_teachers))
           }, {
             dialog.dismiss()
-            toast(getString(no_data))
           })
     }
 
@@ -199,9 +173,9 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
                   getString(R.string.random_dates))) {
             position ->
             when (position) {
-              0 -> setListOfDates(BOTH_WEEKS)
-              1 -> setListOfDates(FIRST_WEEK)
-              2 -> setListOfDates(SECOND_WEEK)
+              0 -> { setListOfDates(BOTH_WEEKS) }
+              1 -> { setListOfDates(FIRST_WEEK) }
+              2 -> { setListOfDates(SECOND_WEEK) }
               3 -> {
                 alert {
                   customView {
@@ -233,11 +207,6 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
         } ?: toast(getString(R.string.set_date_of_end_period))
       } ?: toast(getString(R.string.set_date_of_begin_period))
     }
-  }
-
-  override fun onStop() {
-    super.onStop()
-    subscription?.unsubscribe()
   }
 
   private fun setPeriods(startPeriod: Date, endPeriod: Date) {
@@ -285,7 +254,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     this.week = week
   }
 
-  private fun setColor(cat: String, id: Int, color: Int) {
+  private fun setColor(cat: Category, id: Int, color: Int) {
     when (id) {
       0 -> {
         exam.setColor(color)
@@ -335,9 +304,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
 
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {
     when (item?.itemId) {
-      R.id.add_item -> {
-        changeSchedule(); return true
-      }
+      R.id.add_item -> { changeSchedule(); return true }
       else -> return super.onOptionsItemSelected(item)
     }
   }
@@ -385,7 +352,7 @@ class AddScheduleActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListe
     schedule.endTime = endTime
     schedule.teacher = Teacher(name_of_teacher.getText().toString(), name_of_lesson.getText().toString())
     schedule.typeLesson = if (spinner_type_of_lesson.selectedItem.toString() == getString(R.string.practice))
-      SEMINAR else LECTURE
+      TypeLesson.SEMINAR else TypeLesson.LECTURE
     schedule.category = category
     schedule.week = week
 

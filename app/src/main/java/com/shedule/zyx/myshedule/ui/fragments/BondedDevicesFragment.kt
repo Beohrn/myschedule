@@ -68,6 +68,8 @@ class BondedDevicesFragment : Fragment(), OnConnectionListener {
             }
         } else if (state == bluetoothManager.STATE_CONNECTING)
           progressDialog.show()
+
+
       })
     }
   }
@@ -75,8 +77,7 @@ class BondedDevicesFragment : Fragment(), OnConnectionListener {
   override fun onConnectionState(state: Int) {
     if (state == bluetoothManager.STATE_CONNECTION_FAILED) {
       progressDialog.hide()
-      if (isAdded)
-        toast(getString(R.string.no_connection))
+      toast(getString(R.string.no_connection))
     }
   }
 }

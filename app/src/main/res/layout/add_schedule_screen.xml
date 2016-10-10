@@ -13,30 +13,12 @@
         android:orientation="vertical"
         android:paddingBottom="10dp">
 
-        <LinearLayout
+        <com.shedule.zyx.myshedule.widget.CustomEditText
+            android:id="@+id/name_of_lesson"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:paddingRight="10dp"
-            android:weightSum="1">
-
-            <com.shedule.zyx.myshedule.widget.CustomEditText
-                android:id="@+id/name_of_lesson"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.9"
-                app:hint="@string/name_of_lesson"/>
-
-            <ImageView
-                android:layout_width="0dp"
-                android:id="@+id/subjects_list"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.1"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:src="@drawable/subject"/>
-
-        </LinearLayout>
+            app:hint="@string/name_of_lesson"/>
 
         <LinearLayout
             android:layout_width="match_parent"
