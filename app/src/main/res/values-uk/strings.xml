@@ -110,6 +110,7 @@
     <string name="lesson_delete">Видалити предмет</string>
     <string name="in_single_day">Тільки в цей день</string>
     <string name="in_others_day">В усі інші дні</string>
+    <string name="check">Перевірка</string>
 
     <string name="settings">Налаштування</string>
     <string name="admins">Адміністратори</string>

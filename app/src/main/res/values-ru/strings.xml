@@ -139,6 +139,7 @@
     <string name="via_bluetooth">Через Bluetooth</string>
     <string name="via_server">С группой</string>
     <string name="settings">Настройки</string>
+    <string name="check">Проверка</string>
 
     <string name="admins">Администраторы</string>
     <string name="none">Отсутствуют</string>

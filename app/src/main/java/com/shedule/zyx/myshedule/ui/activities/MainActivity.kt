@@ -329,6 +329,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe({
           scheduleManager.globalList.clear()
+          appPreference.saveChangesCount(0)
+          appPreference.saveUniverName("")
+          appPreference.saveFacultyName("")
           startActivity<TutorialActivity>()
         }, {
           if (DEBOUG_ENABLED) report(it)
@@ -345,7 +348,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (it) {
               appPreference.saveAdminKey("")
               appPreference.saveAdminRights(false)
-              appPreference.saveChangesCount(0)
             }
           }, { if (DEBOUG_ENABLED) report(it) })
   }
