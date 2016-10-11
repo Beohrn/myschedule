@@ -90,7 +90,8 @@ class SettingsActivity : AppCompatActivity() {
   private fun becomeAdmin(admins: List<String>) {
     subscription?.unsubscribe()
     if (admins.size < 2)
-      subscription = firebaseWrapper.pushAdmin()
+      subscription = firebaseWrapper.pushAdmin(appPreferences.getUniverName(),
+          appPreferences.getFacultyName(), appPreferences.getGroupName())
           .subscribeOn(io())
           .observeOn(mainThread())
           .subscribe({ key ->

@@ -1,22 +1,14 @@
 package com.shedule.zyx.myshedule.auth.fragments
 
 import android.app.ProgressDialog
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
-import android.view.KeyEvent.KEYCODE_BACK
-import android.view.KeyEvent.KEYCODE_ENTER
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo.IME_ACTION_DONE
-import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
-import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.MultiAutoCompleteTextView
@@ -59,6 +51,7 @@ class CreateAccountFragment : Fragment() {
   lateinit var firebaseWrapper: FirebaseWrapper
 
   lateinit var facultyWatcher: TextWatcher
+  lateinit var groupWatcher: TextWatcher
 
   var subscription: Subscription? = null
   var adminsCount = 0
@@ -70,11 +63,6 @@ class CreateAccountFragment : Fragment() {
 
   override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-
-    if (!prefs.getUniverName().isNullOrBlank()) {
-      univer_ET.setText(prefs.getUniverName())
-      faculty_ET.setText(prefs.getFacultyName())
-    }
 
     val adapter = ArrayAdapter(context, R.layout.single_text_view, R.id.single_text,
         Utils.getUniversities(context))
@@ -98,11 +86,14 @@ class CreateAccountFragment : Fragment() {
               if (universities != null) {
                 selector(null, universities) {
                   univer_ET.setText(universities[it])
+                  univer_ET.error = null
                   faculty_ET.setText("")
                   subscription?.unsubscribe()
                 }
               } else toast(getString(no_universities))
             }, {
+              if (it.message == EMPTY_DATA)
+                toast(getString(R.string.no_data))
               if (DEBOUG_ENABLED) report(it)
               dialog.dismiss()
             })
@@ -122,20 +113,23 @@ class CreateAccountFragment : Fragment() {
                 if (faculty != null) {
                   selector(null, faculty) {
                     faculty_ET.setText(faculty[it])
+                    faculty_ET.error = null
                     subscription?.unsubscribe()
                   }
                 } else toast(getString(no_faculties))
               }, {
+                if (it.message == EMPTY_DATA)
+                  toast(getString(R.string.no_data))
                 if (DEBOUG_ENABLED) report(it)
                 dialog.dismiss()
               })
-        } else toast(getString(type_the_university_name))
+        } else univer_ET.error = getString(type_the_university_name)
       } else toast(getString(connection_is_failed))
     }
 
     remote_group_list.onClick {
       if (isOnline(context)) {
-        if (!faculty_ET.text.isNullOrBlank() && !univer_ET.text.isNullOrBlank()) {
+        if (!faculty_ET.text.isNullOrEmpty() && !univer_ET.text.isNullOrEmpty()) {
           val dialog = indeterminateProgressDialog(getString(load))
           subscription?.unsubscribe()
           subscription = firebaseWrapper.getGroups(faculty_ET.text.toString(),
@@ -148,30 +142,20 @@ class CreateAccountFragment : Fragment() {
                   if (groups.size != 0) {
                     selector(null, groups) { index ->
                       group_ET.setText(groups[index])
-                      checkAdmins(false)
+                      group_ET.error = null
                       subscription?.unsubscribe()
                     }
                   } else toast(getString(groups_not_found))
                 } ?: toast(getString(groups_not_found))
               }, {
+                if (it.message == EMPTY_DATA)
+                  toast(getString(R.string.no_data))
                 if (DEBOUG_ENABLED) report(it)
                 dialog.dismiss()
               })
-        } else if (faculty_ET.text.isNullOrBlank()) toast(getString(type_the_faculty_name))
-        else if (univer_ET.text.isNullOrBlank()) toast(getString(type_the_university_name))
+        } else if (faculty_ET.text.isNullOrBlank()) faculty_ET.error = getString(type_the_faculty_name)
+        else if (univer_ET.text.isNullOrBlank()) univer_ET.error = getString(type_the_university_name)
       } else toast(getString(connection_is_failed))
-    }
-
-    admin.visibility = GONE
-    admin.isChecked = false
-
-    group_ET.setOnEditorActionListener { textView, i, keyEvent ->
-      if (i == IME_ACTION_SEARCH || i == IME_ACTION_DONE ||
-          keyEvent.action == KEYCODE_BACK || keyEvent.keyCode == KEYCODE_ENTER) {
-        hideKyboard()
-        checkAdmins(true)
-      }
-      true
     }
 
     facultyWatcher = object : TextWatcher {
@@ -190,14 +174,41 @@ class CreateAccountFragment : Fragment() {
       }
     }
 
+    groupWatcher = object : TextWatcher {
+      override fun afterTextChanged(s: Editable?) {
+
+      }
+
+      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+      }
+
+      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        group_ET.removeTextChangedListener(groupWatcher)
+        group_ET.setText(group_ET.text.toString().replace("Ы", "І").replace("Э", "Е"))
+        group_ET.setSelection(group_ET.text.toString().length)
+        group_ET.addTextChangedListener(groupWatcher)
+      }
+    }
+
+    group_ET.addTextChangedListener(groupWatcher)
+
     faculty_ET.filters = arrayOf<InputFilter>(android.text.InputFilter.AllCaps())
     faculty_ET.addTextChangedListener(facultyWatcher)
+    admin.setOnCheckedChangeListener { compoundButton, b ->
+      if (!group_ET.text.isNullOrEmpty()) {
+        if (b) checkAdmins(true)
+      } else {
+        admin.isChecked = false
+        group_ET.error = getString(type_the_group_name)
+      }
+    }
 
     create_account_btn.onClick {
       if (isOnline(context)) {
-        if (!prefs.getUniverName().isNullOrBlank()) forUpdate()
-        else {
-          if (!checkEdiTextIsEmpty(univer_ET) && !checkEdiTextIsEmpty(faculty_ET)) {
+
+        if (!checkEdiTextIsEmpty(univer_ET) && !checkEdiTextIsEmpty(faculty_ET) && !checkEdiTextIsEmpty(group_ET)) {
+          if (!prefs.getUniverName().isNullOrEmpty()) forUpdate()
+          else {
             val dialog = indeterminateProgressDialog(getString(authentication))
             dialog.show()
             firebaseWrapper.createAccount()
@@ -215,44 +226,59 @@ class CreateAccountFragment : Fragment() {
                   if (DEBOUG_ENABLED) report(it)
                   toast(getString(authentication_error))
                 })
-          } else if (checkEdiTextIsEmpty(univer_ET)) {
-            univer_ET.error = getString(input_data)
-          } else if (checkEdiTextIsEmpty(faculty_ET)) {
-            faculty_ET.error = getString(input_data)
           }
+        } else if (checkEdiTextIsEmpty(univer_ET)) {
+          univer_ET.error = getString(input_data)
+          if (checkEdiTextIsEmpty(faculty_ET))
+            faculty_ET.error = getString(input_data)
+          if (checkEdiTextIsEmpty(group_ET))
+            group_ET.error = getString(input_data)
+        } else if (checkEdiTextIsEmpty(faculty_ET)) {
+          faculty_ET.error = getString(input_data)
+          if (checkEdiTextIsEmpty(univer_ET))
+            univer_ET.error = getString(input_data)
+          if (checkEdiTextIsEmpty(group_ET))
+            group_ET.error = getString(input_data)
+        } else if (checkEdiTextIsEmpty(group_ET)) {
+          group_ET.error = getString(input_data)
+          if (checkEdiTextIsEmpty(faculty_ET))
+            faculty_ET.error = getString(input_data)
+          if (checkEdiTextIsEmpty(univer_ET))
+            univer_ET.error = getString(input_data)
         }
       } else toast(getString(connection_is_failed))
     }
   }
 
-  fun hideKyboard() {
-    val view = activity.currentFocus
-    if (view != null) {
-      val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-      imm.hideSoftInputFromWindow(view.windowToken, 0)
-    }
-  }
-
   private fun forUpdate() {
     val dialog = indeterminateProgressDialog(getString(authentication))
-    firebaseWrapper.pushAdmin()
+    firebaseWrapper.pushAdmin(univer_ET.text.toString(),
+        faculty_ET.text.toString(), group_ET.text.toString())
         .doOnTerminate { dialog.dismiss() }
         .subscribeOn(io())
         .observeOn(mainThread())
         .subscribe({ key ->
           key?.let {
+            prefs.saveUniverName(univer_ET.text.toString().trim())
+            prefs.saveFacultyName(faculty_ET.text.toString().trim())
+            prefs.saveGroupName(group_ET.text.toString().trim())
             prefs.saveAdminRights(admin.isChecked)
             prefs.saveChangesCount(0)
             prefs.saveAdminKey(it)
             prefs.saveLogin(true)
             startActivity<MainActivity>()
           }
-        }, { if (DEBOUG_ENABLED) report(it) })
+        }, {
+          if (it.message == EMPTY_DATA)
+            toast(getString(R.string.no_data))
+          if (DEBOUG_ENABLED) report(it)
+        })
   }
 
   private fun createGroup() {
     if (adminsCount < 2)
-      firebaseWrapper.pushAdmin()
+      firebaseWrapper.pushAdmin(univer_ET.text.toString(),
+          faculty_ET.text.toString(), group_ET.text.toString())
           .subscribeOn(io())
           .observeOn(mainThread())
           .subscribe({ key ->
@@ -261,7 +287,12 @@ class CreateAccountFragment : Fragment() {
               prefs.saveChangesCount(0)
               prefs.saveAdminKey(it)
             }
-          }, { if (DEBOUG_ENABLED) report(it) })
+          }, {
+            if (it.message == EMPTY_DATA)
+              toast(getString(R.string.no_data))
+            if (DEBOUG_ENABLED) report(it)
+          })
+    else toast(getString(you_not_become_admin))
   }
 
   override fun onStop() {
@@ -282,21 +313,21 @@ class CreateAccountFragment : Fragment() {
           dialog?.dismiss()
           admins?.let {
             if (it.size < 2) {
-              admin.visibility = VISIBLE
-              admin.isChecked = false
+              admin.isChecked = true
               adminsCount = it.size
+              toast(getString(you_have_become_an_admin))
             } else {
-              admin.visibility = GONE
               admin.isChecked = false
               adminsCount = it.size
+              toast(getString(you_not_become_admin))
             }
           }
         }, {
           if (DEBOUG_ENABLED) report(it)
           dialog?.dismiss()
           if (it.message == EMPTY_DATA) {
-            admin.visibility = VISIBLE
-            admin.isChecked = false
+            admin.isChecked = true
+            toast(getString(you_have_become_an_admin))
           }
         })
   }

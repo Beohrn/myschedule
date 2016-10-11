@@ -9,6 +9,9 @@
     <string name="start_period_of_lesson">Дата початку заняття</string>
     <string name="end_period_of_lesson">Дата закінчення заняття</string>
     <string name="name">Назва</string>
+    <string name="one_admin_is_missing">Одного адміністратора немає</string>
+    <string name="you_have_become_an_admin">Ви стали адміністратором</string>
+    <string name="type_the_group_name">Введіть назву групи</string>
 
     <string name="housing">корп.</string>
     <string name="classroom">ауд.</string>

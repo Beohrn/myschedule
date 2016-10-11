@@ -132,6 +132,7 @@
     <string name="no_faculties">Нет факультетов</string>
     <string name="type_the_university_name">Введите название университета</string>
     <string name="type_the_faculty_name">Введите название факультета</string>
+    <string name="type_the_group_name">Введите название группы</string>
     <string name="groups_not_found">Групп пока нет</string>
     <string name="connection_is_failed">Нет подключения к интернету</string>
     <string name="schedule_was_sent">Расписание успешно отправлено</string>

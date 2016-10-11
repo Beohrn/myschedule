@@ -112,8 +112,9 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
         .map { it.getValue(Int::class.java) }
   }
 
-  fun pushAdmin(): Observable<String> {
-    groupRef().child(ADMINS).push().setValue(auth.currentUser?.uid)
+  fun pushAdmin(university: String, faculty: String, group: String): Observable<String> {
+    ref.child(getKeyByName(university))
+        .child(getKeyByName(faculty)).child(group).child(ADMINS).push().setValue(auth.currentUser?.uid)
     return RxFirebase.observe(groupRef().child(ADMINS))
         .flatMap { Observable.from(it.children?.filter { it.value == auth.currentUser?.uid }?.map { it.key }) }
   }

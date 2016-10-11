@@ -565,6 +565,7 @@
     <string name="you_have_become_an_admin">You have become an administrator</string>
     <string name="u_no_longer_admin">You no longer administrator</string>
     <string name="exit">Exit</string>
+    <string name="type_the_group_name">Type the group name</string>
 
     <string name="no_permission_for_camera">No permission to access the camera</string>
     <string name="no_permission_for_storage">No permission to access the Memory</string>
