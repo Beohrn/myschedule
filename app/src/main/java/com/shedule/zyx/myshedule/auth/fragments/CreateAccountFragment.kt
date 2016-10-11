@@ -207,8 +207,6 @@ class CreateAccountFragment : Fragment() {
       if (isOnline(context)) {
 
         if (!checkEdiTextIsEmpty(univer_ET) && !checkEdiTextIsEmpty(faculty_ET) && !checkEdiTextIsEmpty(group_ET)) {
-          if (!prefs.getUniverName().isNullOrEmpty()) forUpdate()
-          else {
             val dialog = indeterminateProgressDialog(getString(authentication))
             dialog.show()
             firebaseWrapper.createAccount()
@@ -226,7 +224,6 @@ class CreateAccountFragment : Fragment() {
                   if (DEBOUG_ENABLED) report(it)
                   toast(getString(authentication_error))
                 })
-          }
         } else if (checkEdiTextIsEmpty(univer_ET)) {
           univer_ET.error = getString(input_data)
           if (checkEdiTextIsEmpty(faculty_ET))
@@ -250,34 +247,10 @@ class CreateAccountFragment : Fragment() {
     }
   }
 
-  private fun forUpdate() {
-    val dialog = indeterminateProgressDialog(getString(authentication))
-    firebaseWrapper.pushAdmin(univer_ET.text.toString(),
-        faculty_ET.text.toString(), group_ET.text.toString())
-        .doOnTerminate { dialog.dismiss() }
-        .subscribeOn(io())
-        .observeOn(mainThread())
-        .subscribe({ key ->
-          key?.let {
-            prefs.saveUniverName(univer_ET.text.toString().trim())
-            prefs.saveFacultyName(faculty_ET.text.toString().trim())
-            prefs.saveGroupName(group_ET.text.toString().trim())
-            prefs.saveAdminRights(admin.isChecked)
-            prefs.saveChangesCount(0)
-            prefs.saveAdminKey(it)
-            prefs.saveLogin(true)
-            startActivity<MainActivity>()
-          }
-        }, {
-          if (it.message == EMPTY_DATA)
-            toast(getString(R.string.no_data))
-          if (DEBOUG_ENABLED) report(it)
-        })
-  }
-
   private fun createGroup() {
+    subscription?.unsubscribe()
     if (adminsCount < 2)
-      firebaseWrapper.pushAdmin(univer_ET.text.toString(),
+      subscription = firebaseWrapper.pushAdmin(univer_ET.text.toString(),
           faculty_ET.text.toString(), group_ET.text.toString())
           .subscribeOn(io())
           .observeOn(mainThread())
@@ -296,16 +269,17 @@ class CreateAccountFragment : Fragment() {
   }
 
   override fun onStop() {
-    super.onStop()
     subscription?.unsubscribe()
+    super.onStop()
   }
 
   private fun checkAdmins(show: Boolean) {
+    subscription?.unsubscribe()
     var dialog: ProgressDialog? = null
     if (show)
       dialog = indeterminateProgressDialog(getString(check))
 
-    firebaseWrapper.getAdmins(univer_ET.text.toString(),
+    subscription = firebaseWrapper.getAdmins(univer_ET.text.toString(),
         faculty_ET.text.toString(), group_ET.text.toString())
         .subscribeOn(io())
         .observeOn(mainThread())

@@ -27,7 +27,7 @@
     <string name="calendar">Календарь</string>
     <string name="push">Поделиться</string>
     <string name="update">Обновить</string>
-    <string name="open_group">Открить группу</string>
+    <string name="open_group">Открыть группу</string>
     <string name="group_has_not_been_created">Группа еще не создана</string>
 
     <string-array name="type_of_lesson">

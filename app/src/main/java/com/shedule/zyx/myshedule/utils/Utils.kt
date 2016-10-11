@@ -44,14 +44,13 @@ class Utils {
       else -> 0
     }
 
-    fun getKeyByName(name: String) = name.replace(".", " ")
+    fun getKeyByName(name: String) = name.replace(".", "")
         .replace("[", "")
         .replace("]", "")
+        .replace("(", "")
+        .replace(")", "")
         .replace("$", "")
         .replace("#", "")
-
-    fun removeSlash(json: String) =
-        json.replace("\\\"", "\"")
 
     fun isOnline(context: Context): Boolean {
       val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -60,7 +59,7 @@ class Utils {
     }
 
     fun getUniversities(context: Context) =
-        context.getString(R.string.universities).replace("(", "").replace(")", "").split(";").map(String::trim)
+        context.getString(R.string.universities).replace("(", "").replace(")", "").replace(".","").split(";").map(String::trim)
 
     fun getRatingByData(assessments: HashMap<String, Int>): Double {
       var result = 0.0
@@ -103,7 +102,7 @@ class Utils {
       if (!storageDir.exists())
         storageDir.mkdirs()
 
-      val timeStamp = SimpleDateFormat("ddMMyyyy_HHmmss").format(Date())
+      val timeStamp = SimpleDateFormat("ddMMyyyy_HHmmss").format(java.util.Date())
       val image: String
 
       if (isDifferent) image = "HomeWork_${timeStamp}_photo.jpg"

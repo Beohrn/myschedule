@@ -294,10 +294,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             when (it) {
               0 -> startBluetooth()
               1 -> {
-                if (isOnline(applicationContext))
-                  if (scheduleManager.globalList.size != 0)
-                    pushSchedule()
-                  else toast(getString(connection_is_failed))
+                if (isOnline(applicationContext)) {
+                  if (scheduleManager.globalList.size != 0) pushSchedule()
+                  else toast(getString(schedules_is_no))
+                } else toast(getString(connection_is_failed))
               }
             }
           }

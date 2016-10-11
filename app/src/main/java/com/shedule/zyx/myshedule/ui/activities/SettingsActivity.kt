@@ -101,7 +101,10 @@ class SettingsActivity : AppCompatActivity() {
               youAreAdminSettings()
               toast(getString(you_have_become_an_admin))
             }
-          }, { if (DEBOUG_ENABLED) report(it) })
+          }, {
+            if (DEBOUG_ENABLED)
+              report(it)
+          })
     else toast(getString(you_not_become_admin))
   }
 
@@ -145,8 +148,8 @@ class SettingsActivity : AppCompatActivity() {
     admin_button.text = getString(not_to_be_an_admin)
   }
 
-  override fun onDestroy() {
+  override fun onPause() {
     subscription?.unsubscribe()
-    super.onDestroy()
+    super.onPause()
   }
 }
