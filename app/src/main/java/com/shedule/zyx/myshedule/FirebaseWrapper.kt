@@ -3,11 +3,12 @@ package com.shedule.zyx.myshedule
 import app.voter.xyz.RxFirebase
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.crash.FirebaseCrash
+import com.google.firebase.crash.FirebaseCrash.report
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import com.shedule.zyx.myshedule.BuildConfig.DEBOUG_ENABLED
 import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.models.Teacher
@@ -18,6 +19,7 @@ import com.shedule.zyx.myshedule.utils.Constants.Companion.SCHEDULE
 import com.shedule.zyx.myshedule.utils.Constants.Companion.TEACHERS
 import com.shedule.zyx.myshedule.utils.Utils.Companion.getKeyByName
 import rx.Observable
+import rx.Subscription
 import java.util.*
 
 /**
@@ -26,6 +28,8 @@ import java.util.*
 class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val auth: FirebaseAuth) {
 
   fun createTeacherRef() = facultyRef().child(TEACHERS)
+
+  var subscription: Subscription? = null
 
   private fun facultyRef(): DatabaseReference {
     return ref.child(getKeyByName(prefs.getUniverName() ?: ""))
@@ -37,6 +41,9 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
         .child(getKeyByName(prefs.getFacultyName() ?: ""))
         .child(getKeyByName(prefs.getGroupName() ?: ""))
   }
+
+  private fun chainToAdminRef(university: String, faculty: String, group: String) = ref.child(getKeyByName(university))
+      .child(getKeyByName(faculty)).child(getKeyByName(group)).child(ADMINS)
 
   fun createAccount(): Observable<Void> {
     return Observable.create {
@@ -66,11 +73,11 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
   }
 
   fun getGroups(faculty: String, university: String): Observable<List<String>?> {
-    return RxFirebase.observe(ref.child(university).child(faculty)).map { it.children?.map { it.key }?.filter { it != TEACHERS } }
+    return RxFirebase.observe(ref.child(getKeyByName(university)).child(getKeyByName(faculty))).map { it.children?.map { it.key }?.filter { it != TEACHERS } }
   }
 
   fun getFaculty(university: String): Observable<List<String>?> {
-    return RxFirebase.observe(ref.child(university)).map { it.children?.map { it.key } }
+    return RxFirebase.observe(ref.child(getKeyByName(university))).map { it.children?.map { it.key } }
   }
 
   fun getUniversity(): Observable<List<String>?> {
@@ -100,8 +107,7 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
   }
 
   fun getAdmins(university: String, faculty: String, group: String): Observable<List<String>?> {
-    return RxFirebase.observe(ref.child(getKeyByName(university))
-        .child(getKeyByName(faculty)).child(group).child(ADMINS))
+    return RxFirebase.observe(chainToAdminRef(university, faculty, group))
         .filter { it != null }
         .filter { it.value != null }.map { it.children.map { it.getValue(String::class.java) } }
   }
@@ -113,10 +119,12 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
   }
 
   fun pushAdmin(university: String, faculty: String, group: String): Observable<String> {
-    ref.child(getKeyByName(university))
-        .child(getKeyByName(faculty)).child(group).child(ADMINS).push().setValue(auth.currentUser?.uid)
-    return RxFirebase.observe(groupRef().child(ADMINS))
+
+    chainToAdminRef(university, faculty, group).child(auth.currentUser?.uid).setValue(auth.currentUser?.uid)
+
+    return RxFirebase.observe(chainToAdminRef(university, faculty, group))
         .flatMap { Observable.from(it.children?.filter { it.value == auth.currentUser?.uid }?.map { it.key }) }
+
   }
 
   fun pushTeacher(teachers: List<Teacher>): Observable<Boolean> {
@@ -156,14 +164,14 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
                       subscriber.onNext(true)
                       subscriber.onCompleted()
                     }, {
-                      if (BuildConfig.DEBOUG_ENABLED)
-                        FirebaseCrash.report(it)
+                      if (DEBOUG_ENABLED)
+                        report(it)
                       subscriber.onError(it)
                     })
               }
             }, {
-              if (BuildConfig.DEBOUG_ENABLED)
-                FirebaseCrash.report(it)
+              if (DEBOUG_ENABLED)
+                report(it)
               subscriber.onError(it)
             })
           }
@@ -184,14 +192,14 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
                   subscriber.onCompleted()
                 }
               }, {
-                if (BuildConfig.DEBOUG_ENABLED)
-                  FirebaseCrash.report(it)
+                if (DEBOUG_ENABLED)
+                  report(it)
                 subscriber.onError(it)
               })
         }
       }, {
-        if (BuildConfig.DEBOUG_ENABLED)
-          FirebaseCrash.report(it)
+        if (DEBOUG_ENABLED)
+          report(it)
         subscriber.onError(it)
       })
     }
