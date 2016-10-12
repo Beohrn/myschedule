@@ -1,65 +1,41 @@
 package com.shedule.zyx.myshedule.auth.fragments
 
-import android.app.ProgressDialog
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.MultiAutoCompleteTextView
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crash.FirebaseCrash.report
 import com.shedule.zyx.myshedule.BuildConfig.DEBOUG_ENABLED
-import com.shedule.zyx.myshedule.FirebaseWrapper
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.string.*
-import com.shedule.zyx.myshedule.ScheduleApplication
-import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.ui.activities.MainActivity
+import com.shedule.zyx.myshedule.ui.fragments.BaseFragment
 import com.shedule.zyx.myshedule.utils.Constants.Companion.EMPTY_DATA
 import com.shedule.zyx.myshedule.utils.Utils
 import com.shedule.zyx.myshedule.utils.Utils.Companion.isOnline
+import com.shedule.zyx.myshedule.utils.toMainThread
 import kotlinx.android.synthetic.main.create_account_layout.*
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.onItemClick
-import org.jetbrains.anko.support.v4.indeterminateProgressDialog
 import org.jetbrains.anko.support.v4.selector
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers.mainThread
-import rx.schedulers.Schedulers.io
-import javax.inject.Inject
 
 /**
  * Created by bogdan on 13.09.16.
  */
-class CreateAccountFragment : Fragment() {
-
-  @Inject
-  lateinit var auth: FirebaseAuth
-
-  @Inject
-  lateinit var prefs: AppPreference
-
-  @Inject
-  lateinit var firebaseWrapper: FirebaseWrapper
+class CreateAccountFragment : BaseFragment() {
+  override var contentView = R.layout.create_account_layout
 
   lateinit var facultyWatcher: TextWatcher
   lateinit var groupWatcher: TextWatcher
 
   var subscription: Subscription? = null
-  var adminsCount = 0
-
-  override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
-    ScheduleApplication.getComponent().inject(this)
-    return inflater!!.inflate(R.layout.create_account_layout, container, false)
-  }
 
   override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
@@ -77,12 +53,11 @@ class CreateAccountFragment : Fragment() {
     remote_list.onClick {
       if (isOnline(context)) {
         subscription?.unsubscribe()
-        val dialog = indeterminateProgressDialog(getString(load))
+        showDialog()
         subscription = firebaseWrapper.getUniversity()
-            .subscribeOn(io())
-            .observeOn(mainThread())
+            .toMainThread()
+            .doOnTerminate { hideDialog() }
             .subscribe({ universities ->
-              dialog.dismiss()
               if (universities != null) {
                 selector(null, universities) {
                   univer_ET.setText(universities[it])
@@ -92,10 +67,8 @@ class CreateAccountFragment : Fragment() {
                 }
               } else toast(getString(no_universities))
             }, {
-              if (it.message == EMPTY_DATA)
-                toast(getString(R.string.no_data))
+              if (it.message == EMPTY_DATA) toast(getString(R.string.no_data))
               if (DEBOUG_ENABLED) report(it)
-              dialog.dismiss()
             })
       } else toast(getString(connection_is_failed))
     }
@@ -104,12 +77,11 @@ class CreateAccountFragment : Fragment() {
       if (isOnline(context)) {
         if (!univer_ET.text.isNullOrBlank()) {
           subscription?.unsubscribe()
-          val dialog = indeterminateProgressDialog(getString(load))
+          showDialog()
           subscription = firebaseWrapper.getFaculty(univer_ET.text.toString())
-              .subscribeOn(io())
-              .observeOn(mainThread())
+              .toMainThread()
+              .doOnTerminate { hideDialog() }
               .subscribe({ faculty ->
-                dialog.dismiss()
                 if (faculty != null) {
                   selector(null, faculty) {
                     faculty_ET.setText(faculty[it])
@@ -118,10 +90,8 @@ class CreateAccountFragment : Fragment() {
                   }
                 } else toast(getString(no_faculties))
               }, {
-                if (it.message == EMPTY_DATA)
-                  toast(getString(R.string.no_data))
+                if (it.message == EMPTY_DATA) toast(getString(R.string.no_data))
                 if (DEBOUG_ENABLED) report(it)
-                dialog.dismiss()
               })
         } else univer_ET.error = getString(type_the_university_name)
       } else toast(getString(connection_is_failed))
@@ -130,14 +100,13 @@ class CreateAccountFragment : Fragment() {
     remote_group_list.onClick {
       if (isOnline(context)) {
         if (!faculty_ET.text.isNullOrEmpty() && !univer_ET.text.isNullOrEmpty()) {
-          val dialog = indeterminateProgressDialog(getString(load))
+          showDialog()
           subscription?.unsubscribe()
           subscription = firebaseWrapper.getGroups(faculty_ET.text.toString(),
               univer_ET.text.toString())
-              .subscribeOn(io())
-              .observeOn(mainThread())
+              .toMainThread()
+              .doOnTerminate { hideDialog() }
               .subscribe({
-                dialog.dismiss()
                 it?.let { groups ->
                   if (groups.size != 0) {
                     selector(null, groups) { index ->
@@ -151,7 +120,6 @@ class CreateAccountFragment : Fragment() {
                 if (it.message == EMPTY_DATA)
                   toast(getString(R.string.no_data))
                 if (DEBOUG_ENABLED) report(it)
-                dialog.dismiss()
               })
         } else if (faculty_ET.text.isNullOrBlank()) faculty_ET.error = getString(type_the_faculty_name)
         else if (univer_ET.text.isNullOrBlank()) univer_ET.error = getString(type_the_university_name)
@@ -207,23 +175,21 @@ class CreateAccountFragment : Fragment() {
       if (isOnline(context)) {
 
         if (!checkEdiTextIsEmpty(univer_ET) && !checkEdiTextIsEmpty(faculty_ET) && !checkEdiTextIsEmpty(group_ET)) {
-            val dialog = indeterminateProgressDialog(getString(authentication))
-            dialog.show()
-            firebaseWrapper.createAccount()
-                .doOnTerminate { dialog.dismiss() }
-                .subscribeOn(io())
-                .observeOn(mainThread())
-                .subscribe({
-                  prefs.saveUniverName(univer_ET.text.toString().trim())
-                  prefs.saveFacultyName(faculty_ET.text.toString().trim())
-                  prefs.saveGroupName(group_ET.text.toString().trim())
-                  prefs.saveLogin(true)
-                  if (admin.isChecked) createGroup()
-                  startActivity<MainActivity>()
-                }, {
-                  if (DEBOUG_ENABLED) report(it)
-                  toast(getString(authentication_error))
-                })
+          showDialog()
+          firebaseWrapper.createAccount()
+              .toMainThread()
+              .doOnTerminate { hideDialog() }
+              .subscribe({
+                prefs.saveUniverName(univer_ET.text.toString().trim())
+                prefs.saveFacultyName(faculty_ET.text.toString().trim())
+                prefs.saveGroupName(group_ET.text.toString().trim())
+                prefs.saveLogin(true)
+                if (admin.isChecked) createGroup()
+                startActivity<MainActivity>()
+              }, {
+                if (DEBOUG_ENABLED) report(it)
+                toast(getString(authentication_error))
+              })
         } else if (checkEdiTextIsEmpty(univer_ET)) {
           univer_ET.error = getString(input_data)
           if (checkEdiTextIsEmpty(faculty_ET))
@@ -249,56 +215,48 @@ class CreateAccountFragment : Fragment() {
 
   private fun createGroup() {
     subscription?.unsubscribe()
-    if (adminsCount < 2)
-      subscription = firebaseWrapper.pushAdmin(univer_ET.text.toString(),
-          faculty_ET.text.toString(), group_ET.text.toString())
-          .subscribeOn(io())
-          .observeOn(mainThread())
-          .subscribe({ key ->
-            key?.let {
-              prefs.saveAdminRights(true)
-              prefs.saveChangesCount(0)
-              prefs.saveAdminKey(it)
-            }
-          }, {
-            if (it.message == EMPTY_DATA)
-              toast(getString(R.string.no_data))
-            if (DEBOUG_ENABLED) report(it)
-          })
-    else toast(getString(you_not_become_admin))
+    subscription = firebaseWrapper.pushAdmin(univer_ET.text.toString(),
+        faculty_ET.text.toString(), group_ET.text.toString())
+        .toMainThread()
+        .subscribe({ key ->
+          key?.let {
+            prefs.saveAdminRights(true)
+            prefs.saveChangesCount(0)
+            prefs.saveAdminKey(it)
+          }
+        }, {
+          if (it.message == EMPTY_DATA)
+            toast(getString(R.string.no_data))
+          if (DEBOUG_ENABLED) report(it)
+        })
   }
 
-  override fun onStop() {
+  override fun onDestroy() {
     subscription?.unsubscribe()
-    super.onStop()
+    super.onDestroy()
   }
 
   private fun checkAdmins(show: Boolean) {
     subscription?.unsubscribe()
-    var dialog: ProgressDialog? = null
     if (show)
-      dialog = indeterminateProgressDialog(getString(check))
+      showDialog()
 
     subscription = firebaseWrapper.getAdmins(univer_ET.text.toString(),
         faculty_ET.text.toString(), group_ET.text.toString())
-        .subscribeOn(io())
-        .observeOn(mainThread())
+        .toMainThread()
+        .doOnTerminate { hideDialog() }
         .subscribe({ admins ->
-          dialog?.dismiss()
           admins?.let {
             if (it.size < 2) {
               admin.isChecked = true
-              adminsCount = it.size
               toast(getString(you_have_become_an_admin))
             } else {
               admin.isChecked = false
-              adminsCount = it.size
               toast(getString(you_not_become_admin))
             }
           }
         }, {
           if (DEBOUG_ENABLED) report(it)
-          dialog?.dismiss()
           if (it.message == EMPTY_DATA) {
             admin.isChecked = true
             toast(getString(you_have_become_an_admin))

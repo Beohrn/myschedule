@@ -12,6 +12,7 @@ import com.shedule.zyx.myshedule.ui.activities.HomeWorkActivity;
 import com.shedule.zyx.myshedule.ui.activities.MainActivity;
 import com.shedule.zyx.myshedule.ui.activities.SettingsActivity;
 import com.shedule.zyx.myshedule.ui.activities.SplashActivity;
+import com.shedule.zyx.myshedule.ui.fragments.BaseFragment;
 import com.shedule.zyx.myshedule.ui.fragments.BondedDevicesFragment;
 import com.shedule.zyx.myshedule.ui.fragments.NearbyDevicesFragment;
 import com.shedule.zyx.myshedule.ui.fragments.ScheduleFragment;
@@ -40,4 +41,5 @@ public interface AppComponent {
     void inject(TeachersRatingFragment teachersRatingFragment);
     void inject(SplashActivity splashActivity);
     void inject(SettingsActivity settingsActivity);
+    void inject(BaseFragment baseFragment);
 }

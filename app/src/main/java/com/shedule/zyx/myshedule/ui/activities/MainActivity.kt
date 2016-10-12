@@ -328,7 +328,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe({
-          scheduleManager.globalList.clear()
           appPreference.saveChangesCount(0)
           appPreference.saveUniverName("")
           appPreference.saveFacultyName("")

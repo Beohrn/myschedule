@@ -13,6 +13,9 @@ import com.shedule.zyx.myshedule.utils.Constants.Companion.COURSE_WORK
 import com.shedule.zyx.myshedule.utils.Constants.Companion.EXAM
 import com.shedule.zyx.myshedule.utils.Constants.Companion.HOME_EXAM
 import com.shedule.zyx.myshedule.utils.Constants.Companion.STANDINGS
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import java.io.File
 import java.io.FileOutputStream
 import java.text.DateFormatSymbols
@@ -151,5 +154,9 @@ class Utils {
       bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
       fos.close()
     }
+
+    fun getPrefsByKey(faculty: String, group: String) = "$faculty$group"
   }
 }
+
+fun <T> Observable<T>.toMainThread() = this.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())

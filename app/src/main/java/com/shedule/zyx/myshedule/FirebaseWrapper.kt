@@ -12,7 +12,7 @@ import com.shedule.zyx.myshedule.BuildConfig.DEBOUG_ENABLED
 import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.models.Teacher
-import com.shedule.zyx.myshedule.utils.Constants.Companion.ADMINS
+import com.shedule.zyx.myshedule.utils.Constants.Companion.ADMIN
 import com.shedule.zyx.myshedule.utils.Constants.Companion.CHANGES_COUNT
 import com.shedule.zyx.myshedule.utils.Constants.Companion.RATINGS
 import com.shedule.zyx.myshedule.utils.Constants.Companion.SCHEDULE
@@ -29,8 +29,6 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
 
   fun createTeacherRef() = facultyRef().child(TEACHERS)
 
-  var subscription: Subscription? = null
-
   private fun facultyRef(): DatabaseReference {
     return ref.child(getKeyByName(prefs.getUniverName() ?: ""))
         .child(getKeyByName(prefs.getFacultyName() ?: ""))
@@ -43,7 +41,7 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
   }
 
   private fun chainToAdminRef(university: String, faculty: String, group: String) = ref.child(getKeyByName(university))
-      .child(getKeyByName(faculty)).child(getKeyByName(group)).child(ADMINS)
+      .child(getKeyByName(faculty)).child(getKeyByName(group)).child(ADMIN)
 
   fun createAccount(): Observable<Void> {
     return Observable.create {
@@ -68,8 +66,8 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
   }
 
   fun removeAdmin(): Observable<Boolean> {
-    groupRef().child(ADMINS).child(prefs.getAdminKey()).removeValue()
-    return RxFirebase.observe(groupRef().child(ADMINS)).flatMap { Observable.just(true) }
+    groupRef().child(ADMIN).child(prefs.getAdminKey()).removeValue()
+    return RxFirebase.observe(groupRef().child(ADMIN)).flatMap { Observable.just(true) }
   }
 
   fun getGroups(faculty: String, university: String): Observable<List<String>?> {
@@ -123,7 +121,7 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
     chainToAdminRef(university, faculty, group).child(auth.currentUser?.uid).setValue(auth.currentUser?.uid)
 
     return RxFirebase.observe(chainToAdminRef(university, faculty, group))
-        .flatMap { Observable.from(it.children?.filter { it.value == auth.currentUser?.uid }?.map { it.key }) }
+        .flatMap { Observable.from(it.children?.filter { it.key == auth.currentUser?.uid }?.map { it.key }) }
 
   }
 
