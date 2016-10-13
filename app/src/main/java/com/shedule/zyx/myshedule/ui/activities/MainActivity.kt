@@ -102,7 +102,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     getSchedule()
 
     val nav = nav_view.inflateHeaderView(nav_header_navigation)
-    nav.faculty_name.text = appPreference.getFacultyName()
+    nav.faculty_name.text = prefs.getFacultyName()
     Utils.getAccountPhoto(applicationContext)?.let { nav.circleView.setImageBitmap(it) }
     Glide.with(this).load(R.drawable.univer_image)
         .bitmapTransform(BlurTransformation(this, 10))
@@ -183,14 +183,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
   private fun pushSchedule() {
     subscription?.unsubscribe()
     val dialog = indeterminateProgressDialog(getString(load))
-    var changes = appPreference.getChangesCount()
+    var changes = prefs.getChangesCount()
     changes++
     subscription = firebaseWrapper.pushSchedule(scheduleManager.globalList, changes)
         .toMainThread()
         .subscribe({ done ->
           if (done) {
             dialog.dismiss()
-            appPreference.saveChangesCount(changes)
+            prefs.saveChangesCount(changes)
             toast(getString(schedule_was_sent))
           }
         }, {
@@ -209,7 +209,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             dialog.dismiss()
             scheduleManager.globalList.clear()
             scheduleManager.globalList.addAll(it)
-            if (changesCount != 0) appPreference.saveChangesCount(changesCount)
+            if (changesCount != 0) prefs.saveChangesCount(changesCount)
             else getChangesCount()
             listenerList.map { it.updateData() }
             update.icon = resources.getDrawable(R.drawable.alarm)
@@ -228,11 +228,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         .subscribe({ count ->
           count?.let {
             if (changesCount == 0) {
-              if (it > appPreference.getChangesCount()) {
+              if (it > prefs.getChangesCount()) {
                 changesCount = it
                 update.icon = resources.getDrawable(notification)
               }
-            } else appPreference.saveChangesCount(it)
+            } else prefs.saveChangesCount(it)
           }
         }, { if (DEBOUG_ENABLED) report(it) })
   }
@@ -263,7 +263,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
               1 -> {
                 if (isOnline(applicationContext)) {
                   if (scheduleManager.globalList.size != 0) {
-                    if (appPreference.getAdminRight())
+                    if (prefs.getAdminRight())
                       pushSchedule()
                     else startActivityForResult<SettingsActivity>(MANAGER_REQUEST,
                         BECOME_MANAGER_KEY to true)
@@ -296,13 +296,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         .doOnTerminate { hideProgressDialog() }
         .toMainThread()
         .subscribe({
-          appPreference.saveChangesCount(0)
+          prefs.saveChangesCount(0)
           scheduleManager.saveSchedule()
-          appPreference.saveUniverName("")
-          appPreference.saveFacultyName("")
-          appPreference.saveGroupName("")
-          appPreference.saveAdminKey("")
-          appPreference.saveAdminRights(false)
+          prefs.saveUniverName("")
+          prefs.saveFacultyName("")
+          prefs.saveGroupName("")
+          prefs.saveAdminKey("")
+          prefs.saveAdminRights(false)
           scheduleManager.globalList.clear()
           startActivity<TutorialActivity>()
         }, {

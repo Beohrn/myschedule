@@ -20,14 +20,14 @@ class SplashActivity : BaseActivity() {
     if (auth.currentUser == null) {
       startActivity<TutorialActivity>()
     } else {
-      if (appPreference.isLogin()) {
+      if (prefs.isLogin()) {
         startActivity<MainActivity>()
       } else {
         if (isOnline(applicationContext)) {
           firebaseWrapper.logOut().subscribe({
-            appPreference.saveChangesCount(0)
-            appPreference.saveUniverName("")
-            appPreference.saveFacultyName("")
+            prefs.saveChangesCount(0)
+            prefs.saveUniverName("")
+            prefs.saveFacultyName("")
             startActivity<TutorialActivity>()
           }, { if (DEBOUG_ENABLED) report(it) })
         } else toast(getString(R.string.connection_is_failed))

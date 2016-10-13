@@ -15,7 +15,6 @@ import com.shedule.zyx.myshedule.R.string.*
 import com.shedule.zyx.myshedule.ui.activities.MainActivity
 import com.shedule.zyx.myshedule.ui.fragments.BaseFragment
 import com.shedule.zyx.myshedule.utils.Constants.Companion.EMPTY_DATA
-import com.shedule.zyx.myshedule.utils.Constants.Companion.TEMP
 import com.shedule.zyx.myshedule.utils.Utils
 import com.shedule.zyx.myshedule.utils.Utils.Companion.isOnline
 import com.shedule.zyx.myshedule.utils.toMainThread
@@ -52,7 +51,7 @@ class CreateAccountFragment : BaseFragment() {
     }
 
     universities_button.onClick {
-      hideKyboard()
+      hideKeyboard()
       if (isOnline(context)) {
         subscription?.unsubscribe()
         showDialog(getString(R.string.load))
@@ -78,7 +77,7 @@ class CreateAccountFragment : BaseFragment() {
     }
 
     faculty_button.onClick {
-      hideKyboard()
+      hideKeyboard()
       if (isOnline(context)) {
         if (!checkEdiTextIsEmpty(univer_ET)) {
           subscription?.unsubscribe()
@@ -105,7 +104,7 @@ class CreateAccountFragment : BaseFragment() {
     }
 
     group_button.onClick {
-      hideKyboard()
+      hideKeyboard()
       if (isOnline(context)) {
         if (!checkEdiTextIsEmpty(faculty_ET) && !checkEdiTextIsEmpty(univer_ET)) {
           showDialog(getString(R.string.load))
@@ -166,7 +165,7 @@ class CreateAccountFragment : BaseFragment() {
     faculty_ET.addTextChangedListener(facultyWatcher)
 
     create_account_btn.onClick {
-      hideKyboard()
+      hideKeyboard()
       if (isOnline(context)) {
 
         if (!checkEdiTextIsEmpty(univer_ET) && !checkEdiTextIsEmpty(faculty_ET) && !checkEdiTextIsEmpty(group_ET)) {
@@ -180,7 +179,7 @@ class CreateAccountFragment : BaseFragment() {
                 prefs.saveFacultyName(faculty_ET.text.toString().trim())
                 prefs.saveGroupName(group_ET.text.toString().trim())
                 prefs.saveLogin(true)
-                firebaseWrapper.groupRef().child(TEMP).setValue(TEMP)
+                firebaseWrapper.createGroup()
                 startActivity<MainActivity>()
               }, {
                 hideDialog()

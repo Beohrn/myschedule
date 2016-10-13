@@ -12,6 +12,7 @@ import com.shedule.zyx.myshedule.BuildConfig.DEBOUG_ENABLED
 import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.models.Teacher
+import com.shedule.zyx.myshedule.utils.Constants
 import com.shedule.zyx.myshedule.utils.Constants.Companion.ADMIN
 import com.shedule.zyx.myshedule.utils.Constants.Companion.ADMIN_IS_EXISTS
 import com.shedule.zyx.myshedule.utils.Constants.Companion.CHANGES_COUNT
@@ -34,12 +35,13 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
         .child(getKeyByName(prefs.getFacultyName() ?: ""))
   }
 
+  fun createGroup() = groupRef().child(Constants.TEMP).setValue(Constants.TEMP)
+
   fun groupRef() = ref.child(getKeyByName(prefs.getUniverName() ?: ""))
       .child(getKeyByName(prefs.getFacultyName() ?: ""))
       .child(getKeyByName(prefs.getGroupName() ?: ""))
 
-  private fun chainToAdminRef(university: String, faculty: String, group: String) = ref.child(getKeyByName(university))
-      .child(getKeyByName(faculty)).child(getKeyByName(group)).child(ADMIN)
+  private fun chainToAdminRef() = groupRef().child(ADMIN)
 
   fun createAccount(): Observable<Void> {
     return Observable.create {
@@ -117,7 +119,7 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
         .map { it.getValue(Int::class.java) }
   }
 
-  fun pushAdmin(university: String, faculty: String, group: String): Observable<String> {
+  fun pushAdmin(): Observable<String> {
 
     return RxFirebase.observe(groupRef())
         .flatMap {
@@ -126,7 +128,7 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
           if (isExist) {
             Observable.just(ADMIN_IS_EXISTS)
           } else {
-            chainToAdminRef(university, faculty, group).setValue(auth.currentUser?.uid)
+            chainToAdminRef().setValue(auth.currentUser?.uid)
             Observable.just(it.value.toString())
           }
     }

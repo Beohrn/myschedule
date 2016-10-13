@@ -9,7 +9,6 @@ import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.managers.BluetoothManager.OnConnectionListener
 import kotlinx.android.synthetic.main.fragment_list_of_devices.*
 import org.jetbrains.anko.onItemClick
-import org.jetbrains.anko.support.v4.indeterminateProgressDialog
 import org.jetbrains.anko.support.v4.selector
 import org.jetbrains.anko.support.v4.toast
 
@@ -31,11 +30,11 @@ class BondedDevicesFragment : BaseFragment(), OnConnectionListener {
     bluetoothManager.onConnectionListener = this
 
     list_of_devices.onItemClick { adapterView, view, i, l ->
-      progressDialog = indeterminateProgressDialog(getString(R.string.connecting))
+      showDialog(getString(R.string.connecting))
       bluetoothManager.connect(pairs[i].first)
       bluetoothManager.setStateListener(BluetoothStateListener { state ->
         if (state == bluetoothManager.STATE_CONNECTED) {
-          progressDialog?.hide()
+          hideDialog()
           if (isAdded)
             selector("", listOf(getString(R.string.send), getString(R.string.cancel))) {
               when (it) {
@@ -43,14 +42,14 @@ class BondedDevicesFragment : BaseFragment(), OnConnectionListener {
                 1 -> bluetoothManager.disconnect()
               }
             }
-        } else if (state == bluetoothManager.STATE_CONNECTING) progressDialog?.hide()
+        } else if (state == bluetoothManager.STATE_CONNECTING) hideDialog()
       })
     }
   }
 
   override fun onConnectionState(state: Int) {
     if (state == bluetoothManager.STATE_CONNECTION_FAILED) {
-      progressDialog?.hide()
+      hideDialog()
       if (isAdded)
         toast(getString(R.string.no_connection))
     }

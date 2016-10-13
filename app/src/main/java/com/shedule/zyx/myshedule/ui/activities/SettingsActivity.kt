@@ -55,32 +55,31 @@ class SettingsActivity : BaseActivity() {
       manager_info.text = getString(R.string.before_do_action_become_manager)
       manager_button.text = getString(R.string.become_manager)
     } else {
-      if (appPreference.getAdminRight()) youAreAdminSettings()
+      if (prefs.getAdminRight()) youAreAdminSettings()
       else becomeAdminSettings()
     }
 
     manager_button.onClick {
       if (manager_button.text == getString(R.string.become_manager)) {
-        if (isOnline(applicationContext)) becomeManager()
+        if (isOnline(this)) setEnableAdmin()
         else toast(getString(connection_is_failed))
       } else if (manager_button.text == getString(R.string.not_to_be_an_manager)) {
-        if (isOnline(applicationContext)) noToBeManager()
+        if (isOnline(applicationContext)) setDisableAdmin()
         else toast(getString(connection_is_failed))
       }
     }
   }
 
-  private fun becomeManager() {
+  private fun setEnableAdmin() {
     showProgressDialog(getString(load))
-    subscription = firebaseWrapper.pushAdmin(appPreference.getUniverName(),
-        appPreference.getFacultyName(), appPreference.getGroupName())
+    subscription = firebaseWrapper.pushAdmin()
         .toMainThread()
         .subscribe({ key ->
           key?.let {
             hideProgressDialog()
             if (it != ADMIN_IS_EXISTS) {
-              appPreference.saveAdminKey(it)
-              appPreference.saveAdminRights(true)
+              prefs.saveAdminKey(it)
+              prefs.saveAdminRights(true)
               youAreAdminSettings()
               toast(getString(R.string.you_have_become_an_manager))
               subscription?.unsubscribe()
@@ -99,7 +98,7 @@ class SettingsActivity : BaseActivity() {
         })
   }
 
-  private fun noToBeManager() {
+  private fun setDisableAdmin() {
     subscription?.unsubscribe()
     showProgressDialog(getString(load))
     subscription = firebaseWrapper.removeAdmin()
@@ -107,22 +106,22 @@ class SettingsActivity : BaseActivity() {
         .subscribe({
           if (it) {
             hideProgressDialog()
-            noAdmin()
+            clearAdmin()
             becomeAdminSettings()
           }
         }, {
           if (DEBOUG_ENABLED) report(it)
           if (it.message == EMPTY_DATA) {
             hideProgressDialog()
-            noAdmin()
+            clearAdmin()
             becomeAdminSettings()
           }
         })
   }
 
-  private fun noAdmin() {
-    appPreference.saveAdminKey("")
-    appPreference.saveAdminRights(false)
+  private fun clearAdmin() {
+    prefs.saveAdminKey("")
+    prefs.saveAdminRights(false)
     toast(getString(R.string.u_no_longer_manager))
   }
 

@@ -31,7 +31,7 @@ abstract class BaseActivity : AppCompatActivity() {
   lateinit var scheduleManager: ScheduleManager
 
   @Inject
-  lateinit var appPreference: AppPreference
+  lateinit var prefs: AppPreference
 
   @Inject
   lateinit var gson: Gson
@@ -58,11 +58,11 @@ abstract class BaseActivity : AppCompatActivity() {
   }
 
   fun saveSchedule() {
-    if (!appPreference.getFacultyName().isNullOrEmpty() && !appPreference.getGroupName().isNullOrEmpty())
+    if (!prefs.getFacultyName().isNullOrEmpty() && !prefs.getGroupName().isNullOrEmpty())
       scheduleManager.saveSchedule()
   }
 
-  fun getSchedule() { scheduleManager.globalList = appPreference.getSchedule() }
+  fun getSchedule() { scheduleManager.globalList = prefs.getSchedule() }
 
   fun showProgressDialog(message: String) {
     dialog = indeterminateProgressDialog(message)

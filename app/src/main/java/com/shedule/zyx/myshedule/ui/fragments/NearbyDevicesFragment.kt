@@ -13,7 +13,6 @@ import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import com.shedule.zyx.myshedule.R
 import kotlinx.android.synthetic.main.fragment_list_of_devices.*
 import org.jetbrains.anko.onItemClick
-import org.jetbrains.anko.support.v4.indeterminateProgressDialog
 import org.jetbrains.anko.support.v4.selector
 
 /**
@@ -44,11 +43,11 @@ class NearbyDevicesFragment: BaseFragment() {
     list_of_devices.adapter = adapter
 
     list_of_devices.onItemClick { adapterView, view, i, l ->
-      progressDialog = indeterminateProgressDialog(getString(R.string.connecting))
+      showDialog(getString(R.string.connecting))
       bluetoothManager.connect(devices[i].first)
       bluetoothManager.setStateListener(BluetoothSPP.BluetoothStateListener { state ->
         if (state == bluetoothManager.STATE_CONNECTED) {
-          progressDialog?.hide()
+          hideDialog()
           if (isAdded)
             selector("", listOf(getString(R.string.send), getString(R.string.cancel))) {
               when (it) {
@@ -56,7 +55,7 @@ class NearbyDevicesFragment: BaseFragment() {
                 1 -> bluetoothManager.disconnect()
               }
             }
-        } else if (state == bluetoothManager.STATE_CONNECTING) progressDialog?.hide()
+        } else if (state == bluetoothManager.STATE_CONNECTING) hideDialog()
       })
 
       nearbyDevicesList.removeAt(i)

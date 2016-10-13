@@ -44,8 +44,8 @@ class DiscussionActivity : BaseActivity(), CommentsAdapter.OnCommentClickListene
 
     whichId = getKeyByName(intent.getStringExtra(TEACHER_REQUEST))
 
-    ref = firebaseRef.child(getKeyByName(appPreference.getUniverName()))
-        .child(getKeyByName(appPreference.getFacultyName()))
+    ref = firebaseRef.child(getKeyByName(prefs.getUniverName()))
+        .child(getKeyByName(prefs.getFacultyName()))
         .child(Constants.TEACHERS)
         .child(whichId)
         .child(COMMENTS)
