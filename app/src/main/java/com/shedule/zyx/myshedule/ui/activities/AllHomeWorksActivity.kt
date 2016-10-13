@@ -3,7 +3,6 @@ package com.shedule.zyx.myshedule.ui.activities
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
@@ -11,21 +10,16 @@ import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.all_homeworks_activity
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.adapters.AllHomeWorkItemsAdapter
-import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.ui.activities.HomeWorkActivity.Companion.ALL_HOMEWORK
 import com.shedule.zyx.myshedule.ui.activities.HomeWorkActivity.Companion.SCHEDULE_HOMEWORK_REQUEST
 import kotlinx.android.synthetic.main.all_homeworks_activity.*
 import org.jetbrains.anko.startActivityForResult
-import javax.inject.Inject
 
 /**
  * Created by alexkowlew on 21.09.2016.
  */
-class AllHomeWorksActivity: AppCompatActivity(), AllHomeWorkItemsAdapter.OnItemClick {
-
-  @Inject
-  lateinit var scheduleManager: ScheduleManager
+class AllHomeWorksActivity: BaseActivity(), AllHomeWorkItemsAdapter.OnItemClick {
 
   var list = arrayListOf<Schedule>()
   lateinit var adapter: AllHomeWorkItemsAdapter
@@ -33,7 +27,6 @@ class AllHomeWorksActivity: AppCompatActivity(), AllHomeWorkItemsAdapter.OnItemC
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(all_homeworks_activity)
-    ScheduleApplication.getComponent().inject(this)
 
     setSupportActionBar(ah_toolbar)
     supportActionBar?.let {

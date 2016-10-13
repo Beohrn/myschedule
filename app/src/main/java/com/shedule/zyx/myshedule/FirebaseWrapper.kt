@@ -13,13 +13,13 @@ import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.models.Teacher
 import com.shedule.zyx.myshedule.utils.Constants.Companion.ADMIN
+import com.shedule.zyx.myshedule.utils.Constants.Companion.ADMIN_IS_EXISTS
 import com.shedule.zyx.myshedule.utils.Constants.Companion.CHANGES_COUNT
 import com.shedule.zyx.myshedule.utils.Constants.Companion.RATINGS
 import com.shedule.zyx.myshedule.utils.Constants.Companion.SCHEDULE
 import com.shedule.zyx.myshedule.utils.Constants.Companion.TEACHERS
 import com.shedule.zyx.myshedule.utils.Utils.Companion.getKeyByName
 import rx.Observable
-import rx.Subscription
 import java.util.*
 
 /**
@@ -34,11 +34,9 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
         .child(getKeyByName(prefs.getFacultyName() ?: ""))
   }
 
-  private fun groupRef(): DatabaseReference {
-    return ref.child(getKeyByName(prefs.getUniverName() ?: ""))
-        .child(getKeyByName(prefs.getFacultyName() ?: ""))
-        .child(getKeyByName(prefs.getGroupName() ?: ""))
-  }
+  fun groupRef() = ref.child(getKeyByName(prefs.getUniverName() ?: ""))
+      .child(getKeyByName(prefs.getFacultyName() ?: ""))
+      .child(getKeyByName(prefs.getGroupName() ?: ""))
 
   private fun chainToAdminRef(university: String, faculty: String, group: String) = ref.child(getKeyByName(university))
       .child(getKeyByName(faculty)).child(getKeyByName(group)).child(ADMIN)
@@ -59,6 +57,8 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
       auth.currentUser?.delete()?.addOnCompleteListener { task ->
         if (task.isSuccessful) {
           it.onNext(null)
+          if (prefs.getAdminRight())
+            groupRef().child(ADMIN).removeValue()
           it.onCompleted()
         } else it.onError(task.exception)
       }
@@ -66,8 +66,12 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
   }
 
   fun removeAdmin(): Observable<Boolean> {
-    groupRef().child(ADMIN).child(prefs.getAdminKey()).removeValue()
-    return RxFirebase.observe(groupRef().child(ADMIN)).flatMap { Observable.just(true) }
+    return RxFirebase.observe(groupRef().child(ADMIN)).flatMap {
+      if (it.key != null) {
+        groupRef().child(ADMIN).removeValue()
+        Observable.just(true)
+      } else Observable.just(false)
+    }
   }
 
   fun getGroups(faculty: String, university: String): Observable<List<String>?> {
@@ -101,13 +105,10 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
     groupRef().child(SCHEDULE).setValue(list)
     groupRef().child(CHANGES_COUNT).setValue(change)
     return RxFirebase.observe(groupRef())
-        .flatMap { Observable.just(true) }
-  }
-
-  fun getAdmins(university: String, faculty: String, group: String): Observable<List<String>?> {
-    return RxFirebase.observe(chainToAdminRef(university, faculty, group))
-        .filter { it != null }
-        .filter { it.value != null }.map { it.children.map { it.getValue(String::class.java) } }
+        .flatMap {
+          if (it.children != null) Observable.just(true)
+          else Observable.just(false)
+        }
   }
 
   fun getChangesCount(): Observable<Int> {
@@ -118,11 +119,17 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
 
   fun pushAdmin(university: String, faculty: String, group: String): Observable<String> {
 
-    chainToAdminRef(university, faculty, group).child(auth.currentUser?.uid).setValue(auth.currentUser?.uid)
-
-    return RxFirebase.observe(chainToAdminRef(university, faculty, group))
-        .flatMap { Observable.from(it.children?.filter { it.key == auth.currentUser?.uid }?.map { it.key }) }
-
+    return RxFirebase.observe(groupRef())
+        .flatMap {
+          var isExist = false
+          it.children?.map { if (it.key == ADMIN) isExist = true }
+          if (isExist) {
+            Observable.just(ADMIN_IS_EXISTS)
+          } else {
+            chainToAdminRef(university, faculty, group).setValue(auth.currentUser?.uid)
+            Observable.just(it.value.toString())
+          }
+    }
   }
 
   fun pushTeacher(teachers: List<Teacher>): Observable<Boolean> {

@@ -10,14 +10,11 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.add_home_work_activity
-import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.adapters.ImageAdapter
-import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.models.HomeWork
 import com.shedule.zyx.myshedule.ui.activities.HomeWorkActivity.Companion.HOMEWORK_DESCRIPTION
 import com.shedule.zyx.myshedule.ui.activities.HomeWorkActivity.Companion.HOMEWORK_NAME
@@ -33,18 +30,14 @@ import org.jetbrains.anko.selector
 import org.jetbrains.anko.startActivityForResult
 import org.jetbrains.anko.toast
 import java.io.File
-import javax.inject.Inject
 
 /**
  * Created by alexkowlew on 15.09.2016.
  */
-class CreateHomeWorkActivity : AppCompatActivity() {
+class CreateHomeWorkActivity : BaseActivity() {
 
   val photos = arrayListOf<File>()
   lateinit var photosAdapter: ImageAdapter
-
-  @Inject
-  lateinit var scheduleManager: ScheduleManager
 
   var homework: HomeWork? = null
   var isHomeworkEdit = false
@@ -61,7 +54,6 @@ class CreateHomeWorkActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     setContentView(add_home_work_activity)
-    ScheduleApplication.getComponent().inject(this)
 
     setSupportActionBar(add_homework_toolbar)
     supportActionBar?.let {

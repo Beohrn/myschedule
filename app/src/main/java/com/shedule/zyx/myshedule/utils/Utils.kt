@@ -155,7 +155,7 @@ class Utils {
       fos.close()
     }
 
-    fun getPrefsByKey(faculty: String, group: String) = "$faculty$group"
+    fun getPrefsKeyByName(faculty: String, group: String) = "${faculty}_$group"
   }
 }
 

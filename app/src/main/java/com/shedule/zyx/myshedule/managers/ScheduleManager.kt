@@ -4,15 +4,16 @@ import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.models.Date
 import com.shedule.zyx.myshedule.models.HomeWork
 import com.shedule.zyx.myshedule.models.Schedule
+import com.shedule.zyx.myshedule.utils.Utils
 import java.util.*
 
 /**
  * Created by alexkowlew on 29.08.2016.
  */
-class ScheduleManager(val globalList: ArrayList<Schedule>, val prefs: AppPreference) {
+class ScheduleManager(var globalList: ArrayList<Schedule>, val prefs: AppPreference) {
 
   fun saveSchedule() {
-    prefs.saveSchedule(globalList)
+    prefs.saveSchedule(globalList, Utils.getPrefsKeyByName(prefs.getFacultyName(), prefs.getGroupName()))
   }
 
   fun getScheduleByDay(day: String) = globalList.map { schedule ->

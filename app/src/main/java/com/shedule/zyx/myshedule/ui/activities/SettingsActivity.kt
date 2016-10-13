@@ -1,44 +1,39 @@
 package com.shedule.zyx.myshedule.ui.activities
 
+import android.app.Activity
 import android.graphics.Color.WHITE
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import com.google.firebase.crash.FirebaseCrash.report
 import com.shedule.zyx.myshedule.BuildConfig.DEBOUG_ENABLED
-import com.shedule.zyx.myshedule.FirebaseWrapper
+import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.settings_activity
 import com.shedule.zyx.myshedule.R.string.*
-import com.shedule.zyx.myshedule.ScheduleApplication.getComponent
-import com.shedule.zyx.myshedule.config.AppPreference
+import com.shedule.zyx.myshedule.utils.Constants.Companion.ADMIN_IS_EXISTS
 import com.shedule.zyx.myshedule.utils.Constants.Companion.EMPTY_DATA
 import com.shedule.zyx.myshedule.utils.Utils.Companion.isOnline
+import com.shedule.zyx.myshedule.utils.toMainThread
 import kotlinx.android.synthetic.main.settings_activity.*
 import kotlinx.android.synthetic.main.settings_screen.*
-import org.jetbrains.anko.indeterminateProgressDialog
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.toast
-import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers.mainThread
-import rx.schedulers.Schedulers.io
-import javax.inject.Inject
 
 /**
  * Created by alexkowlew on 08.10.2016.
  */
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : BaseActivity() {
 
-  @Inject
-  lateinit var firebaseWrapper: FirebaseWrapper
+  companion object {
+    val MANAGER_REQUEST = 3292
+    val BECOME_MANAGER_KEY = "manager_key"
+  }
 
-  @Inject
-  lateinit var appPreferences: AppPreference
-
-  var subscription: Subscription? = null
+  var isBecomeManager = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    getComponent().inject(this)
+
     setContentView(settings_activity)
+
     subscription?.unsubscribe()
     setSupportActionBar(settings_toolbar)
     supportActionBar?.let {
@@ -54,76 +49,71 @@ class SettingsActivity : AppCompatActivity() {
       setNavigationOnClickListener { finish() }
     }
 
-    if (appPreferences.getAdminRight()) youAreAdminSettings()
-    else becomeAdminSettings()
+    isBecomeManager = intent.getBooleanExtra(BECOME_MANAGER_KEY, false)
 
-    admin_button.onClick {
-      if (admin_button.text == getString(become_administrator)) {
-        if (isOnline(applicationContext)) checkAdmins()
+    if (isBecomeManager) {
+      manager_info.text = getString(R.string.before_do_action_become_manager)
+      manager_button.text = getString(R.string.become_manager)
+    } else {
+      if (appPreference.getAdminRight()) youAreAdminSettings()
+      else becomeAdminSettings()
+    }
+
+    manager_button.onClick {
+      if (manager_button.text == getString(R.string.become_manager)) {
+        if (isOnline(applicationContext)) becomeManager()
         else toast(getString(connection_is_failed))
-      } else if (admin_button.text == getString(not_to_be_an_admin)) {
-        if (isOnline(applicationContext)) noToBeAnAdmin()
+      } else if (manager_button.text == getString(R.string.not_to_be_an_manager)) {
+        if (isOnline(applicationContext)) noToBeManager()
         else toast(getString(connection_is_failed))
       }
     }
   }
 
-  private fun checkAdmins() {
-    val dialog = indeterminateProgressDialog(getString(load))
-    subscription = firebaseWrapper.getAdmins(appPreferences.getUniverName(),
-        appPreferences.getFacultyName(),
-        appPreferences.getGroupName())
-        .subscribeOn(io())
-        .observeOn(mainThread())
-        .subscribe({ admins ->
-          dialog.dismiss()
-          admins?.let { becomeAdmin(it) }
+  private fun becomeManager() {
+    showProgressDialog(getString(load))
+    subscription = firebaseWrapper.pushAdmin(appPreference.getUniverName(),
+        appPreference.getFacultyName(), appPreference.getGroupName())
+        .toMainThread()
+        .subscribe({ key ->
+          key?.let {
+            hideProgressDialog()
+            if (it != ADMIN_IS_EXISTS) {
+              appPreference.saveAdminKey(it)
+              appPreference.saveAdminRights(true)
+              youAreAdminSettings()
+              toast(getString(R.string.you_have_become_an_manager))
+              subscription?.unsubscribe()
+              if (isBecomeManager) {
+                setResult(Activity.RESULT_OK)
+                finish()
+              } else {}
+            } else {
+              toast(getString(R.string.you_not_become_manager))
+              subscription?.unsubscribe()
+            }
+          }
         }, {
           if (DEBOUG_ENABLED) report(it)
-          if (it.message == EMPTY_DATA) {
-            dialog.dismiss()
-            becomeAdmin(listOf<String>())
-          }
+          hideProgressDialog()
         })
   }
 
-  private fun becomeAdmin(admins: List<String>) {
+  private fun noToBeManager() {
     subscription?.unsubscribe()
-    if (admins.size < 2)
-      subscription = firebaseWrapper.pushAdmin(appPreferences.getUniverName(),
-          appPreferences.getFacultyName(), appPreferences.getGroupName())
-          .subscribeOn(io())
-          .observeOn(mainThread())
-          .subscribe({ key ->
-            key?.let {
-              appPreferences.saveAdminKey(it)
-              appPreferences.saveAdminRights(true)
-              youAreAdminSettings()
-              toast(getString(you_have_become_an_admin))
-            }
-          }, {
-            if (DEBOUG_ENABLED)
-              report(it)
-          })
-    else toast(getString(you_not_become_admin))
-  }
-
-  private fun noToBeAnAdmin() {
-    subscription?.unsubscribe()
-    val dialog = indeterminateProgressDialog(getString(load))
+    showProgressDialog(getString(load))
     subscription = firebaseWrapper.removeAdmin()
-        .subscribeOn(io())
-        .observeOn(mainThread())
+        .toMainThread()
         .subscribe({
           if (it) {
-            dialog.dismiss()
+            hideProgressDialog()
             noAdmin()
             becomeAdminSettings()
           }
         }, {
           if (DEBOUG_ENABLED) report(it)
           if (it.message == EMPTY_DATA) {
-            dialog.dismiss()
+            hideProgressDialog()
             noAdmin()
             becomeAdminSettings()
           }
@@ -131,25 +121,19 @@ class SettingsActivity : AppCompatActivity() {
   }
 
   private fun noAdmin() {
-    appPreferences.saveAdminKey("")
-    appPreferences.saveAdminRights(false)
-    admins_count.text = getString(one_admin_is_missing)
-    toast(getString(u_no_longer_admin))
+    appPreference.saveAdminKey("")
+    appPreference.saveAdminRights(false)
+    toast(getString(R.string.u_no_longer_manager))
   }
 
   private fun becomeAdminSettings() {
     subscription?.unsubscribe()
-    admins_count.text = getString(you_are_not_admin)
-    admin_button.text = getString(become_administrator)
+    manager_info.text = getString(R.string.you_are_not_manager)
+    manager_button.text = getString(R.string.become_manager)
   }
 
   private fun youAreAdminSettings() {
-    admins_count.text = getString(you_are_admin)
-    admin_button.text = getString(not_to_be_an_admin)
-  }
-
-  override fun onPause() {
-    subscription?.unsubscribe()
-    super.onPause()
+    manager_info.text = getString(R.string.you_are_manager)
+    manager_button.text = getString(R.string.not_to_be_an_manager)
   }
 }

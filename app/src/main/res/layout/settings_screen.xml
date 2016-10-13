@@ -11,35 +11,35 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/admins"
+        android:text="@string/manager"
         android:padding="10dp"
-        android:textSize="@dimen/material_text_size"/>
-
-    <TextView
-        android:id="@+id/admins_count"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="Ви не можете стати адміністратором"
-        android:textColor="@color/black"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
         android:textSize="16sp"/>
 
     <TextView
-        android:id="@+id/admin_button"
+        android:id="@+id/manager_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="@string/you_not_become_manager"
+        android:textColor="@color/black"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:paddingBottom="15dp"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/manager_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
         android:background="@drawable/email_login_btn"
         android:gravity="center"
+        android:layout_gravity="center_horizontal"
         android:paddingBottom="10dp"
         android:paddingEnd="14dp"
         android:paddingLeft="14dp"
         android:paddingRight="14dp"
         android:paddingStart="14dp"
         android:paddingTop="10dp"
-        tools:text="Стать администратором"
+        tools:text="@string/become_manager"
         android:textColor="@color/white"
         android:textSize="18sp"/>
 

@@ -33,5 +33,7 @@ class Constants {
     val SCHEDULE = "schedule"
 
     val EMPTY_DATA = "Empty data"
+    val ADMIN_IS_EXISTS = "Admin is exists"
+    val TEMP = "temp"
   }
 }

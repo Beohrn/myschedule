@@ -2,7 +2,6 @@ package com.shedule.zyx.myshedule.comments
 
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import app.voter.xyz.RxFirebase
@@ -10,8 +9,7 @@ import app.voter.xyz.comments.Comment
 import app.voter.xyz.comments.CommentsAdapter
 import com.google.firebase.database.DatabaseReference
 import com.shedule.zyx.myshedule.R
-import com.shedule.zyx.myshedule.ScheduleApplication
-import com.shedule.zyx.myshedule.config.AppPreference
+import com.shedule.zyx.myshedule.ui.activities.BaseActivity
 import com.shedule.zyx.myshedule.utils.Constants
 import com.shedule.zyx.myshedule.utils.Constants.Companion.COMMENTS
 import com.shedule.zyx.myshedule.utils.Constants.Companion.LIKES
@@ -22,18 +20,8 @@ import org.jetbrains.anko.dip
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.selector
 import java.util.*
-import javax.inject.Inject
 
-class DiscussionActivity : AppCompatActivity(), CommentsAdapter.OnCommentClickListener {
-
-  @Inject
-  lateinit var firebaseRef: DatabaseReference
-
-  @Inject
-  lateinit var deviceToken: String
-
-  @Inject
-  lateinit var prefs: AppPreference
+class DiscussionActivity : BaseActivity(), CommentsAdapter.OnCommentClickListener {
 
   var whichId = ""
 
@@ -53,12 +41,11 @@ class DiscussionActivity : AppCompatActivity(), CommentsAdapter.OnCommentClickLi
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.discussion_activity_layout)
-    ScheduleApplication.getComponent().inject(this)
 
     whichId = getKeyByName(intent.getStringExtra(TEACHER_REQUEST))
 
-    ref = firebaseRef.child(getKeyByName(prefs.getUniverName()))
-        .child(getKeyByName(prefs.getFacultyName()))
+    ref = firebaseRef.child(getKeyByName(appPreference.getUniverName()))
+        .child(getKeyByName(appPreference.getFacultyName()))
         .child(Constants.TEACHERS)
         .child(whichId)
         .child(COMMENTS)
