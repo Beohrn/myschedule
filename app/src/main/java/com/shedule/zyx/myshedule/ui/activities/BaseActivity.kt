@@ -55,6 +55,8 @@ abstract class BaseActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     getComponent().inject(this)
+    if (scheduleManager.globalList.size == 0)
+      scheduleManager.globalList = prefs.getSchedule()
   }
 
   fun saveSchedule() {
@@ -62,15 +64,12 @@ abstract class BaseActivity : AppCompatActivity() {
       scheduleManager.saveSchedule()
   }
 
-  fun getSchedule() { scheduleManager.globalList = prefs.getSchedule() }
-
   fun showProgressDialog(message: String) {
     dialog = indeterminateProgressDialog(message)
   }
 
-  fun hideProgressDialog() {
-    dialog.hide()
-  }
+  fun hideProgressDialog() = dialog.hide()
+
 
   override fun onPause() {
     subscription?.unsubscribe()

@@ -563,7 +563,8 @@
     <string name="u_no_longer_manager">You no longer manager</string>
     <string name="exit">Exit</string>
     <string name="type_the_group_name">Type the group name</string>
-    <string name="before_do_action_become_manager">Before you send the schedule to a group, you need to become a manager!</string>
+    <string name="before_do_action_become_manager">1. In a group can have only one manager.\n2. To distribute a schedule for a group, you must be a manager.\n3. When leaving a group, you automatically cease to be a manager.
+    </string>
 
     <string name="no_permission_for_camera">No permission to access the camera</string>
     <string name="no_permission_for_storage">No permission to access the Memory</string>

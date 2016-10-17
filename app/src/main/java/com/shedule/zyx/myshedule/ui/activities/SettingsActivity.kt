@@ -1,7 +1,10 @@
 package com.shedule.zyx.myshedule.ui.activities
 
 import android.app.Activity
+import android.content.Intent
+import android.content.Intent.ACTION_VIEW
 import android.graphics.Color.WHITE
+import android.net.Uri.parse
 import android.os.Bundle
 import com.google.firebase.crash.FirebaseCrash.report
 import com.shedule.zyx.myshedule.BuildConfig.DEBOUG_ENABLED
@@ -12,6 +15,7 @@ import com.shedule.zyx.myshedule.utils.Constants.Companion.ADMIN_IS_EXISTS
 import com.shedule.zyx.myshedule.utils.Constants.Companion.EMPTY_DATA
 import com.shedule.zyx.myshedule.utils.Utils.Companion.isOnline
 import com.shedule.zyx.myshedule.utils.toMainThread
+import de.cketti.mailto.EmailIntentBuilder
 import kotlinx.android.synthetic.main.settings_activity.*
 import kotlinx.android.synthetic.main.settings_screen.*
 import org.jetbrains.anko.onClick
@@ -20,7 +24,7 @@ import org.jetbrains.anko.toast
 /**
  * Created by alexkowlew on 08.10.2016.
  */
-class SettingsActivity : BaseActivity() {
+class SettingsActivity: BaseActivity() {
 
   companion object {
     val MANAGER_REQUEST = 3292
@@ -68,7 +72,17 @@ class SettingsActivity : BaseActivity() {
         else toast(getString(connection_is_failed))
       }
     }
+
+    open_our_group.onClick { startActivity(Intent(ACTION_VIEW, parse("https://vk.com/club129716882"))) }
+
+    write_to_us.onClick { sendEmail() }
   }
+
+  fun sendEmail() =
+      startActivity(EmailIntentBuilder.from(this)
+          .to(getString(R.string.email))
+          .subject(getString(feedback))
+          .build())
 
   private fun setEnableAdmin() {
     showProgressDialog(getString(load))
@@ -127,12 +141,12 @@ class SettingsActivity : BaseActivity() {
 
   private fun becomeAdminSettings() {
     subscription?.unsubscribe()
-    manager_info.text = getString(R.string.you_are_not_manager)
+    manager_info.text = getString(R.string.before_do_action_become_manager)
     manager_button.text = getString(R.string.become_manager)
   }
 
   private fun youAreAdminSettings() {
-    manager_info.text = getString(R.string.you_are_manager)
+    manager_info.text = getString(R.string.before_do_action_become_manager)
     manager_button.text = getString(R.string.not_to_be_an_manager)
   }
 }

@@ -34,6 +34,6 @@ class Constants {
 
     val EMPTY_DATA = "Empty data"
     val ADMIN_IS_EXISTS = "Admin is exists"
-    val TEMP = "temp"
+    val GROUP_CREATED = "group_created"
   }
 }

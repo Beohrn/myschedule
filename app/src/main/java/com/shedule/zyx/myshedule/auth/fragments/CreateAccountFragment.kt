@@ -136,8 +136,11 @@ class CreateAccountFragment : BaseFragment() {
     }
 
     facultyWatcher = object : TextWatcher {
-      override fun afterTextChanged(s: Editable?) { }
-      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
+      override fun afterTextChanged(s: Editable?) {
+      }
+
+      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+      }
 
       override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
         faculty_ET.removeTextChangedListener(facultyWatcher)
@@ -148,8 +151,11 @@ class CreateAccountFragment : BaseFragment() {
     }
 
     groupWatcher = object : TextWatcher {
-      override fun afterTextChanged(s: Editable?) { }
-      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
+      override fun afterTextChanged(s: Editable?) {
+      }
+
+      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+      }
 
       override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
         group_ET.removeTextChangedListener(groupWatcher)
@@ -170,11 +176,13 @@ class CreateAccountFragment : BaseFragment() {
 
         if (!checkEdiTextIsEmpty(univer_ET) && !checkEdiTextIsEmpty(faculty_ET) && !checkEdiTextIsEmpty(group_ET)) {
           showDialog(getString(R.string.authentication))
-          firebaseWrapper.createAccount()
+          firebaseWrapper.createAccount(univer_ET.text.toString().trim(),
+              faculty_ET.text.toString().trim(), group_ET.text.toString().trim())
               .toMainThread()
               .doOnTerminate { hideDialog() }
               .subscribe({
                 hideDialog()
+                it?.let { scheduleManager.globalList.addAll(it) }
                 prefs.saveUniverName(univer_ET.text.toString().trim())
                 prefs.saveFacultyName(faculty_ET.text.toString().trim())
                 prefs.saveGroupName(group_ET.text.toString().trim())

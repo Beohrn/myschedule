@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.ConnectivityManager
 import android.os.Environment
+import com.google.firebase.database.DataSnapshot
 import com.google.gson.Gson
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.models.Date
@@ -160,3 +161,6 @@ class Utils {
 }
 
 fun <T> Observable<T>.toMainThread() = this.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+
+fun Observable<DataSnapshot>.filterNotNull() =
+    this.filter { it != null }.filter { it.value != null }

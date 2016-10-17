@@ -12,14 +12,16 @@ import com.shedule.zyx.myshedule.BuildConfig.DEBOUG_ENABLED
 import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.models.Teacher
-import com.shedule.zyx.myshedule.utils.Constants
 import com.shedule.zyx.myshedule.utils.Constants.Companion.ADMIN
 import com.shedule.zyx.myshedule.utils.Constants.Companion.ADMIN_IS_EXISTS
 import com.shedule.zyx.myshedule.utils.Constants.Companion.CHANGES_COUNT
+import com.shedule.zyx.myshedule.utils.Constants.Companion.EMPTY_DATA
+import com.shedule.zyx.myshedule.utils.Constants.Companion.GROUP_CREATED
 import com.shedule.zyx.myshedule.utils.Constants.Companion.RATINGS
 import com.shedule.zyx.myshedule.utils.Constants.Companion.SCHEDULE
 import com.shedule.zyx.myshedule.utils.Constants.Companion.TEACHERS
 import com.shedule.zyx.myshedule.utils.Utils.Companion.getKeyByName
+import com.shedule.zyx.myshedule.utils.filterNotNull
 import rx.Observable
 import java.util.*
 
@@ -35,7 +37,7 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
         .child(getKeyByName(prefs.getFacultyName() ?: ""))
   }
 
-  fun createGroup() = groupRef().child(Constants.TEMP).setValue(Constants.TEMP)
+  fun createGroup() = groupRef().child(GROUP_CREATED).setValue(true)
 
   fun groupRef() = ref.child(getKeyByName(prefs.getUniverName() ?: ""))
       .child(getKeyByName(prefs.getFacultyName() ?: ""))
@@ -43,13 +45,27 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
 
   private fun chainToAdminRef() = groupRef().child(ADMIN)
 
-  fun createAccount(): Observable<Void> {
-    return Observable.create {
+  fun createAccount(university: String, faculty: String, group: String): Observable<List<Schedule>?> {
+    return Observable.create { subscription ->
       auth.signInAnonymously().addOnCompleteListener { task ->
         if (task.isSuccessful) {
-          it.onNext(null)
-          it.onCompleted()
-        } else it.onError(task.exception)
+          if (!prefs.isLogin())
+            getSchedule(getKeyByName(university),
+                getKeyByName(faculty),
+                getKeyByName(group)).subscribe({
+              subscription.onNext(it)
+              subscription.onCompleted()
+            }, {
+              if (it.message == EMPTY_DATA) {
+                subscription.onNext(null)
+                subscription.onCompleted()
+              }
+            })
+          else {
+            subscription.onNext(null)
+            subscription.onCompleted()
+          }
+        } else subscription.onError(task.exception)
       }
     }
   }
@@ -92,15 +108,23 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
 
   fun getTeachers(): Observable<List<Teacher>?> {
     return RxFirebase.observe(createTeacherRef())
-        .filter { it != null }
-        .filter { it.value != null }
+        .filterNotNull()
         .map { it.children.map { it.getValue(Teacher::class.java) } }
   }
 
-  fun getSchedule(): Observable<List<Schedule>?> {
-    return RxFirebase.observe(groupRef().child(SCHEDULE))
-        .filter { it != null }
-        .filter { it.value != null }.map { it.children.map { it.getValue(Schedule::class.java) } }
+  fun getSchedule(university: String = "",
+                  faculty: String = "",
+                  group: String = ""): Observable<List<Schedule>?> {
+
+    val reference: DatabaseReference
+    if (!university.isNullOrEmpty() && !faculty.isNullOrEmpty() && !group.isNullOrEmpty())
+      reference = ref.child(getKeyByName(university))
+          .child(getKeyByName(faculty))
+          .child(getKeyByName(group)).child(SCHEDULE)
+    else reference = groupRef().child(SCHEDULE)
+
+    return RxFirebase.observe(reference)
+        .filterNotNull().map { it.children.map { it.getValue(Schedule::class.java) } }
   }
 
   fun pushSchedule(list: List<Schedule>, change: Int): Observable<Boolean> {
@@ -115,7 +139,7 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
 
   fun getChangesCount(): Observable<Int> {
     return RxFirebase.observe(groupRef().child(CHANGES_COUNT))
-        .filter { it != null }
+        .filterNotNull()
         .map { it.getValue(Int::class.java) }
   }
 
@@ -131,7 +155,7 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
             chainToAdminRef().setValue(auth.currentUser?.uid)
             Observable.just(it.value.toString())
           }
-    }
+        }
   }
 
   fun pushTeacher(teachers: List<Teacher>): Observable<Boolean> {

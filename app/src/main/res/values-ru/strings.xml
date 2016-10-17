@@ -149,7 +149,8 @@
     <string name="you_have_become_an_manager">Вы стали старостой</string>
     <string name="u_no_longer_manager">Вы больше не староста</string>
     <string name="exit">Выход</string>
-    <string name="before_do_action_become_manager">Перед тем как отправлять расписание в группу, нужно стать старостой!</string>
+    <string name="before_do_action_become_manager">1. В группе может быть только один староста.\n2. Чтобы распространять расписание для группы, необходимо быть старостой.\n3. При выходе с группы, Вы автоматически перестанете быть старостой.
+    </string>
 
     <string name="authentication">Авторизация</string>
     <string name="authentication_error">Ошибка авторизации</string>

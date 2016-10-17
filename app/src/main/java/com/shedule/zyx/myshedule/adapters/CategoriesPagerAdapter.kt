@@ -1,8 +1,8 @@
 package com.shedule.zyx.myshedule.adapters
 
-import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import com.shedule.zyx.myshedule.ui.fragments.BaseFragment
 import com.shedule.zyx.myshedule.ui.fragments.BondedDevicesFragment
 import com.shedule.zyx.myshedule.ui.fragments.NearbyDevicesFragment
 
@@ -13,7 +13,7 @@ class CategoriesPagerAdapter(manager: FragmentManager) : FragmentPagerAdapter(ma
 
   override fun getCount() = 2
 
-  override fun getItem(position: Int): Fragment? =
+  override fun getItem(position: Int): BaseFragment? =
       when (position) {
         0 -> BondedDevicesFragment()
         else -> NearbyDevicesFragment()

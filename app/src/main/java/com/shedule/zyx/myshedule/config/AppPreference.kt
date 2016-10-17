@@ -14,7 +14,7 @@ import java.util.*
  */
 class AppPreference(val context: Context, val gson: Gson) {
 
-  private val KEY = "schedule"
+  private val OLD_KEY = "schedule"
   private val UNIVER_NAME = "univer_name"
   private val FACULTY_NAME = "facylty_name"
   private val GROUP = "group_name"
@@ -32,7 +32,10 @@ class AppPreference(val context: Context, val gson: Gson) {
 
   fun getSchedule(): ArrayList<Schedule> {
     val result: ArrayList<Schedule>
-    val key = Utils.getPrefsKeyByName(getFacultyName(), getGroupName())
+    val key: String
+    if (isLogin()) key = Utils.getPrefsKeyByName(getFacultyName() ?: "", getGroupName() ?: "")
+    else key = OLD_KEY
+
     if (prefs.contains(key)) {
       val json = prefs.getString(key, null)
       val type = object : TypeToken<ArrayList<Schedule>>() {}.type

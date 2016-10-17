@@ -4,10 +4,8 @@ import android.Manifest.permission.*
 import android.app.Activity
 import android.content.Intent
 import android.content.Intent.ACTION_PICK
-import android.content.Intent.ACTION_VIEW
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory.decodeFile
-import android.net.Uri.parse
 import android.os.Bundle
 import android.provider.MediaStore.ACTION_IMAGE_CAPTURE
 import android.provider.MediaStore.Images.Media.DATA
@@ -51,7 +49,6 @@ import com.shedule.zyx.myshedule.utils.toMainThread
 import com.tbruyelle.rxpermissions.RxPermissions.getInstance
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog.newInstance
-import de.cketti.mailto.EmailIntentBuilder.from
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_navigation.*
@@ -98,8 +95,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
       startActivityForResult<AddScheduleActivity>(ADD_SCHEDULE_REQUEST,
           Pair("current_day_of_week", main_viewpager.currentItem + 2))
     }
-
-    getSchedule()
 
     val nav = nav_view.inflateHeaderView(nav_header_navigation)
     nav.faculty_name.text = prefs.getFacultyName()
@@ -275,8 +270,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
       }
       nav_teachers -> startActivity<TeachersActivity>()
       nav_tasks -> startActivity<AllHomeWorksActivity>()
-      nav_write_to_us -> sendEmail()
-      R.id.open_group -> openGroup()
       nav_delete_schedule -> deleteSchedule()
       nav_log_out -> {
         if (isOnline(applicationContext)) logOut()
@@ -320,8 +313,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }, {})
   }
 
-  fun openGroup() = startActivity(Intent(ACTION_VIEW, parse("https://vk.com/club129716882")))
-
   fun deleteSchedule() {
     if (scheduleManager.globalList.size != 0) {
       alert(getString(delete), null) {
@@ -333,12 +324,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
       }.show()
     } else toast(getString(schedules_is_no))
   }
-
-  fun sendEmail() =
-      startActivity(from(this)
-          .to(getString(R.string.email))
-          .subject(getString(feedback))
-          .build())
 
   override fun onScheduleReceived(schedules: ArrayList<Schedule>) {
     alert("", getString(receive_single_schedule)) {

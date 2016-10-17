@@ -122,7 +122,7 @@
     <string name="not_to_be_an_manager">Не бути старостою</string>
     <string name="u_no_longer_manager">Ви більше не староста</string>
     <string name="exit">Вихід</string>
-    <string name="before_do_action_become_manager">Перед тим як відправляти розклад в групу, потрібно стати старостою!</string>
+    <string name="before_do_action_become_manager">1. В групі може бути тільки один староста.\n2. Щоб поширювати розклад для групи, потрібно бути старостою. \n3. При виході з групи, Ви автоматично перестаєте бути старостою.</string>
 
     <string name="no_permission_for_camera">Немає дозволу на доступ до Камери</string>
     <string name="no_permission_for_storage">Немає дозволу на доступ до Пам\'яті</string>
