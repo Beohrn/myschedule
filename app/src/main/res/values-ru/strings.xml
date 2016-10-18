@@ -10,6 +10,9 @@
     <string name="end_period_of_lesson">Дата окончания занятия</string>
     <string name="name">Название</string>
 
+    <string name="no_internet_title">Упс!</string>
+    <string name="no_internet_description">Нет подключения к Интернету. Проверьте подключение и повторите попытку.</string>
+
     <string name="housing">корп.</string>
     <string name="classroom">ауд.</string>
     <string name="begin">Начало</string>
@@ -127,7 +130,6 @@
     <string name="university">Университет</string>
     <string name="faculty">Факультет (аббревиатура)</string>
     <string name="group">Группа</string>
-    <string name="admin">Администратор</string>
     <string name="authorize">Авторизоваться</string>
     <string name="no_faculties">Нет факультетов</string>
     <string name="type_the_university_name">Введите название университета</string>
@@ -140,19 +142,18 @@
     <string name="via_bluetooth">Через Bluetooth</string>
     <string name="via_server">С группой</string>
     <string name="settings">Настройки</string>
-    <string name="check">Проверка</string>
 
-    <string name="admins">Администраторы</string>
-    <string name="none">Отсутствуют</string>
-    <string name="one_admin_is_missing">1 администратор отсутствует</string>
-    <string name="become_administrator">Стать администратором</string>
-    <string name="not_to_be_an_admin">Не быть администратором</string>
-    <string name="you_are_admin">Вы администратор</string>
-    <string name="you_are_not_admin">Вы не администратор</string>
-    <string name="you_not_become_admin">Вы не можете быть администратором</string>
-    <string name="you_have_become_an_admin">Вы стали администратором</string>
-    <string name="u_no_longer_admin">Вы больше не администратор</string>
+    <string name="manager">Староста</string>
+    <string name="become_manager">Стать старостой</string>
+    <string name="not_to_be_an_manager">Не быть старостой</string>
+    <string name="you_are_manager">Вы староста</string>
+    <string name="you_are_not_manager">Вы не староста</string>
+    <string name="you_not_become_manager">Вы не можете быть старостой потому, что староста уже есть</string>
+    <string name="you_have_become_an_manager">Вы стали старостой</string>
+    <string name="u_no_longer_manager">Вы больше не староста</string>
     <string name="exit">Выход</string>
+    <string name="before_do_action_become_manager">1. В группе может быть только один староста.\n2. Чтобы распространять расписание для группы, необходимо быть старостой.\n3. При выходе с группы, Вы автоматически перестанете быть старостой.
+    </string>
 
     <string name="authentication">Авторизация</string>
     <string name="authentication_error">Ошибка авторизации</string>

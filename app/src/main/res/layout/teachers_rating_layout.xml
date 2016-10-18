@@ -18,5 +18,13 @@
         app:overview_text="@string/no_teachers_yet"
         android:layout_height="match_parent"/>
 
+    <com.shedule.zyx.myshedule.widget.NoConnectionView
+        android:id="@+id/no_connection"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        app:nc_title="@string/no_internet_title"
+        app:nc_description="@string/no_internet_description"/>
+
 </LinearLayout>
 

@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.shedule.zyx.myshedule.models.Schedule
+import com.shedule.zyx.myshedule.utils.Utils
 import java.util.*
 
 /**
@@ -13,26 +14,28 @@ import java.util.*
  */
 class AppPreference(val context: Context, val gson: Gson) {
 
-  private val KEY = "schedule"
+  private val OLD_KEY = "schedule"
   private val UNIVER_NAME = "univer_name"
   private val FACULTY_NAME = "facylty_name"
   private val GROUP = "group_name"
   private val ADMIN = "admin"
   private val CHANGES_COUNT = "changes_count"
   private val ADMIN_KEY = "admin_key"
-  private val IS_LOGIN = "is_login_1"
+  private val IS_LOGIN = "is_login_2"
   private val prefs: SharedPreferences
 
-  init {
-    prefs = PreferenceManager.getDefaultSharedPreferences(context)
-  }
+  init { prefs = PreferenceManager.getDefaultSharedPreferences(context) }
 
-  fun saveSchedule(list: List<Schedule>) = prefs.edit().putString(KEY, gson.toJson(list)).apply()
+  fun saveSchedule(list: List<Schedule>, key: String) = prefs.edit().putString(key, gson.toJson(list)).apply()
 
   fun getSchedule(): ArrayList<Schedule> {
     val result: ArrayList<Schedule>
-    if (prefs.contains(KEY)) {
-      val json = prefs.getString(KEY, null)
+    val key: String
+    if (isLogin()) key = Utils.getPrefsKeyByName(getFacultyName() ?: "", getGroupName() ?: "")
+    else key = OLD_KEY
+
+    if (prefs.contains(key)) {
+      val json = prefs.getString(key, null)
       val type = object : TypeToken<ArrayList<Schedule>>() {}.type
       result = gson.fromJson(json, type)
     } else {

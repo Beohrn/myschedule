@@ -28,10 +28,12 @@ class Constants {
     val SEMINAR = "SEMINAR"
     val LECTURE = "LECTURE"
 
-    val ADMINS = "admins"
+    val ADMIN = "admin"
     val CHANGES_COUNT = "changesCount"
     val SCHEDULE = "schedule"
 
     val EMPTY_DATA = "Empty data"
+    val ADMIN_IS_EXISTS = "Admin is exists"
+    val GROUP_CREATED = "group_created"
   }
 }

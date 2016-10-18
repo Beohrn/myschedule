@@ -27,7 +27,6 @@
     <string name="homework_activity_title">Homework</string>
     <string name="calendar">Calendar</string>
     <string name="push">Push</string>
-    <string name="check">Checking</string>
 
     <string name="banner_ad_unit_id" translatable="false">ca-app-pub-7743911822125060/2694759036</string>
 
@@ -553,19 +552,22 @@
     <string name="via_server">With group</string>
     <string name="no_data">No data</string>
 
-    <string name="admins">Administrators</string>
-    <string name="none">No admins</string>
-    <string name="one_admin_is_missing">1 administrator is missing</string>
-    <string name="become_administrator">Become administrator</string>
-    <string name="not_to_be_an_admin">Not to be an admin</string>
-    <string name="you_are_admin">You are administrator</string>
-    <string name="you_are_not_admin">You are not administrator</string>
-    <string name="you_not_become_admin">You can\'t become an administrator</string>
+    <string name="no_internet_title">Whoops!</string>
+    <string name="no_internet_description">No Internet connection found. Check your connection or try again.</string>
+
+    <string name="manager">Manager</string>
+    <string name="become_manager">Become manager</string>
+    <string name="not_to_be_an_manager">Not to be an manager</string>
+    <string name="you_are_manager">You are manager</string>
+    <string name="you_are_not_manager">You are not manager</string>
+    <string name="you_not_become_manager">You can\'t become an manager, because the manager is already</string>
     <string name="settings">Settings</string>
-    <string name="you_have_become_an_admin">You have become an administrator</string>
-    <string name="u_no_longer_admin">You no longer administrator</string>
+    <string name="you_have_become_an_manager">You have become an manager</string>
+    <string name="u_no_longer_manager">You no longer manager</string>
     <string name="exit">Exit</string>
     <string name="type_the_group_name">Type the group name</string>
+    <string name="before_do_action_become_manager">1. In a group can have only one manager.\n2. To distribute a schedule for a group, you must be a manager.\n3. When leaving a group, you automatically cease to be a manager.
+    </string>
 
     <string name="no_permission_for_camera">No permission to access the camera</string>
     <string name="no_permission_for_storage">No permission to access the Memory</string>
@@ -582,7 +584,6 @@
     <string name="university">University</string>
     <string name="faculty">Department (abbreviated)</string>
     <string name="group">Group</string>
-    <string name="admin">Administrator</string>
     <string name="authorize">Authorize</string>
     <string name="no_faculties">No faculties</string>
     <string name="type_the_university_name">Type university name</string>

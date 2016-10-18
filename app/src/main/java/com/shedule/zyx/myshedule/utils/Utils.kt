@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.ConnectivityManager
 import android.os.Environment
+import com.google.firebase.database.DataSnapshot
 import com.google.gson.Gson
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.models.Date
@@ -13,6 +14,9 @@ import com.shedule.zyx.myshedule.utils.Constants.Companion.COURSE_WORK
 import com.shedule.zyx.myshedule.utils.Constants.Companion.EXAM
 import com.shedule.zyx.myshedule.utils.Constants.Companion.HOME_EXAM
 import com.shedule.zyx.myshedule.utils.Constants.Companion.STANDINGS
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import java.io.File
 import java.io.FileOutputStream
 import java.text.DateFormatSymbols
@@ -151,5 +155,12 @@ class Utils {
       bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
       fos.close()
     }
+
+    fun getPrefsKeyByName(faculty: String, group: String) = "${faculty}_$group"
   }
 }
+
+fun <T> Observable<T>.toMainThread() = this.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+
+fun Observable<DataSnapshot>.filterNotNull() =
+    this.filter { it != null }.filter { it.value != null }

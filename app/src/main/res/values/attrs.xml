@@ -44,4 +44,9 @@
     <declare-styleable name="EmptyContentView">
         <attr name="overview_text" format="string"/>
     </declare-styleable>
+
+    <declare-styleable name="NoConnectionView">
+        <attr name="nc_title" format="string"/>
+        <attr name="nc_description" format="string"/>
+    </declare-styleable>
 </resources>

@@ -12,14 +12,17 @@ import com.shedule.zyx.myshedule.BuildConfig.DEBOUG_ENABLED
 import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.models.Teacher
-import com.shedule.zyx.myshedule.utils.Constants.Companion.ADMINS
+import com.shedule.zyx.myshedule.utils.Constants.Companion.ADMIN
+import com.shedule.zyx.myshedule.utils.Constants.Companion.ADMIN_IS_EXISTS
 import com.shedule.zyx.myshedule.utils.Constants.Companion.CHANGES_COUNT
+import com.shedule.zyx.myshedule.utils.Constants.Companion.EMPTY_DATA
+import com.shedule.zyx.myshedule.utils.Constants.Companion.GROUP_CREATED
 import com.shedule.zyx.myshedule.utils.Constants.Companion.RATINGS
 import com.shedule.zyx.myshedule.utils.Constants.Companion.SCHEDULE
 import com.shedule.zyx.myshedule.utils.Constants.Companion.TEACHERS
 import com.shedule.zyx.myshedule.utils.Utils.Companion.getKeyByName
+import com.shedule.zyx.myshedule.utils.filterNotNull
 import rx.Observable
-import rx.Subscription
 import java.util.*
 
 /**
@@ -29,29 +32,50 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
 
   fun createTeacherRef() = facultyRef().child(TEACHERS)
 
-  var subscription: Subscription? = null
-
   private fun facultyRef(): DatabaseReference {
     return ref.child(getKeyByName(prefs.getUniverName() ?: ""))
         .child(getKeyByName(prefs.getFacultyName() ?: ""))
   }
 
-  private fun groupRef(): DatabaseReference {
-    return ref.child(getKeyByName(prefs.getUniverName() ?: ""))
-        .child(getKeyByName(prefs.getFacultyName() ?: ""))
-        .child(getKeyByName(prefs.getGroupName() ?: ""))
+  fun createGroup(university: String, faculty: String, group: String): Observable<Boolean?> {
+    createGroupRef(university, faculty, group).child(GROUP_CREATED).setValue(true)
+    return RxFirebase.observe(createGroupRef(university, faculty, group).child(GROUP_CREATED))
+        .map { it.getValue(Boolean::class.java) }
   }
 
-  private fun chainToAdminRef(university: String, faculty: String, group: String) = ref.child(getKeyByName(university))
-      .child(getKeyByName(faculty)).child(getKeyByName(group)).child(ADMINS)
+  fun createGroupRef(university: String, faculty: String, group: String) = ref.child(getKeyByName(university)).child(getKeyByName(faculty)).child(getKeyByName(group))
 
-  fun createAccount(): Observable<Void> {
-    return Observable.create {
+  fun groupRef() = ref.child(getKeyByName(prefs.getUniverName() ?: ""))
+      .child(getKeyByName(prefs.getFacultyName() ?: ""))
+      .child(getKeyByName(prefs.getGroupName() ?: ""))
+
+  private fun chainToAdminRef() = groupRef().child(ADMIN)
+
+  fun createAccount(university: String, faculty: String, group: String): Observable<List<Schedule>?> {
+    return Observable.create { subscription ->
       auth.signInAnonymously().addOnCompleteListener { task ->
         if (task.isSuccessful) {
-          it.onNext(null)
-          it.onCompleted()
-        } else it.onError(task.exception)
+          createGroup(university, faculty, group).subscribe({ done ->
+            if (!prefs.isLogin())
+              getSchedule(university, faculty, group).subscribe({ schedule ->
+                  if (done ?: false) {
+                    getChangesCount(createGroupRef(university, faculty, group))
+                      .subscribe({ prefs.saveChangesCount(it) }, {})
+                    subscription.onNext(schedule)
+                    subscription.onCompleted()
+                  }
+              }, {
+                if (it.message == EMPTY_DATA) {
+                  subscription.onNext(null)
+                  subscription.onCompleted()
+                }
+              })
+            else {
+              subscription.onNext(null)
+              subscription.onCompleted()
+            }
+          }, {})
+        } else subscription.onError(task.exception)
       }
     }
   }
@@ -61,6 +85,8 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
       auth.currentUser?.delete()?.addOnCompleteListener { task ->
         if (task.isSuccessful) {
           it.onNext(null)
+          if (prefs.getAdminRight())
+            groupRef().child(ADMIN).removeValue()
           it.onCompleted()
         } else it.onError(task.exception)
       }
@@ -68,8 +94,12 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
   }
 
   fun removeAdmin(): Observable<Boolean> {
-    groupRef().child(ADMINS).child(prefs.getAdminKey()).removeValue()
-    return RxFirebase.observe(groupRef().child(ADMINS)).flatMap { Observable.just(true) }
+    return RxFirebase.observe(groupRef().child(ADMIN)).flatMap {
+      if (it.key != null) {
+        groupRef().child(ADMIN).removeValue()
+        Observable.just(true)
+      } else Observable.just(false)
+    }
   }
 
   fun getGroups(faculty: String, university: String): Observable<List<String>?> {
@@ -88,43 +118,52 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
 
   fun getTeachers(): Observable<List<Teacher>?> {
     return RxFirebase.observe(createTeacherRef())
-        .filter { it != null }
-        .filter { it.value != null }
+        .filterNotNull()
         .map { it.children.map { it.getValue(Teacher::class.java) } }
   }
 
-  fun getSchedule(): Observable<List<Schedule>?> {
-    return RxFirebase.observe(groupRef().child(SCHEDULE))
-        .filter { it != null }
-        .filter { it.value != null }.map { it.children.map { it.getValue(Schedule::class.java) } }
+  fun getSchedule(university: String = "",
+                  faculty: String = "",
+                  group: String = ""): Observable<List<Schedule>?> {
+
+    val reference: DatabaseReference
+    if (!university.isNullOrEmpty() && !faculty.isNullOrEmpty() && !group.isNullOrEmpty())
+      reference = createGroupRef(university, faculty, group).child(SCHEDULE)
+    else reference = groupRef().child(SCHEDULE)
+
+    return RxFirebase.observe(reference)
+        .filterNotNull().map { it.children.map { it.getValue(Schedule::class.java) } }
   }
 
   fun pushSchedule(list: List<Schedule>, change: Int): Observable<Boolean> {
     groupRef().child(SCHEDULE).setValue(list)
     groupRef().child(CHANGES_COUNT).setValue(change)
     return RxFirebase.observe(groupRef())
-        .flatMap { Observable.just(true) }
+        .flatMap {
+          if (it.children != null) Observable.just(true)
+          else Observable.just(false)
+        }
   }
 
-  fun getAdmins(university: String, faculty: String, group: String): Observable<List<String>?> {
-    return RxFirebase.observe(chainToAdminRef(university, faculty, group))
-        .filter { it != null }
-        .filter { it.value != null }.map { it.children.map { it.getValue(String::class.java) } }
-  }
-
-  fun getChangesCount(): Observable<Int> {
-    return RxFirebase.observe(groupRef().child(CHANGES_COUNT))
-        .filter { it != null }
+  fun getChangesCount(reference: DatabaseReference? = null): Observable<Int> {
+    return RxFirebase.observe(reference?.child(CHANGES_COUNT) ?: groupRef().child(CHANGES_COUNT))
+        .filterNotNull()
         .map { it.getValue(Int::class.java) }
   }
 
-  fun pushAdmin(university: String, faculty: String, group: String): Observable<String> {
+  fun pushAdmin(): Observable<String> {
 
-    chainToAdminRef(university, faculty, group).child(auth.currentUser?.uid).setValue(auth.currentUser?.uid)
-
-    return RxFirebase.observe(chainToAdminRef(university, faculty, group))
-        .flatMap { Observable.from(it.children?.filter { it.value == auth.currentUser?.uid }?.map { it.key }) }
-
+    return RxFirebase.observe(groupRef())
+        .flatMap {
+          var isExist = false
+          it.children?.map { if (it.key == ADMIN) isExist = true }
+          if (isExist) {
+            Observable.just(ADMIN_IS_EXISTS)
+          } else {
+            chainToAdminRef().setValue(auth.currentUser?.uid)
+            Observable.just(it.value.toString())
+          }
+        }
   }
 
   fun pushTeacher(teachers: List<Teacher>): Observable<Boolean> {

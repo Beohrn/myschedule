@@ -4,10 +4,8 @@ import android.Manifest.permission.*
 import android.app.Activity
 import android.content.Intent
 import android.content.Intent.ACTION_PICK
-import android.content.Intent.ACTION_VIEW
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory.decodeFile
-import android.net.Uri.parse
 import android.os.Bundle
 import android.provider.MediaStore.ACTION_IMAGE_CAPTURE
 import android.provider.MediaStore.Images.Media.DATA
@@ -16,14 +14,11 @@ import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat.START
 import android.support.v4.view.ViewPager
 import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.bumptech.glide.Glide
 import com.google.firebase.crash.FirebaseCrash.report
-import com.google.gson.Gson
 import com.shedule.zyx.myshedule.BuildConfig.DEBOUG_ENABLED
-import com.shedule.zyx.myshedule.FirebaseWrapper
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.drawable.notification
 import com.shedule.zyx.myshedule.R.id.*
@@ -33,12 +28,9 @@ import com.shedule.zyx.myshedule.R.string.*
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.adapters.ScheduleItemsAdapter
 import com.shedule.zyx.myshedule.adapters.ViewPagerAdapter
-import com.shedule.zyx.myshedule.config.AppPreference
 import com.shedule.zyx.myshedule.interfaces.ChangeStateFragmentListener
 import com.shedule.zyx.myshedule.interfaces.DataChangeListener
 import com.shedule.zyx.myshedule.managers.BluetoothManager
-import com.shedule.zyx.myshedule.managers.DateManager
-import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.models.Schedule
 import com.shedule.zyx.myshedule.teachers.TeachersActivity
 import com.shedule.zyx.myshedule.tutorial.TutorialActivity
@@ -47,14 +39,16 @@ import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity.Companion.DAY
 import com.shedule.zyx.myshedule.ui.activities.AddScheduleActivity.Companion.EDIT_SCHEDULE_REQUEST
 import com.shedule.zyx.myshedule.ui.activities.HomeWorkActivity.Companion.HOMEWORK_BY_DATE
 import com.shedule.zyx.myshedule.ui.activities.HomeWorkActivity.Companion.SCHEDULE_HOMEWORK_REQUEST
+import com.shedule.zyx.myshedule.ui.activities.SettingsActivity.Companion.BECOME_MANAGER_KEY
+import com.shedule.zyx.myshedule.ui.activities.SettingsActivity.Companion.MANAGER_REQUEST
 import com.shedule.zyx.myshedule.ui.fragments.BluetoothDialog
 import com.shedule.zyx.myshedule.utils.Utils
 import com.shedule.zyx.myshedule.utils.Utils.Companion.isOnline
 import com.shedule.zyx.myshedule.utils.Utils.Companion.saveAccountImage
+import com.shedule.zyx.myshedule.utils.toMainThread
 import com.tbruyelle.rxpermissions.RxPermissions.getInstance
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog.newInstance
-import de.cketti.mailto.EmailIntentBuilder.from
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_navigation.*
@@ -63,38 +57,15 @@ import kotlinx.android.synthetic.main.nav_header_navigation.*
 import kotlinx.android.synthetic.main.nav_header_navigation.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.onPageChangeListener
-import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import java.util.*
 import java.util.Calendar.*
-import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
     ChangeStateFragmentListener, DatePickerDialog.OnDateSetListener, ScheduleItemsAdapter.ScheduleItemListener,
     BluetoothManager.OnScheduleReceiveListener {
-
-  @Inject
-  lateinit var dateManager: DateManager
-
-  @Inject
-  lateinit var bluetoothManager: BluetoothManager
-
-  @Inject
-  lateinit var scheduleManager: ScheduleManager
-
-  @Inject
-  lateinit var appPreference: AppPreference
-
-  @Inject
-  lateinit var firebaseWraper: FirebaseWrapper
-
-  @Inject
-  lateinit var gson: Gson
+  
   lateinit var update: MenuItem
   var changesCount = 0
-
-  var subscription: Subscription? = null
 
   val listenerList = arrayListOf<DataChangeListener>()
   private val CAMERA_REQUEST = 1888
@@ -126,7 +97,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     val nav = nav_view.inflateHeaderView(nav_header_navigation)
-    nav.faculty_name.text = appPreference.getFacultyName()
+    nav.faculty_name.text = prefs.getFacultyName()
     Utils.getAccountPhoto(applicationContext)?.let { nav.circleView.setImageBitmap(it) }
     Glide.with(this).load(R.drawable.univer_image)
         .bitmapTransform(BlurTransformation(this, 10))
@@ -151,11 +122,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
       }
     }
-  }
-
-  override fun onPause() {
-    subscription?.unsubscribe()
-    super.onPause()
   }
 
   private fun convertDateString(dateString: String): String {
@@ -212,15 +178,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   private fun pushSchedule() {
     subscription?.unsubscribe()
     val dialog = indeterminateProgressDialog(getString(load))
-    var changes = appPreference.getChangesCount()
+    var changes = prefs.getChangesCount()
     changes++
-    subscription = firebaseWraper.pushSchedule(scheduleManager.globalList, changes)
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
+    subscription = firebaseWrapper.pushSchedule(scheduleManager.globalList, changes)
+        .toMainThread()
         .subscribe({ done ->
           if (done) {
             dialog.dismiss()
-            appPreference.saveChangesCount(changes)
+            prefs.saveChangesCount(changes)
             toast(getString(schedule_was_sent))
           }
         }, {
@@ -232,15 +197,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   private fun pullSchedule() {
     subscription?.unsubscribe()
     val dialog = indeterminateProgressDialog(getString(load))
-    subscription = firebaseWraper.getSchedule()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
+    subscription = firebaseWrapper.getSchedule()
+        .toMainThread()
         .subscribe({ schedule ->
           schedule?.let {
             dialog.dismiss()
             scheduleManager.globalList.clear()
             scheduleManager.globalList.addAll(it)
-            if (changesCount != 0) appPreference.saveChangesCount(changesCount)
+            if (changesCount != 0) prefs.saveChangesCount(changesCount)
             else getChangesCount()
             listenerList.map { it.updateData() }
             update.icon = resources.getDrawable(R.drawable.alarm)
@@ -254,17 +218,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   }
 
   private fun getChangesCount() {
-    subscription = firebaseWraper.getChangesCount()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
+    subscription = firebaseWrapper.getChangesCount()
+        .toMainThread()
         .subscribe({ count ->
           count?.let {
             if (changesCount == 0) {
-              if (it > appPreference.getChangesCount()) {
+              if (it > prefs.getChangesCount()) {
                 changesCount = it
                 update.icon = resources.getDrawable(notification)
               }
-            } else appPreference.saveChangesCount(it)
+            } else prefs.saveChangesCount(it)
           }
         }, { if (DEBOUG_ENABLED) report(it) })
   }
@@ -289,24 +252,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
   override fun onNavigationItemSelected(item: MenuItem): Boolean {
     when (item.itemId) {
       nav_share -> {
-        if (appPreference.getAdminRight()) {
           selector(null, listOf(getString(via_bluetooth), getString(via_server))) {
             when (it) {
               0 -> startBluetooth()
               1 -> {
                 if (isOnline(applicationContext)) {
-                  if (scheduleManager.globalList.size != 0) pushSchedule()
-                  else toast(getString(schedules_is_no))
+                  if (scheduleManager.globalList.size != 0) {
+                    if (prefs.getAdminRight())
+                      pushSchedule()
+                    else startActivityForResult<SettingsActivity>(MANAGER_REQUEST,
+                        BECOME_MANAGER_KEY to true)
+                  } else toast(getString(schedules_is_no))
                 } else toast(getString(connection_is_failed))
               }
             }
           }
-        } else startBluetooth()
       }
       nav_teachers -> startActivity<TeachersActivity>()
       nav_tasks -> startActivity<AllHomeWorksActivity>()
-      nav_write_to_us -> sendEmail()
-      R.id.open_group -> openGroup()
       nav_delete_schedule -> deleteSchedule()
       nav_log_out -> {
         if (isOnline(applicationContext)) logOut()
@@ -321,35 +284,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   fun logOut() {
     subscription?.unsubscribe()
-    val dialog = indeterminateProgressDialog(getString(log_out))
-    removeAdmin()
-    firebaseWraper.logOut()
-        .doOnTerminate { dialog.dismiss() }
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
+    showProgressDialog(getString(exit))
+    firebaseWrapper.logOut()
+        .doOnTerminate { hideProgressDialog() }
+        .toMainThread()
         .subscribe({
+          prefs.saveChangesCount(0)
+          scheduleManager.saveSchedule()
+          prefs.saveUniverName("")
+          prefs.saveFacultyName("")
+          prefs.saveGroupName("")
+          prefs.saveAdminKey("")
+          prefs.saveAdminRights(false)
           scheduleManager.globalList.clear()
-          appPreference.saveChangesCount(0)
-          appPreference.saveUniverName("")
-          appPreference.saveFacultyName("")
           startActivity<TutorialActivity>()
         }, {
           if (DEBOUG_ENABLED) report(it)
           toast(getString(log_out_error))
         })
-  }
-
-  fun removeAdmin() {
-    if (appPreference.getAdminRight())
-      firebaseWraper.removeAdmin()
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe({
-            if (it) {
-              appPreference.saveAdminKey("")
-              appPreference.saveAdminRights(false)
-            }
-          }, { if (DEBOUG_ENABLED) report(it) })
   }
 
   fun startBluetooth() {
@@ -360,8 +312,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       } else toast(getString(no_permission_for_bluetooth))
     }, {})
   }
-
-  fun openGroup() = startActivity(Intent(ACTION_VIEW, parse("https://vk.com/club129716882")))
 
   fun deleteSchedule() {
     if (scheduleManager.globalList.size != 0) {
@@ -374,12 +324,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       }.show()
     } else toast(getString(schedules_is_no))
   }
-
-  fun sendEmail() =
-      startActivity(from(this)
-          .to(getString(R.string.email))
-          .subject(getString(feedback))
-          .build())
 
   override fun onScheduleReceived(schedules: ArrayList<Schedule>) {
     alert("", getString(receive_single_schedule)) {
@@ -428,7 +372,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
   override fun onStop() {
     super.onStop()
-    scheduleManager.saveSchedule()
+    saveSchedule()
   }
 
   private fun checkSinglePermission(permission: String) = getInstance(this)
@@ -526,7 +470,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
           circleView.setImageBitmap(bitmap)
           saveAccountImage(applicationContext, bitmap)
         }
-      }
+      } else if (requestCode == MANAGER_REQUEST) pushSchedule()
     }
   }
 }

@@ -9,9 +9,11 @@
     <string name="start_period_of_lesson">Дата початку заняття</string>
     <string name="end_period_of_lesson">Дата закінчення заняття</string>
     <string name="name">Назва</string>
-    <string name="one_admin_is_missing">Одного адміністратора немає</string>
-    <string name="you_have_become_an_admin">Ви стали адміністратором</string>
+    <string name="you_have_become_an_manager">Ви стали адміністратором</string>
     <string name="type_the_group_name">Введіть назву групи</string>
+
+    <string name="no_internet_title">Упс!</string>
+    <string name="no_internet_description">Немає підключення до Інтернету. Перевірте підключення і спробуйте знову.</string>
 
     <string name="housing">корп.</string>
     <string name="classroom">ауд.</string>
@@ -113,18 +115,17 @@
     <string name="lesson_delete">Видалити предмет</string>
     <string name="in_single_day">Тільки в цей день</string>
     <string name="in_others_day">В усі інші дні</string>
-    <string name="check">Перевірка</string>
 
     <string name="settings">Налаштування</string>
-    <string name="admins">Адміністратори</string>
-    <string name="none">Відсутні</string>
-    <string name="you_not_become_admin">Ви не можете стати адміністратором</string>
-    <string name="you_are_admin">Ви адміністратор</string>
-    <string name="you_are_not_admin">Ви не адмиіністратор</string>
-    <string name="become_administrator">Стати адміністратором</string>
-    <string name="not_to_be_an_admin">Не бути адміністратором</string>
-    <string name="u_no_longer_admin">Ви більше не адміністратор</string>
+    <string name="manager">Старостa</string>
+    <string name="you_not_become_manager">Ви не можете бути старостою, тому що староста вже є</string>
+    <string name="you_are_manager">Ви староста</string>
+    <string name="you_are_not_manager">Ви не староста</string>
+    <string name="become_manager">Стати старостою</string>
+    <string name="not_to_be_an_manager">Не бути старостою</string>
+    <string name="u_no_longer_manager">Ви більше не староста</string>
     <string name="exit">Вихід</string>
+    <string name="before_do_action_become_manager">1. В групі може бути тільки один староста.\n2. Щоб поширювати розклад для групи, потрібно бути старостою. \n3. При виході з групи, Ви автоматично перестаєте бути старостою.</string>
 
     <string name="no_permission_for_camera">Немає дозволу на доступ до Камери</string>
     <string name="no_permission_for_storage">Немає дозволу на доступ до Пам\'яті</string>
@@ -139,7 +140,6 @@
     <string name="university">Університет</string>
     <string name="faculty">Факультет (абревіатура)</string>
     <string name="group">Група</string>
-    <string name="admin">Адміністратор</string>
     <string name="authorize">Авторизуватися</string>
     <string name="no_faculties">Немає факультетів</string>
     <string name="type_the_university_name">Введіть назву університету</string>
