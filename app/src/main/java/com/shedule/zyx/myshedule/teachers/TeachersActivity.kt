@@ -1,47 +1,29 @@
 package com.shedule.zyx.myshedule.teachers
 
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import app.voter.xyz.auth.ReplaceFragmentListener
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.shedule.zyx.myshedule.FirebaseWrapper
 import com.shedule.zyx.myshedule.R
-import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.auth.fragments.CreateAccountFragment
 import com.shedule.zyx.myshedule.comments.DiscussionActivity
 import com.shedule.zyx.myshedule.comments.DiscussionActivity.Companion.TEACHER_REQUEST
-import com.shedule.zyx.myshedule.managers.ScheduleManager
 import com.shedule.zyx.myshedule.models.Teacher
 import com.shedule.zyx.myshedule.teachers.TeachersAdapter.OnTeacherClickListener
+import com.shedule.zyx.myshedule.ui.activities.BaseActivity
 import com.shedule.zyx.myshedule.widget.TeacherView.OnRatingClickListener
 import kotlinx.android.synthetic.main.teachers_activity.*
 import org.jetbrains.anko.startActivity
-import javax.inject.Inject
 
 /**
  * Created by alexkowlew on 05.09.2016.
  */
-class TeachersActivity : AppCompatActivity(), OnRatingClickListener, OnTeacherClickListener, ReplaceFragmentListener {
-
-  @Inject
-  lateinit var scheduleManager: ScheduleManager
-
-  @Inject
-  lateinit var auth: FirebaseAuth
-
-  @Inject
-  lateinit var ref: DatabaseReference
-
-  @Inject
-  lateinit var firebase: FirebaseWrapper
+class TeachersActivity: BaseActivity(), OnRatingClickListener, OnTeacherClickListener, ReplaceFragmentListener {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.teachers_activity)
-    ScheduleApplication.getComponent().inject(this)
 
     setSupportActionBar(teachers_toolbar)
     supportActionBar?.title = getString(R.string.teachers)
@@ -74,6 +56,6 @@ class TeachersActivity : AppCompatActivity(), OnRatingClickListener, OnTeacherCl
   }
 
   override fun onRatingClick(teacherName: String, averageAssessment: Double) {
-    firebase.pushRating(averageAssessment, teacherName)
+    firebaseWrapper.pushRating(averageAssessment, teacherName)
   }
 }

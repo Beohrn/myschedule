@@ -4,7 +4,6 @@ import android.app.Activity
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -17,7 +16,7 @@ import kotlinx.android.synthetic.main.photo_activity.*
 /**
  * Created by alexkowlew on 20.09.2016.
  */
-class PhotoActivity: AppCompatActivity() {
+class PhotoActivity: BaseActivity() {
 
   companion object {
     val BITMAP = "bitmap_key"

@@ -10,6 +10,9 @@
     <string name="end_period_of_lesson">Дата окончания занятия</string>
     <string name="name">Название</string>
 
+    <string name="no_internet_title">Упс!</string>
+    <string name="no_internet_description">Нет подключения к Интернету. Проверьте подключение и повторите попытку.</string>
+
     <string name="housing">корп.</string>
     <string name="classroom">ауд.</string>
     <string name="begin">Начало</string>
@@ -25,8 +28,11 @@
     <string name="add_schedule_toolbar_title">Создать занятие</string>
     <string name="homework_activity_title">Домашнее задание</string>
     <string name="calendar">Календарь</string>
+    <string name="push">Поделиться</string>
+    <string name="update">Обновить</string>
+    <string name="open_group">Открыть группу</string>
+    <string name="group_has_not_been_created">Группа еще не создана</string>
     <string name="events">Собития</string>
-    <string name="open_group">Открить группу</string>
 
     <string-array name="type_of_lesson">
         <item>Практика</item>
@@ -51,6 +57,7 @@
     <string name="ability_to_information">Умение донести информацию</string>
     <string name="desire_to_learn">Желание учить</string>
     <string name="teacher_culture">Культура преподавателя</string>
+    <string name="log_out">Выйти</string>
 
     <string name="add_photo">Добавить фото</string>
     <string name="approve">Принять</string>
@@ -64,8 +71,8 @@
     <string name="repeat_of_lesson">Повторение занятия:</string>
     <string name="every_week">Каждую неделю</string>
     <string name="every_week_brc">(Каждую неделю)</string>
-    <string name="on_first_week">По первой неделе</string>
-    <string name="on_second_week">По второй неделе</string>
+    <string name="on_first_week">По нечетной неделе</string>
+    <string name="on_second_week">По четной неделе</string>
     <string name="practice">Практика</string>
     <string name="lecture">Лекция</string>
     <string name="repeat">Повторение</string>
@@ -123,11 +130,37 @@
     <string name="classroom_hint">Аудитория</string>
     <string name="university">Университет</string>
     <string name="faculty">Факультет (аббревиатура)</string>
+    <string name="group">Группа</string>
     <string name="authorize">Авторизоваться</string>
-    
+    <string name="no_faculties">Нет факультетов</string>
+    <string name="type_the_university_name">Введите название университета</string>
+    <string name="type_the_faculty_name">Введите название факультета</string>
+    <string name="type_the_group_name">Введите название группы</string>
+    <string name="groups_not_found">Групп пока нет</string>
+    <string name="connection_is_failed">Нет подключения к интернету</string>
+    <string name="schedule_was_sent">Расписание успешно отправлено</string>
+    <string name="schedule_was_updated">Расписание успешно обновлено</string>
+    <string name="via_bluetooth">Через Bluetooth</string>
+    <string name="via_server">С группой</string>
+    <string name="settings">Настройки</string>
+
+    <string name="manager">Староста</string>
+    <string name="become_manager">Стать старостой</string>
+    <string name="not_to_be_an_manager">Не быть старостой</string>
+    <string name="you_are_manager">Вы староста</string>
+    <string name="you_are_not_manager">Вы не староста</string>
+    <string name="you_not_become_manager">Вы не можете быть старостой потому, что староста уже есть</string>
+    <string name="you_have_become_an_manager">Вы стали старостой</string>
+    <string name="u_no_longer_manager">Вы больше не староста</string>
+    <string name="exit">Выход</string>
+    <string name="before_do_action_become_manager">1. В группе может быть только один староста.\n2. Чтобы распространять расписание для группы, необходимо быть старостой.\n3. При выходе с группы, Вы автоматически перестанете быть старостой.
+    </string>
+
     <string name="authentication">Авторизация</string>
     <string name="authentication_error">Ошибка авторизации</string>
+    <string name="log_out_error">Ошибка выхода</string>
     <string name="download_error">Ошибка загрузки</string>
+    <string name="notting_subjects">Предметов пока нет</string>
     <string name="notting_teachers">Нет преподавателей</string>
     <string name="load">Загрузка</string>
     <string name="create">Создавай</string>
@@ -149,9 +182,12 @@
     <string name="email">yourschedule.info@gmail.com</string>
     <string name="delete_schedule">Удалить расписание</string>
     <string name="schedules_is_no">Расписания пока нет</string>
+    <string name="no_data">Нет данных</string>
 
     <string name="no_homework_yet">Для этого предмета нет домашних заданий</string>
     <string name="no_schedules_with_homework_yet">Нет предметов, у которых есть домашние задания</string>
     <string name="no_teachers_yet">Преподавателей пока нет</string>
+
+    <string name="no_universities">Нет университетов</string>
 
 </resources>

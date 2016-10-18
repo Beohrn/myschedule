@@ -23,16 +23,6 @@
             android:title="@string/delete_schedule"/>
 
         <item
-            android:id="@+id/nav_write_to_us"
-            android:icon="@drawable/manage"
-            android:title="@string/write_to_us"/>
-
-        <item
-            android:id="@+id/open_group"
-            android:icon="@drawable/vkontacte"
-            android:title="@string/open_group"/>
-
-        <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/settings"
             android:title="@string/settings"/>

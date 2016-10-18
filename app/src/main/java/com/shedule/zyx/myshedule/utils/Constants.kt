@@ -19,5 +19,21 @@ class Constants {
     val TEACHER_CULTURE = "teacher_culture"
 
     val VALUE_FOR_SCAN_MODE = "public boolean android.bluetooth.BluetoothAdapter.setScanMode(int,int)"
+
+    val EXAM = "EXAM"
+    val COURSE_WORK = "COURSE_WORK"
+    val STANDINGS = "STANDINGS"
+    val HOME_EXAM = "HOME_EXAM"
+    val SIMPLE_LESSON = "SIMPLE_LESSON"
+    val SEMINAR = "SEMINAR"
+    val LECTURE = "LECTURE"
+
+    val ADMIN = "admin"
+    val CHANGES_COUNT = "changesCount"
+    val SCHEDULE = "schedule"
+
+    val EMPTY_DATA = "Empty data"
+    val ADMIN_IS_EXISTS = "Admin is exists"
+    val GROUP_CREATED = "group_created"
   }
 }

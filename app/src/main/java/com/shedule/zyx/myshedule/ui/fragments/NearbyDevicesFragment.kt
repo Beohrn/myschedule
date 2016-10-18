@@ -7,36 +7,27 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import com.shedule.zyx.myshedule.R
-import com.shedule.zyx.myshedule.ScheduleApplication
-import com.shedule.zyx.myshedule.managers.BluetoothManager
 import kotlinx.android.synthetic.main.fragment_list_of_devices.*
 import org.jetbrains.anko.onItemClick
-import org.jetbrains.anko.support.v4.indeterminateProgressDialog
 import org.jetbrains.anko.support.v4.selector
-import javax.inject.Inject
 
 /**
  * Created by Alexander on 20.08.2016.
  */
-class NearbyDevicesFragment: Fragment() {
+class NearbyDevicesFragment: BaseFragment() {
+  override var contentView = R.layout.fragment_nearby_devices
+  private var progressDialog: ProgressDialog? = null
 
-  @Inject
-  lateinit var bluetoothManager: BluetoothManager
-  lateinit var progressDialog: ProgressDialog
   lateinit var adapter: ArrayAdapter<String>
   val nearbyDevicesList = arrayListOf<String>()
   var devices = arrayListOf<Pair<String, String>>()
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    ScheduleApplication.getComponent().inject(this)
+  override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
 
     val intentFilter = IntentFilter()
     with(intentFilter) {
@@ -47,31 +38,24 @@ class NearbyDevicesFragment: Fragment() {
 
     context.registerReceiver(receiver, intentFilter)
     bluetoothManager.startDiscovery()
-  }
 
-  override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) =
-      inflater!!.inflate(R.layout.fragment_nearby_devices, container, false)
-
-  override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
     adapter = ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, nearbyDevicesList)
     list_of_devices.adapter = adapter
 
     list_of_devices.onItemClick { adapterView, view, i, l ->
+      showDialog(getString(R.string.connecting))
       bluetoothManager.connect(devices[i].first)
-      progressDialog = indeterminateProgressDialog(getString(R.string.connecting))
       bluetoothManager.setStateListener(BluetoothSPP.BluetoothStateListener { state ->
         if (state == bluetoothManager.STATE_CONNECTED) {
-          progressDialog.hide()
+          hideDialog()
           if (isAdded)
             selector("", listOf(getString(R.string.send), getString(R.string.cancel))) {
               when (it) {
                 0 -> { bluetoothManager.send(); bluetoothManager.disconnect() }
-                1 -> { bluetoothManager.disconnect() }
+                1 -> bluetoothManager.disconnect()
               }
             }
-        } else if (state == bluetoothManager.STATE_CONNECTING)
-          progressDialog.show()
+        } else if (state == bluetoothManager.STATE_CONNECTING) hideDialog()
       })
 
       nearbyDevicesList.removeAt(i)
@@ -82,8 +66,8 @@ class NearbyDevicesFragment: Fragment() {
   private val receiver = object : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
       intent?.let {
-        if (bluetoothManager.DISCOVERY_STARTED.equals(it.action))
-        else if (bluetoothManager.DISCOVERY_FINISHED.equals(it.action))
+        if (bluetoothManager.DISCOVERY_STARTED == it.action)
+        else if (bluetoothManager.DISCOVERY_FINISHED == it.action)
           context?.unregisterReceiver(this)
         else if (bluetoothManager.FOUND.equals(it.action)) {
           val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)

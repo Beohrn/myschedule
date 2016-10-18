@@ -1,88 +1,142 @@
 package com.shedule.zyx.myshedule.auth.fragments
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.crash.FirebaseCrash
-import com.shedule.zyx.myshedule.BuildConfig
-import com.shedule.zyx.myshedule.FirebaseWrapper
+import android.widget.MultiAutoCompleteTextView
+import com.google.firebase.crash.FirebaseCrash.report
+import com.shedule.zyx.myshedule.BuildConfig.DEBOUG_ENABLED
 import com.shedule.zyx.myshedule.R
-import com.shedule.zyx.myshedule.ScheduleApplication
-import com.shedule.zyx.myshedule.config.AppPreference
+import com.shedule.zyx.myshedule.R.string.*
 import com.shedule.zyx.myshedule.ui.activities.MainActivity
+import com.shedule.zyx.myshedule.ui.fragments.BaseFragment
+import com.shedule.zyx.myshedule.utils.Constants.Companion.EMPTY_DATA
+import com.shedule.zyx.myshedule.utils.Utils
+import com.shedule.zyx.myshedule.utils.Utils.Companion.isOnline
+import com.shedule.zyx.myshedule.utils.toMainThread
 import kotlinx.android.synthetic.main.create_account_layout.*
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.onItemClick
-import org.jetbrains.anko.support.v4.indeterminateProgressDialog
+import org.jetbrains.anko.support.v4.selector
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
-import javax.inject.Inject
+import rx.Subscription
 
 /**
  * Created by bogdan on 13.09.16.
  */
-class CreateAccountFragment : Fragment() {
-
-  @Inject
-  lateinit var auth: FirebaseAuth
-
-  @Inject
-  lateinit var prefs: AppPreference
-
-  @Inject
-  lateinit var firebaseWrapper: FirebaseWrapper
+class CreateAccountFragment : BaseFragment() {
+  override var contentView = R.layout.create_account_layout
 
   lateinit var facultyWatcher: TextWatcher
-  lateinit var univerWatcher: TextWatcher
+  lateinit var groupWatcher: TextWatcher
 
-  override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
-    ScheduleApplication.getComponent().inject(this)
-    return inflater!!.inflate(R.layout.create_account_layout, container, false)
-  }
+  var subscription: Subscription? = null
 
   override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
     val adapter = ArrayAdapter(context, R.layout.single_text_view, R.id.single_text,
-        getString(R.string.universities).split(";").map(String::trim))
+        Utils.getUniversities(context))
 
     univer_ET.setAdapter(adapter)
-    univer_ET.threshold = 1
+    univer_ET.setTokenizer(MultiAutoCompleteTextView.CommaTokenizer())
 
     univer_ET.onItemClick { adapterView, view, i, l ->
       univer_ET.setText(adapter.getItem(i))
     }
 
-    univerWatcher = object : TextWatcher {
-      override fun afterTextChanged(s: Editable?) {
+    universities_button.onClick {
+      hideKeyboard()
+      if (isOnline(context)) {
+        subscription?.unsubscribe()
+        showDialog(getString(R.string.load))
+        subscription = firebaseWrapper.getUniversity()
+            .toMainThread()
+            .doOnTerminate { hideDialog() }
+            .subscribe({ universities ->
+              hideDialog()
+              if (universities != null) {
+                selector(null, universities) {
+                  univer_ET.setText(universities[it])
+                  univer_ET.error = null
+                  faculty_ET.setText("")
+                  subscription?.unsubscribe()
+                }
+              } else toast(getString(no_universities))
+            }, {
+              hideDialog()
+              if (it.message == EMPTY_DATA) toast(getString(R.string.no_universities))
+              if (DEBOUG_ENABLED) report(it)
+            })
+      } else toast(getString(connection_is_failed))
+    }
 
-      }
+    faculty_button.onClick {
+      hideKeyboard()
+      if (isOnline(context)) {
+        if (!checkEdiTextIsEmpty(univer_ET)) {
+          subscription?.unsubscribe()
+          showDialog(getString(R.string.load))
+          subscription = firebaseWrapper.getFaculty(univer_ET.text.toString())
+              .toMainThread()
+              .doOnTerminate { hideDialog() }
+              .subscribe({ faculty ->
+                hideDialog()
+                if (faculty != null) {
+                  selector(null, faculty) {
+                    faculty_ET.setText(faculty[it])
+                    faculty_ET.error = null
+                    subscription?.unsubscribe()
+                  }
+                } else toast(getString(no_faculties))
+              }, {
+                hideDialog()
+                if (it.message == EMPTY_DATA) toast(getString(R.string.no_faculties))
+                if (DEBOUG_ENABLED) report(it)
+              })
+        } else univer_ET.error = getString(type_the_university_name)
+      } else toast(getString(connection_is_failed))
+    }
 
-      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-      }
-
-      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        univer_ET.removeTextChangedListener(univerWatcher)
-        univer_ET.setText(univer_ET.text.toString().replace("Ы", "І").replace("Э", "Е")
-            .replace("ы", "і").replace("э", "е"))
-        univer_ET.setSelection(univer_ET.text.toString().length)
-        univer_ET.addTextChangedListener(univerWatcher)
-      }
+    group_button.onClick {
+      hideKeyboard()
+      if (isOnline(context)) {
+        if (!checkEdiTextIsEmpty(faculty_ET) && !checkEdiTextIsEmpty(univer_ET)) {
+          showDialog(getString(R.string.load))
+          subscription?.unsubscribe()
+          subscription = firebaseWrapper.getGroups(faculty_ET.text.toString(),
+              univer_ET.text.toString())
+              .toMainThread()
+              .doOnTerminate { hideDialog() }
+              .subscribe({
+                it?.let { groups ->
+                  hideDialog()
+                  if (groups.size != 0) {
+                    selector(null, groups) { index ->
+                      group_ET.setText(groups[index])
+                      group_ET.error = null
+                      subscription?.unsubscribe()
+                    }
+                  } else toast(getString(groups_not_found))
+                } ?: toast(getString(groups_not_found))
+              }, {
+                hideDialog()
+                if (it.message == EMPTY_DATA)
+                  toast(getString(R.string.groups_not_found))
+                if (DEBOUG_ENABLED) report(it)
+              })
+        } else if (checkEdiTextIsEmpty(faculty_ET)) faculty_ET.error = getString(type_the_faculty_name)
+        else if (checkEdiTextIsEmpty(univer_ET)) univer_ET.error = getString(type_the_university_name)
+      } else toast(getString(connection_is_failed))
     }
 
     facultyWatcher = object : TextWatcher {
       override fun afterTextChanged(s: Editable?) {
-
       }
 
       override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -96,33 +150,74 @@ class CreateAccountFragment : Fragment() {
       }
     }
 
-    faculty_ET.filters = arrayOf<InputFilter>(android.text.InputFilter.AllCaps())
-    faculty_ET.addTextChangedListener(facultyWatcher)
-    univer_ET.addTextChangedListener(univerWatcher)
+    groupWatcher = object : TextWatcher {
+      override fun afterTextChanged(s: Editable?) {
+      }
 
-    create_account_btn.onClick {
-      if (!checkEdiTextIsEmpty(univer_ET) && !checkEdiTextIsEmpty(faculty_ET)) {
-        val dialog = indeterminateProgressDialog(getString(R.string.authentication))
-        dialog.show()
-        firebaseWrapper.createAccount()
-            .doOnTerminate { dialog.dismiss() }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-              prefs.saveUniverName(univer_ET.text.toString().trim())
-              prefs.saveFacultyName(faculty_ET.text.toString().trim())
-              startActivity<MainActivity>()
-            }, {
-              if (BuildConfig.DEBOUG_ENABLED)
-                FirebaseCrash.report(it)
-              toast(getString(R.string.authentication_error))
-            })
-      } else if (checkEdiTextIsEmpty(univer_ET)) {
-        univer_ET.error = getString(R.string.input_data)
-      } else if (checkEdiTextIsEmpty(faculty_ET)) {
-        faculty_ET.error = getString(R.string.input_data)
+      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+      }
+
+      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        group_ET.removeTextChangedListener(groupWatcher)
+        group_ET.setText(group_ET.text.toString().replace("Ы", "І").replace("Э", "Е"))
+        group_ET.setSelection(group_ET.text.toString().length)
+        group_ET.addTextChangedListener(groupWatcher)
       }
     }
+
+    group_ET.addTextChangedListener(groupWatcher)
+
+    faculty_ET.filters = arrayOf<InputFilter>(android.text.InputFilter.AllCaps())
+    faculty_ET.addTextChangedListener(facultyWatcher)
+
+    create_account_btn.onClick {
+      hideKeyboard()
+      if (isOnline(context)) {
+
+        if (!checkEdiTextIsEmpty(univer_ET) && !checkEdiTextIsEmpty(faculty_ET) && !checkEdiTextIsEmpty(group_ET)) {
+          showDialog(getString(R.string.authentication))
+          firebaseWrapper.createAccount(univer_ET.text.toString().trim(),
+              faculty_ET.text.toString().trim(), group_ET.text.toString().trim())
+              .toMainThread()
+              .subscribe({
+                hideDialog()
+                it?.let { scheduleManager.globalList.addAll(it) }
+                prefs.saveUniverName(univer_ET.text.toString().trim())
+                prefs.saveFacultyName(faculty_ET.text.toString().trim())
+                prefs.saveGroupName(group_ET.text.toString().trim())
+                prefs.saveLogin(true)
+                startActivity<MainActivity>()
+              }, {
+                hideDialog()
+                if (DEBOUG_ENABLED) report(it)
+                toast(getString(authentication_error))
+              })
+        } else if (checkEdiTextIsEmpty(univer_ET)) {
+          univer_ET.error = getString(type_the_university_name)
+          if (checkEdiTextIsEmpty(faculty_ET))
+            faculty_ET.error = getString(type_the_faculty_name)
+          if (checkEdiTextIsEmpty(group_ET))
+            group_ET.error = getString(type_the_group_name)
+        } else if (checkEdiTextIsEmpty(faculty_ET)) {
+          faculty_ET.error = getString(type_the_faculty_name)
+          if (checkEdiTextIsEmpty(univer_ET))
+            univer_ET.error = getString(type_the_university_name)
+          if (checkEdiTextIsEmpty(group_ET))
+            group_ET.error = getString(type_the_group_name)
+        } else if (checkEdiTextIsEmpty(group_ET)) {
+          group_ET.error = getString(type_the_group_name)
+          if (checkEdiTextIsEmpty(faculty_ET))
+            faculty_ET.error = getString(type_the_faculty_name)
+          if (checkEdiTextIsEmpty(univer_ET))
+            univer_ET.error = getString(type_the_university_name)
+        }
+      } else toast(getString(connection_is_failed))
+    }
+  }
+
+  override fun onDestroy() {
+    subscription?.unsubscribe()
+    super.onDestroy()
   }
 
   fun checkEdiTextIsEmpty(view: EditText) = view.text?.toString().isNullOrEmpty()

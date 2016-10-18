@@ -3,13 +3,20 @@ package com.shedule.zyx.myshedule.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.ConnectivityManager
 import android.os.Environment
+import com.google.firebase.database.DataSnapshot
 import com.google.gson.Gson
 import com.shedule.zyx.myshedule.R
-import com.shedule.zyx.myshedule.models.Category
-import com.shedule.zyx.myshedule.models.Category.*
 import com.shedule.zyx.myshedule.models.Date
 import com.shedule.zyx.myshedule.models.Schedule
+import com.shedule.zyx.myshedule.utils.Constants.Companion.COURSE_WORK
+import com.shedule.zyx.myshedule.utils.Constants.Companion.EXAM
+import com.shedule.zyx.myshedule.utils.Constants.Companion.HOME_EXAM
+import com.shedule.zyx.myshedule.utils.Constants.Companion.STANDINGS
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import java.io.File
 import java.io.FileOutputStream
 import java.text.DateFormatSymbols
@@ -22,7 +29,7 @@ import java.util.*
 class Utils {
 
   companion object {
-    fun getColorByCategory(context: Context, category: Category) = when (category) {
+    fun getColorByCategory(context: Context, category: String) = when (category) {
       EXAM -> context.resources.getColor(R.color.mark_red)
       STANDINGS -> context.resources.getColor(R.color.mark_yellow)
       COURSE_WORK -> context.resources.getColor(R.color.mark_orange)
@@ -41,11 +48,22 @@ class Utils {
       else -> 0
     }
 
-    fun getKeyByName(name: String) = name.replace(".", " ")
+    fun getKeyByName(name: String) = name.replace(".", "")
         .replace("[", "")
         .replace("]", "")
+        .replace("(", "")
+        .replace(")", "")
         .replace("$", "")
         .replace("#", "")
+
+    fun isOnline(context: Context): Boolean {
+      val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+      val info = connectivityManager.activeNetworkInfo
+      return info != null && info.isConnectedOrConnecting
+    }
+
+    fun getUniversities(context: Context) =
+        context.getString(R.string.universities).replace("(", "").replace(")", "").replace(".","").split(";").map(String::trim)
 
     fun getRatingByData(assessments: HashMap<String, Int>): Double {
       var result = 0.0
@@ -88,7 +106,7 @@ class Utils {
       if (!storageDir.exists())
         storageDir.mkdirs()
 
-      val timeStamp = SimpleDateFormat("ddMMyyyy_HHmmss").format(Date())
+      val timeStamp = SimpleDateFormat("ddMMyyyy_HHmmss").format(java.util.Date())
       val image: String
 
       if (isDifferent) image = "HomeWork_${timeStamp}_photo.jpg"
@@ -137,5 +155,12 @@ class Utils {
       bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
       fos.close()
     }
+
+    fun getPrefsKeyByName(faculty: String, group: String) = "${faculty}_$group"
   }
 }
+
+fun <T> Observable<T>.toMainThread() = this.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+
+fun Observable<DataSnapshot>.filterNotNull() =
+    this.filter { it != null }.filter { it.value != null }
