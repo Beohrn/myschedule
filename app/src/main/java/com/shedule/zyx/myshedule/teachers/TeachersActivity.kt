@@ -19,7 +19,7 @@ import org.jetbrains.anko.startActivity
 /**
  * Created by alexkowlew on 05.09.2016.
  */
-class TeachersActivity : BaseActivity(), OnRatingClickListener, OnTeacherClickListener, ReplaceFragmentListener {
+class TeachersActivity: BaseActivity(), OnRatingClickListener, OnTeacherClickListener, ReplaceFragmentListener {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

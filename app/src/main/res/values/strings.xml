@@ -552,6 +552,9 @@
     <string name="via_server">With group</string>
     <string name="no_data">No data</string>
 
+    <string name="no_internet_title">Whoops!</string>
+    <string name="no_internet_description">No Internet connection found. Check your connection or try again.</string>
+
     <string name="manager">Manager</string>
     <string name="become_manager">Become manager</string>
     <string name="not_to_be_an_manager">Not to be an manager</string>

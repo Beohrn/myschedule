@@ -10,6 +10,9 @@
     <string name="end_period_of_lesson">Дата окончания занятия</string>
     <string name="name">Название</string>
 
+    <string name="no_internet_title">Упс!</string>
+    <string name="no_internet_description">Нет подключения к Интернету. Проверьте подключение и повторите попытку.</string>
+
     <string name="housing">корп.</string>
     <string name="classroom">ауд.</string>
     <string name="begin">Начало</string>

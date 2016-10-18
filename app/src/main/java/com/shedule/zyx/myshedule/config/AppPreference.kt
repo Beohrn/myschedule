@@ -21,12 +21,10 @@ class AppPreference(val context: Context, val gson: Gson) {
   private val ADMIN = "admin"
   private val CHANGES_COUNT = "changes_count"
   private val ADMIN_KEY = "admin_key"
-  private val IS_LOGIN = "is_login_1"
+  private val IS_LOGIN = "is_login_2"
   private val prefs: SharedPreferences
 
-  init {
-    prefs = PreferenceManager.getDefaultSharedPreferences(context)
-  }
+  init { prefs = PreferenceManager.getDefaultSharedPreferences(context) }
 
   fun saveSchedule(list: List<Schedule>, key: String) = prefs.edit().putString(key, gson.toJson(list)).apply()
 

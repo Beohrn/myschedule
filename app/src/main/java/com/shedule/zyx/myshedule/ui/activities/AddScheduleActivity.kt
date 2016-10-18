@@ -12,10 +12,11 @@ import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.add_schedule_activity
-import com.shedule.zyx.myshedule.R.string.no_data
+import com.shedule.zyx.myshedule.R.string.connection_is_failed
 import com.shedule.zyx.myshedule.models.*
 import com.shedule.zyx.myshedule.models.Date
 import com.shedule.zyx.myshedule.utils.Constants.Companion.COURSE_WORK
+import com.shedule.zyx.myshedule.utils.Constants.Companion.EMPTY_DATA
 import com.shedule.zyx.myshedule.utils.Constants.Companion.EXAM
 import com.shedule.zyx.myshedule.utils.Constants.Companion.HOME_EXAM
 import com.shedule.zyx.myshedule.utils.Constants.Companion.LECTURE
@@ -23,6 +24,7 @@ import com.shedule.zyx.myshedule.utils.Constants.Companion.SEMINAR
 import com.shedule.zyx.myshedule.utils.Constants.Companion.SIMPLE_LESSON
 import com.shedule.zyx.myshedule.utils.Constants.Companion.STANDINGS
 import com.shedule.zyx.myshedule.utils.Utils
+import com.shedule.zyx.myshedule.utils.Utils.Companion.isOnline
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
@@ -37,7 +39,7 @@ import java.util.*
 /**
  * Created by alexkowlew on 26.08.2016.
  */
-class AddScheduleActivity: BaseActivity(), TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
+class AddScheduleActivity : BaseActivity(), TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
 
   companion object {
     val ADD_SCHEDULE_REQUEST = 5555
@@ -118,36 +120,46 @@ class AddScheduleActivity: BaseActivity(), TimePickerDialog.OnTimeSetListener, D
     begin_period.onClick { showDateDialog(); switcher = 1 }
 
     subjects_list.onClick {
-      val dialog = indeterminateProgressDialog(getString(R.string.load))
-      subscription = firebaseWrapper.getSubjects()
-          .subscribe({
-            dialog.dismiss()
-            it?.let { subjects ->
-              selector(null, subjects) { name_of_lesson.setText(subjects[it]) }
-            } ?: toast(getString(R.string.notting_subjects))
-          }, {
-            dialog.dismiss()
-            toast(getString(no_data))
-          })
+      showProgressDialog(getString(R.string.load))
+      if (isOnline(this))
+        subscription = firebaseWrapper.getSubjects()
+            .subscribe({
+              hideProgressDialog()
+              it?.let { subjects ->
+                selector(null, subjects) { name_of_lesson.setText(subjects[it]) }
+              } ?: toast(getString(R.string.notting_subjects))
+            }, {
+              hideProgressDialog()
+              if (it.message == EMPTY_DATA) toast(getString(R.string.notting_subjects))
+            })
+      else {
+        hideProgressDialog()
+        toast(getString(connection_is_failed))
+      }
     }
 
     teachers_list.onClick {
-      val dialog = indeterminateProgressDialog(getString(R.string.load))
-      subscription = firebaseWrapper.getTeachers()
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe({ teachers ->
-            dialog.dismiss()
-            if (teachers != null) {
-              selector(null, teachers.map { it.teacherName }) {
-                name_of_teacher.setText(teachers[it].teacherName)
-                name_of_lesson.setText(teachers[it].lessonName)
-              }
-            } else toast(getString(R.string.notting_teachers))
-          }, {
-            dialog.dismiss()
-            toast(getString(no_data))
-          })
+      showProgressDialog(getString(R.string.load))
+      if (isOnline(this))
+        subscription = firebaseWrapper.getTeachers()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ teachers ->
+              hideProgressDialog()
+              if (teachers != null) {
+                selector(null, teachers.map { it.teacherName }) {
+                  name_of_teacher.setText(teachers[it].teacherName)
+                  name_of_lesson.setText(teachers[it].lessonName)
+                }
+              } else toast(getString(R.string.notting_teachers))
+            }, {
+              hideProgressDialog()
+              if (it.message == EMPTY_DATA) toast(getString(R.string.notting_teachers))
+            })
+      else {
+        hideProgressDialog()
+        toast(getString(connection_is_failed))
+      }
     }
 
     begin_period.onClick { showDateDialog(); switcher = 1 }

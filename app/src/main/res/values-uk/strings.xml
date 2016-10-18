@@ -12,6 +12,9 @@
     <string name="you_have_become_an_manager">Ви стали адміністратором</string>
     <string name="type_the_group_name">Введіть назву групи</string>
 
+    <string name="no_internet_title">Упс!</string>
+    <string name="no_internet_description">Немає підключення до Інтернету. Перевірте підключення і спробуйте знову.</string>
+
     <string name="housing">корп.</string>
     <string name="classroom">ауд.</string>
     <string name="begin">Початок</string>

@@ -37,7 +37,13 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
         .child(getKeyByName(prefs.getFacultyName() ?: ""))
   }
 
-  fun createGroup() = groupRef().child(GROUP_CREATED).setValue(true)
+  fun createGroup(university: String, faculty: String, group: String): Observable<Boolean?> {
+    createGroupRef(university, faculty, group).child(GROUP_CREATED).setValue(true)
+    return RxFirebase.observe(createGroupRef(university, faculty, group).child(GROUP_CREATED))
+        .map { it.getValue(Boolean::class.java) }
+  }
+
+  fun createGroupRef(university: String, faculty: String, group: String) = ref.child(getKeyByName(university)).child(getKeyByName(faculty)).child(getKeyByName(group))
 
   fun groupRef() = ref.child(getKeyByName(prefs.getUniverName() ?: ""))
       .child(getKeyByName(prefs.getFacultyName() ?: ""))
@@ -49,22 +55,26 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
     return Observable.create { subscription ->
       auth.signInAnonymously().addOnCompleteListener { task ->
         if (task.isSuccessful) {
-          if (!prefs.isLogin())
-            getSchedule(getKeyByName(university),
-                getKeyByName(faculty),
-                getKeyByName(group)).subscribe({
-              subscription.onNext(it)
+          createGroup(university, faculty, group).subscribe({ done ->
+            if (!prefs.isLogin())
+              getSchedule(university, faculty, group).subscribe({ schedule ->
+                  if (done ?: false) {
+                    getChangesCount(createGroupRef(university, faculty, group))
+                      .subscribe({ prefs.saveChangesCount(it) }, {})
+                    subscription.onNext(schedule)
+                    subscription.onCompleted()
+                  }
+              }, {
+                if (it.message == EMPTY_DATA) {
+                  subscription.onNext(null)
+                  subscription.onCompleted()
+                }
+              })
+            else {
+              subscription.onNext(null)
               subscription.onCompleted()
-            }, {
-              if (it.message == EMPTY_DATA) {
-                subscription.onNext(null)
-                subscription.onCompleted()
-              }
-            })
-          else {
-            subscription.onNext(null)
-            subscription.onCompleted()
-          }
+            }
+          }, {})
         } else subscription.onError(task.exception)
       }
     }
@@ -118,9 +128,7 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
 
     val reference: DatabaseReference
     if (!university.isNullOrEmpty() && !faculty.isNullOrEmpty() && !group.isNullOrEmpty())
-      reference = ref.child(getKeyByName(university))
-          .child(getKeyByName(faculty))
-          .child(getKeyByName(group)).child(SCHEDULE)
+      reference = createGroupRef(university, faculty, group).child(SCHEDULE)
     else reference = groupRef().child(SCHEDULE)
 
     return RxFirebase.observe(reference)
@@ -137,8 +145,8 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
         }
   }
 
-  fun getChangesCount(): Observable<Int> {
-    return RxFirebase.observe(groupRef().child(CHANGES_COUNT))
+  fun getChangesCount(reference: DatabaseReference? = null): Observable<Int> {
+    return RxFirebase.observe(reference?.child(CHANGES_COUNT) ?: groupRef().child(CHANGES_COUNT))
         .filterNotNull()
         .map { it.getValue(Int::class.java) }
   }

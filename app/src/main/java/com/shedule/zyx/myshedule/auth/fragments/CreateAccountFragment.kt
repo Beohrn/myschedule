@@ -179,7 +179,6 @@ class CreateAccountFragment : BaseFragment() {
           firebaseWrapper.createAccount(univer_ET.text.toString().trim(),
               faculty_ET.text.toString().trim(), group_ET.text.toString().trim())
               .toMainThread()
-              .doOnTerminate { hideDialog() }
               .subscribe({
                 hideDialog()
                 it?.let { scheduleManager.globalList.addAll(it) }
@@ -187,7 +186,6 @@ class CreateAccountFragment : BaseFragment() {
                 prefs.saveFacultyName(faculty_ET.text.toString().trim())
                 prefs.saveGroupName(group_ET.text.toString().trim())
                 prefs.saveLogin(true)
-                firebaseWrapper.createGroup()
                 startActivity<MainActivity>()
               }, {
                 hideDialog()
