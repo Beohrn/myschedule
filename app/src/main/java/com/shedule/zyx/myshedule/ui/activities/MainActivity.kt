@@ -21,7 +21,6 @@ import com.google.firebase.crash.FirebaseCrash.report
 import com.shedule.zyx.myshedule.BuildConfig.DEBOUG_ENABLED
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.R.layout.activity_navigation
-import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.adapters.ScheduleItemsAdapter
 import com.shedule.zyx.myshedule.adapters.ViewPagerAdapter
 import com.shedule.zyx.myshedule.events.EventActivity
@@ -67,13 +66,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
   val listenerList = arrayListOf<DataChangeListener>()
   private val CAMERA_REQUEST = 1888
   private val GALLERY_REQUEST = 2888
+  private var isUpdateClicked = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(activity_navigation)
-    ScheduleApplication.getComponent().inject(this)
+    subscription?.unsubscribe()
     checkAllPermissions()
-
     setSupportActionBar(main_toolbar)
     setupDataForViewPager(main_viewpager)
     main_tabs.setupWithViewPager(main_viewpager)
@@ -178,17 +177,19 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
   }
 
   private fun pushSchedule() {
-    subscription?.unsubscribe()
+    isUpdateClicked = true
     val dialog = indeterminateProgressDialog(getString(R.string.load))
     var changes = prefs.getChangesCount()
     changes++
-    subscription = firebaseWrapper.pushSchedule(scheduleManager.globalList, changes)
+    firebaseWrapper.pushSchedule(scheduleManager.globalList, changes)
         .toMainThread()
         .subscribe({ done ->
           if (done) {
             dialog.dismiss()
-            prefs.saveChangesCount(changes)
-            toast(getString(R.string.schedule_was_sent))
+            if (prefs.getAdminRight()) {
+              prefs.saveChangesCount(changes)
+              toast(getString(R.string.schedule_was_sent))
+            }
           }
         }, {
           if (DEBOUG_ENABLED) report(it)
@@ -197,26 +198,45 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
   }
 
   private fun pullSchedule() {
-    subscription?.unsubscribe()
+    isUpdateClicked = false
     val dialog = indeterminateProgressDialog(getString(R.string.load))
     subscription = firebaseWrapper.getSchedule()
         .toMainThread()
         .subscribe({ schedule ->
           schedule?.let {
             dialog.dismiss()
-            scheduleManager.globalList.clear()
-            scheduleManager.globalList.addAll(it)
-            if (changesCount != 0) prefs.saveChangesCount(changesCount)
-            else getChangesCount()
-            listenerList.map { it.updateData() }
-            update.icon = resources.getDrawable(R.drawable.alarm)
-            toast(getString(R.string.schedule_was_updated))
+            if (!isUpdateClicked) {
+              selector(null, listOf(getString(R.string.merge_schedule), getString(R.string.override_schedule))) { position ->
+                when (position) {
+                  0 -> {
+                    scheduleManager.globalList.addAll(it)
+                    updateSchedule()
+                  }
+                  1 -> {
+                    scheduleManager.globalList.clear()
+                    scheduleManager.globalList.addAll(it)
+                    updateSchedule()
+                  }
+                }
+              }
+            }
+
           } ?: toast(getString(R.string.group_has_not_been_created))
         }, {
           if (DEBOUG_ENABLED) report(it)
           dialog.dismiss()
-          toast(getString(R.string.no_data))
+          toast(getString(R.string.schedules_is_no))
         })
+  }
+
+  private fun updateSchedule() {
+    if (changesCount != 0) prefs.saveChangesCount(changesCount)
+    else getChangesCount()
+    listenerList.map { it.updateData() }
+    update.icon = resources.getDrawable(R.drawable.alarm)
+    toast(getString(R.string.schedule_was_updated))
+    subscription?.unsubscribe()
+    isUpdateClicked = true
   }
 
   private fun getChangesCount() {
@@ -227,7 +247,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             if (changesCount == 0) {
               if (it > prefs.getChangesCount()) {
                 changesCount = it
-                update.icon = resources.getDrawable(R.drawable.notification)
+                if (!prefs.getAdminRight())
+                  update.icon = resources.getDrawable(R.drawable.notification)
               }
             } else prefs.saveChangesCount(it)
           }
@@ -318,6 +339,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
       alert(getString(R.string.delete), null) {
         positiveButton(getString(R.string.yes)) {
           scheduleManager.deleteSchedule()
+          scheduleManager.saveSchedule()
           listenerList.map { it.updateData() }
         }
         negativeButton(getString(R.string.no))
@@ -436,6 +458,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
           alert(getString(R.string.delete), null) {
             positiveButton(getString(R.string.yes)) {
               scheduleManager.removeSchedule(schedule)
+              scheduleManager.saveSchedule()
               listenerList.map { it.updateData() }
               add_schedule_button.show()
             }

@@ -181,7 +181,10 @@ class CreateAccountFragment : BaseFragment() {
               .toMainThread()
               .subscribe({
                 hideDialog()
-                it?.let { scheduleManager.globalList.addAll(it) }
+                it?.let {
+                  if (scheduleManager.globalList.size == 0)
+                    scheduleManager.globalList.addAll(it)
+                }
                 prefs.saveUniverName(univer_ET.text.toString().trim())
                 prefs.saveFacultyName(faculty_ET.text.toString().trim())
                 prefs.saveGroupName(group_ET.text.toString().trim())

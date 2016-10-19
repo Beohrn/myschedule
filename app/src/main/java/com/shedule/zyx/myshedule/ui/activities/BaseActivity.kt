@@ -70,10 +70,33 @@ abstract class BaseActivity : AppCompatActivity() {
 
   fun hideProgressDialog() = dialog.hide()
 
+  override fun onRestart() {
+    super.onRestart()
+    subscription?.unsubscribe()
+  }
 
   override fun onPause() {
     subscription?.unsubscribe()
     super.onPause()
   }
 
+  override fun onStart() {
+    super.onStart()
+    subscription?.unsubscribe()
+  }
+
+  override fun onResume() {
+    super.onResume()
+    subscription?.unsubscribe()
+  }
+
+  override fun onStop() {
+    super.onStop()
+    subscription?.unsubscribe()
+  }
+
+  override fun onDestroy() {
+    subscription?.unsubscribe()
+    super.onDestroy()
+  }
 }
