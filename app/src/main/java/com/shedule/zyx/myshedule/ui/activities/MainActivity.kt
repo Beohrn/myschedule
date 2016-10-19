@@ -24,6 +24,7 @@ import com.shedule.zyx.myshedule.R.layout.activity_navigation
 import com.shedule.zyx.myshedule.ScheduleApplication
 import com.shedule.zyx.myshedule.adapters.ScheduleItemsAdapter
 import com.shedule.zyx.myshedule.adapters.ViewPagerAdapter
+import com.shedule.zyx.myshedule.events.EventActivity
 import com.shedule.zyx.myshedule.interfaces.ChangeStateFragmentListener
 import com.shedule.zyx.myshedule.interfaces.DataChangeListener
 import com.shedule.zyx.myshedule.managers.BluetoothManager
@@ -92,27 +93,27 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
           Pair("current_day_of_week", main_viewpager.currentItem + 2))
     }
 
-    val nav = nav_view.inflateHeaderView(nav_header_navigation)
+    val nav = nav_view.inflateHeaderView(R.layout.nav_header_navigation)
     nav.faculty_name.text = prefs.getFacultyName()
     Utils.getAccountPhoto(applicationContext)?.let { nav.circleView.setImageBitmap(it) }
     Glide.with(this).load(R.drawable.univer_image)
         .bitmapTransform(BlurTransformation(this, 10))
         .into(nav.container_to_image)
     nav.circleView.onClick {
-      selector(null, listOf(getString(camera),
-          getString(gallery))) { i ->
+      selector(null, listOf(getString(R.string.camera),
+          getString(R.string.gallery))) { i ->
         when (i) {
           0 -> {
             checkSinglePermission(CAMERA).subscribe({
               if (it) startActivityForResult(Intent(ACTION_IMAGE_CAPTURE), CAMERA_REQUEST)
-              else toast(getString(no_permission_for_camera))
+              else toast(getString(R.string.no_permission_for_camera))
             }, {})
           }
           else -> {
             checkSinglePermission(READ_EXTERNAL_STORAGE).subscribe({
               if (it) startActivityForResult(Intent(ACTION_PICK,
                   EXTERNAL_CONTENT_URI), GALLERY_REQUEST)
-              else toast(getString(no_permission_for_storage))
+              else toast(getString(R.string.no_permission_for_storage))
             }, {})
           }
         }
@@ -170,7 +171,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
       R.id.update -> {
         if (isOnline(applicationContext)) {
           pullSchedule()
-        } else toast(getString(connection_is_failed))
+        } else toast(getString(R.string.connection_is_failed))
       }
     }
     return true
@@ -178,7 +179,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
   private fun pushSchedule() {
     subscription?.unsubscribe()
-    val dialog = indeterminateProgressDialog(getString(load))
+    val dialog = indeterminateProgressDialog(getString(R.string.load))
     var changes = prefs.getChangesCount()
     changes++
     subscription = firebaseWrapper.pushSchedule(scheduleManager.globalList, changes)
@@ -187,7 +188,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
           if (done) {
             dialog.dismiss()
             prefs.saveChangesCount(changes)
-            toast(getString(schedule_was_sent))
+            toast(getString(R.string.schedule_was_sent))
           }
         }, {
           if (DEBOUG_ENABLED) report(it)
@@ -197,7 +198,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
   private fun pullSchedule() {
     subscription?.unsubscribe()
-    val dialog = indeterminateProgressDialog(getString(load))
+    val dialog = indeterminateProgressDialog(getString(R.string.load))
     subscription = firebaseWrapper.getSchedule()
         .toMainThread()
         .subscribe({ schedule ->
@@ -209,12 +210,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             else getChangesCount()
             listenerList.map { it.updateData() }
             update.icon = resources.getDrawable(R.drawable.alarm)
-            toast(getString(schedule_was_updated))
-          } ?: toast(getString(group_has_not_been_created))
+            toast(getString(R.string.schedule_was_updated))
+          } ?: toast(getString(R.string.group_has_not_been_created))
         }, {
           if (DEBOUG_ENABLED) report(it)
           dialog.dismiss()
-          toast(getString(no_data))
+          toast(getString(R.string.no_data))
         })
   }
 
@@ -226,7 +227,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             if (changesCount == 0) {
               if (it > prefs.getChangesCount()) {
                 changesCount = it
-                update.icon = resources.getDrawable(notification)
+                update.icon = resources.getDrawable(R.drawable.notification)
               }
             } else prefs.saveChangesCount(it)
           }
@@ -252,31 +253,29 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
   override fun onNavigationItemSelected(item: MenuItem): Boolean {
     when (item.itemId) {
-      nav_share -> {
-          selector(null, listOf(getString(via_bluetooth), getString(via_server))) {
-            when (it) {
-              0 -> startBluetooth()
-              1 -> {
-                if (isOnline(applicationContext)) {
-                  if (scheduleManager.globalList.size != 0) {
-                    if (prefs.getAdminRight())
-                      pushSchedule()
-                    else startActivityForResult<SettingsActivity>(MANAGER_REQUEST,
-                        BECOME_MANAGER_KEY to true)
-                  } else toast(getString(schedules_is_no))
-                } else toast(getString(connection_is_failed))
-              }
-            }
-          }
+      R.id.nav_share_with_group -> {
+        if (scheduleManager.globalList.size != 0) {
+          if (isOnline(applicationContext)) {
+            if (prefs.getAdminRight())
+              pushSchedule()
+            else startActivityForResult<SettingsActivity>(MANAGER_REQUEST,
+                BECOME_MANAGER_KEY to true)
+          } else toast(getString(R.string.connection_is_failed))
+        } else toast(getString(R.string.schedules_is_no))
       }
-      nav_teachers -> startActivity<TeachersActivity>()
-      nav_tasks -> startActivity<AllHomeWorksActivity>()
-      nav_delete_schedule -> deleteSchedule()
-      nav_log_out -> {
+      R.id.nav_share_via_bluetooth -> {
+        if (scheduleManager.globalList.size != 0) startBluetooth()
+        else toast(getString(R.string.schedules_is_no))
+      }
+      R.id.nav_teachers -> startActivity<TeachersActivity>()
+      R.id.nav_tasks -> startActivity<AllHomeWorksActivity>()
+      R.id.nav_delete_schedule -> deleteSchedule()
+      R.id.nav_log_out -> {
         if (isOnline(applicationContext)) logOut()
-        else toast(getString(connection_is_failed))
+        else toast(getString(R.string.connection_is_failed))
       }
-      nav_settings -> startActivity<SettingsActivity>()
+      R.id.nav_settings -> startActivity<SettingsActivity>()
+      R.id.open_events -> startActivity<EventActivity>()
     }
 
     drawer_layout?.closeDrawer(START)
@@ -285,7 +284,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
   fun logOut() {
     subscription?.unsubscribe()
-    showProgressDialog(getString(exit))
+    showProgressDialog(getString(R.string.exit))
     firebaseWrapper.logOut()
         .doOnTerminate { hideProgressDialog() }
         .toMainThread()
@@ -301,7 +300,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
           startActivity<TutorialActivity>()
         }, {
           if (DEBOUG_ENABLED) report(it)
-          toast(getString(log_out_error))
+          toast(getString(R.string.log_out_error))
         })
   }
 
@@ -310,7 +309,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
       if (it) {
         showDialog()
         bluetoothManager.schedule = scheduleManager.globalList
-      } else toast(getString(no_permission_for_bluetooth))
+      } else toast(getString(R.string.no_permission_for_bluetooth))
     }, {})
   }
 

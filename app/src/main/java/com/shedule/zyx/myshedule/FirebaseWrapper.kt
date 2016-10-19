@@ -1,6 +1,5 @@
 package com.shedule.zyx.myshedule
 
-import app.voter.xyz.RxFirebase
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crash.FirebaseCrash.report
@@ -17,6 +16,7 @@ import com.shedule.zyx.myshedule.utils.Constants.Companion.ADMIN
 import com.shedule.zyx.myshedule.utils.Constants.Companion.ADMIN_IS_EXISTS
 import com.shedule.zyx.myshedule.utils.Constants.Companion.CHANGES_COUNT
 import com.shedule.zyx.myshedule.utils.Constants.Companion.EMPTY_DATA
+import com.shedule.zyx.myshedule.utils.Constants.Companion.EVENTS
 import com.shedule.zyx.myshedule.utils.Constants.Companion.GROUP_CREATED
 import com.shedule.zyx.myshedule.utils.Constants.Companion.RATINGS
 import com.shedule.zyx.myshedule.utils.Constants.Companion.SCHEDULE
@@ -31,11 +31,7 @@ import java.util.*
  */
 class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val auth: FirebaseAuth) {
 
-  companion object {
-    val EVENTS = "events"
-  }
-
-  fun createTeacherRef() = facultyRef().child("teachers")
+  fun createTeacherRef() = facultyRef().child(TEACHERS)
 
   private fun facultyRef(): DatabaseReference {
     return ref.child(BuildConfig.FIREBASE_URL).child(getKeyByName(prefs.getUniverName() ?: ""))
@@ -48,9 +44,9 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
         .map { it.getValue(Boolean::class.java) }
   }
 
-  fun createGroupRef(university: String, faculty: String, group: String) = ref.child(getKeyByName(university)).child(getKeyByName(faculty)).child(getKeyByName(group))
+  fun createGroupRef(university: String, faculty: String, group: String) = ref.child(BuildConfig.FIREBASE_URL).child(getKeyByName(university)).child(getKeyByName(faculty)).child(getKeyByName(group))
 
-  fun groupRef() = ref.child(getKeyByName(prefs.getUniverName() ?: ""))
+  fun groupRef() = ref.child(BuildConfig.FIREBASE_URL).child(getKeyByName(prefs.getUniverName() ?: ""))
       .child(getKeyByName(prefs.getFacultyName() ?: ""))
       .child(getKeyByName(prefs.getGroupName() ?: ""))
 
@@ -108,15 +104,15 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
   }
 
   fun getGroups(faculty: String, university: String): Observable<List<String>?> {
-    return RxFirebase.observe(ref.child(getKeyByName(university)).child(getKeyByName(faculty))).map { it.children?.map { it.key }?.filter { it != TEACHERS } }
+    return RxFirebase.observe(ref.child(BuildConfig.FIREBASE_URL).child(getKeyByName(university)).child(getKeyByName(faculty))).map { it.children?.map { it.key }?.filter { it != TEACHERS } }
   }
 
   fun getFaculty(university: String): Observable<List<String>?> {
-    return RxFirebase.observe(ref.child(getKeyByName(university))).map { it.children?.map { it.key } }
+    return RxFirebase.observe(ref.child(BuildConfig.FIREBASE_URL).child(getKeyByName(university))).map { it.children?.map { it.key } }
   }
 
   fun getUniversity(): Observable<List<String>?> {
-    return RxFirebase.observe(ref).map { it.children?.map { it.key } }
+    return RxFirebase.observe(ref.child(BuildConfig.FIREBASE_URL)).map { it.children?.map { it.key } }
   }
 
   fun getSubjects() = getTeachers().map { it?.map { it.lessonName.toString() } }
@@ -254,5 +250,5 @@ class FirebaseWrapper(val ref: DatabaseReference, val prefs: AppPreference, val 
   }
 
   fun getEvents(cityName: String) = RxFirebase.observe(ref.child(EVENTS).child(getKeyByName(cityName)))
-      .map { listOf(it.getValue(Event::class.java)).map { it } }
+      .map { it.children?.map { it.getValue(Event::class.java) } }
 }

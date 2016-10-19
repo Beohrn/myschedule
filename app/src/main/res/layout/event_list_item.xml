@@ -77,14 +77,15 @@
 
             <at.blogc.android.views.ExpandableTextView
                 android:id="@+id/description"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="3"
                 android:paddingLeft="50dp"
+                android:paddingRight="12dp"
                 android:textColor="#686668"
                 app:animation_duration="400"
-                tools:text="svvdddada"/>
+                tools:text="svvdddadakasflaf;lkjaf;lkajsdf;lkjasf;lkjasf;lkjaf;lkjasdf;l;asldkfja;sflkj"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -99,7 +100,7 @@
                         android:id="@+id/image_poster"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="40dp"
+                        android:layout_marginLeft="50dp"
                         android:layout_marginRight="40dp"/>
 
                     <ProgressBar

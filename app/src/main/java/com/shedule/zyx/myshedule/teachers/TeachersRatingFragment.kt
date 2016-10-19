@@ -5,7 +5,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import app.voter.xyz.RxFirebase
+import com.shedule.zyx.myshedule.RxFirebase
 import com.google.firebase.crash.FirebaseCrash.report
 import com.shedule.zyx.myshedule.BuildConfig.DEBOUG_ENABLED
 import com.shedule.zyx.myshedule.R
@@ -21,7 +21,7 @@ import org.jetbrains.anko.support.v4.toast
 /**
  * Created by bogdan on 13.09.16.
  */
-class TeachersRatingFragment : BaseFragment() {
+class TeachersRatingFragment: BaseFragment() {
 
   override var contentView = R.layout.teachers_rating_layout
 

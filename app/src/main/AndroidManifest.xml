@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".ScheduleApplication"
@@ -19,56 +20,43 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".ui.activities.MainActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activities.MainActivity"
+                  android:screenOrientation="portrait"/>
 
-        <activity
-            android:name=".ui.activities.AddScheduleActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activities.AddScheduleActivity"
+                  android:screenOrientation="portrait"/>
 
-        <activity
-            android:name=".comments.DiscussionActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/TeacherStyle"/>
+        <activity android:name=".comments.DiscussionActivity"
+                  android:screenOrientation="portrait"
+                  android:theme="@style/TeacherStyle"/>
 
-        <activity
-            android:name=".teachers.TeachersActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/TeacherStyle"/>
-
-        <activity
-            android:name=".events.EventActivity"
-            android:screenOrientation="portrait"
-            android:label=""
-            android:theme="@style/TeacherStyle"/>
+        <activity android:name=".teachers.TeachersActivity"
+                  android:theme="@style/TeacherStyle"
+                  android:screenOrientation="portrait"/>
 
         <activity
             android:name=".tutorial.TutorialActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/TutorialTheme"/>
-
-        <activity
-            android:name=".ui.activities.HomeWorkActivity"
+            android:theme="@style/TutorialTheme"
             android:screenOrientation="portrait"/>
 
-        <activity
-            android:name=".ui.activities.CreateHomeWorkActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activities.HomeWorkActivity"
+                  android:screenOrientation="portrait"/>
+
+        <activity android:name=".ui.activities.CreateHomeWorkActivity"
+                  android:screenOrientation="portrait"/>
 
         <activity
             android:name=".ui.activities.PhotoActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppDark"/>
-
-        <activity
-            android:name=".ui.activities.AllHomeWorksActivity"
+            android:theme="@style/AppDark"
             android:screenOrientation="portrait"/>
+
+        <activity android:name=".ui.activities.AllHomeWorksActivity"
+                  android:screenOrientation="portrait"/>
 
         <activity
             android:name=".ui.activities.SplashActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/SplashTheme"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -76,6 +64,13 @@
             </intent-filter>
 
         </activity>
+
+        <activity android:name=".ui.activities.SettingsActivity"
+                  android:theme="@style/AppTheme"
+                  android:screenOrientation="portrait"/>
+
+        <activity android:name=".events.EventActivity"
+                  android:screenOrientation="portrait"/>
 
     </application>
 </manifest>

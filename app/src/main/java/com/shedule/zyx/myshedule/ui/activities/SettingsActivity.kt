@@ -140,7 +140,6 @@ class SettingsActivity: BaseActivity() {
   }
 
   private fun becomeAdminSettings() {
-    subscription?.unsubscribe()
     manager_info.text = getString(R.string.before_do_action_become_manager)
     manager_button.text = getString(R.string.become_manager)
   }

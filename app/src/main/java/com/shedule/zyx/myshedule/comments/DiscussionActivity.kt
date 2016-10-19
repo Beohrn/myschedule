@@ -4,7 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
-import app.voter.xyz.RxFirebase
+import com.shedule.zyx.myshedule.RxFirebase
 import app.voter.xyz.comments.Comment
 import app.voter.xyz.comments.CommentsAdapter
 import com.google.firebase.database.DatabaseReference

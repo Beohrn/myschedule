@@ -494,7 +494,7 @@
         <item>Одеса</item>
         <item>Полтава</item>
         <item>Рівне</item>
-        <item>Севастопол</item>
+        <item>Севастополь</item>
         <item>Суми</item>
         <item>Сімферополь</item>
         <item>Тернопіль</item>
@@ -623,6 +623,7 @@
     <string name="authentication">Authentication</string>
     <string name="authentication_error">Authentication error</string>
     <string name="log_out_error">Log out error</string>
+    <string name="log_out">Log out</string>
     <string name="download_error">Load error</string>
     <string name="notting_subjects">Subjects do not have</string>
     <string name="notting_teachers">Teacher do not have</string>
@@ -651,6 +652,9 @@
     <string name="no_schedules_with_homework_yet">No subjects that have a homework</string>
     <string name="no_teachers_yet">No teachers yet</string>
 
-    <string name="no_universities">No universities</string>
+    <string name="no_universities">Not have universities</string>
+    <string name="no_events_yet">Not have events.</string>
+    <string name="share_with_group">Share with group</string>
+    <string name="share_via_bluetooth">Send schedule</string>
 
 </resources>
