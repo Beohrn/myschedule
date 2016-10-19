@@ -4,10 +4,11 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
-import app.voter.xyz.RxFirebase
+import com.shedule.zyx.myshedule.RxFirebase
 import app.voter.xyz.comments.Comment
 import app.voter.xyz.comments.CommentsAdapter
 import com.google.firebase.database.DatabaseReference
+import com.shedule.zyx.myshedule.BuildConfig
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.ui.activities.BaseActivity
 import com.shedule.zyx.myshedule.utils.Constants
@@ -44,7 +45,7 @@ class DiscussionActivity : BaseActivity(), CommentsAdapter.OnCommentClickListene
 
     whichId = getKeyByName(intent.getStringExtra(TEACHER_REQUEST))
 
-    ref = firebaseRef.child(getKeyByName(prefs.getUniverName()))
+    ref = firebaseRef.child(BuildConfig.FIREBASE_URL).child(getKeyByName(prefs.getUniverName()))
         .child(getKeyByName(prefs.getFacultyName()))
         .child(Constants.TEACHERS)
         .child(whichId)

@@ -9,7 +9,7 @@
     <string name="start_period_of_lesson">Дата початку заняття</string>
     <string name="end_period_of_lesson">Дата закінчення заняття</string>
     <string name="name">Назва</string>
-    <string name="you_have_become_an_manager">Ви стали адміністратором</string>
+    <string name="you_have_become_an_manager">Ви стали старостою</string>
     <string name="type_the_group_name">Введіть назву групи</string>
 
     <string name="no_internet_title">Упс!</string>
@@ -30,6 +30,7 @@
     <string name="add_schedule_toolbar_title">Створити заняття</string>
     <string name="homework_activity_title">Домашнє завдання</string>
     <string name="calendar">Календар</string>
+    <string name="events">Події</string>
     <string name="push">Поділитись</string>
     <string name="open_group">Відкрити групу</string>
 
@@ -185,6 +186,9 @@
     <string name="no_schedules_with_homework_yet">Немає предметів, у яких є домашні завдання</string>
     <string name="no_teachers_yet">Викладачів поки що немає</string>
 
-    <string name="no_universities">Немає університетів</string>
+    <string name="no_universities">Університетів поки немає</string>
+    <string name="no_events_yet">Подій поки немає/</string>
+    <string name="share_with_group">Поділитись з групою</string>
+    <string name="share_via_bluetooth">Надіслати розклад</string>
 
 </resources>

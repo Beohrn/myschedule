@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.activities.MainActivity"
-            android:screenOrientation="portrait"/>
+                  android:screenOrientation="portrait"/>
 
         <activity android:name=".ui.activities.AddScheduleActivity"
                   android:screenOrientation="portrait"/>
@@ -31,7 +31,7 @@
                   android:theme="@style/TeacherStyle"/>
 
         <activity android:name=".teachers.TeachersActivity"
-            android:theme="@style/TeacherStyle"
+                  android:theme="@style/TeacherStyle"
                   android:screenOrientation="portrait"/>
 
         <activity
@@ -67,6 +67,9 @@
 
         <activity android:name=".ui.activities.SettingsActivity"
                   android:theme="@style/AppTheme"
+                  android:screenOrientation="portrait"/>
+
+        <activity android:name=".events.EventActivity"
                   android:screenOrientation="portrait"/>
 
     </application>

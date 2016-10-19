@@ -464,18 +464,47 @@
         ;Чорноморський державний університет ім. П. Могили (ЧДУ)</string>
 
     <string-array name="type_of_lesson">
-       <item>Practice</item>
-       <item>Lecture</item>
+        <item>Practice</item>
+        <item>Lecture</item>
     </string-array>
 
     <string-array name="number_of_lesson">
-        <item>1 lesson</item>
-        <item>2 lesson</item>
-        <item>3 lesson</item>
-        <item>4 lesson</item>
-        <item>5 lesson</item>
-        <item>6 lesson</item>
-        <item>7 lesson</item>
+        <item>1 lesson</item>
+        <item>2 lesson</item>
+        <item>3 lesson</item>
+        <item>4 lesson</item>
+        <item>5 lesson</item>
+        <item>6 lesson</item>
+        <item>7 lesson</item>
+    </string-array>
+
+    <string-array name="city_ukraine" translatable="false">
+        <item>Київ</item>
+        <item>Івано-Франківськ</item>
+        <item>Вінниця</item>
+        <item>Дніпропетровськ</item>
+        <item>Донецьк</item>
+        <item>Житомир</item>
+        <item>Запоріжжя</item>
+        <item>Кіровоград</item>
+        <item>Луганськ</item>
+        <item>Луцьк</item>
+        <item>Львів</item>
+        <item>Миколаїв</item>
+        <item>Одеса</item>
+        <item>Полтава</item>
+        <item>Рівне</item>
+        <item>Севастополь</item>
+        <item>Суми</item>
+        <item>Сімферополь</item>
+        <item>Тернопіль</item>
+        <item>Ужгород</item>
+        <item>Харків</item>
+        <item>Херсон</item>
+        <item>Хмельницький</item>
+        <item>Черкаси</item>
+        <item>Чернівці</item>
+        <item>Чернігів</item>
     </string-array>
 
     <string name="description">Description</string>
@@ -578,7 +607,7 @@
     <string name="share">Share</string>
     <string name="write_to_us">Write to us</string>
     <string name="open_group">Open our group</string>
-    <string name="log_out">Log out</string>
+    <string name="events">Events</string>
     <string name="housing_hint">Housing</string>
     <string name="classroom_hint">Audience</string>
     <string name="university">University</string>
@@ -594,6 +623,7 @@
     <string name="authentication">Authentication</string>
     <string name="authentication_error">Authentication error</string>
     <string name="log_out_error">Log out error</string>
+    <string name="log_out">Log out</string>
     <string name="download_error">Load error</string>
     <string name="notting_subjects">Subjects do not have</string>
     <string name="notting_teachers">Teacher do not have</string>
@@ -622,6 +652,9 @@
     <string name="no_schedules_with_homework_yet">No subjects that have a homework</string>
     <string name="no_teachers_yet">No teachers yet</string>
 
-    <string name="no_universities">No universities</string>
+    <string name="no_universities">Not have universities</string>
+    <string name="no_events_yet">Not have events.</string>
+    <string name="share_with_group">Share with group</string>
+    <string name="share_via_bluetooth">Send schedule</string>
 
 </resources>

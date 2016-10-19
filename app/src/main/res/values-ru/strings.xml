@@ -32,6 +32,7 @@
     <string name="update">Обновить</string>
     <string name="open_group">Открыть группу</string>
     <string name="group_has_not_been_created">Группа еще не создана</string>
+    <string name="events">События</string>
 
     <string-array name="type_of_lesson">
         <item>Практика</item>
@@ -187,6 +188,9 @@
     <string name="no_schedules_with_homework_yet">Нет предметов, у которых есть домашние задания</string>
     <string name="no_teachers_yet">Преподавателей пока нет</string>
 
-    <string name="no_universities">Нет университетов</string>
+    <string name="no_universities">Университетов пока нет</string>
+    <string name="no_events_yet">Событий пока нет.</string>
+    <string name="share_with_group">Поделиться с группой</string>
+    <string name="share_via_bluetooth">Послать расписание</string>
 
 </resources>

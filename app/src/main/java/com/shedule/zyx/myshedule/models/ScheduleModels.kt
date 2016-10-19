@@ -6,6 +6,7 @@ import java.io.Serializable
 /**
  * Created by alexkowlew on 26.08.2016.
  */
+
 class Schedule : Serializable {
 
   var numberLesson = ""

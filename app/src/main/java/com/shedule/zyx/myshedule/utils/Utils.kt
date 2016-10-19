@@ -162,5 +162,4 @@ class Utils {
 
 fun <T> Observable<T>.toMainThread() = this.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
 
-fun Observable<DataSnapshot>.filterNotNull() =
-    this.filter { it != null }.filter { it.value != null }
+fun Observable<DataSnapshot>.filterNotNull() = this.filter { it != null }.filter { it.value != null }

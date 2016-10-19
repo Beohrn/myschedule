@@ -1,4 +1,4 @@
-package app.voter.xyz
+package com.shedule.zyx.myshedule
 
 
 import com.google.firebase.FirebaseException

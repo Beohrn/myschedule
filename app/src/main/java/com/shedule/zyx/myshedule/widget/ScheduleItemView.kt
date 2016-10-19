@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.widget.FrameLayout
 import com.shedule.zyx.myshedule.R
 import com.shedule.zyx.myshedule.models.Schedule
+import com.shedule.zyx.myshedule.utils.Constants
 import com.shedule.zyx.myshedule.utils.Constants.Companion.LECTURE
 import com.shedule.zyx.myshedule.utils.Utils
 import kotlinx.android.synthetic.main.schedule_item_layout.view.*
@@ -36,7 +37,7 @@ class ScheduleItemView : FrameLayout {
   }
 
   fun setData(schedule: Schedule) {
-    (view_number_of_lesson.background as GradientDrawable).setColor(Utils.getColorByCategory(context, schedule.category))
+    (view_number_of_lesson.background as GradientDrawable).setColor(Utils.getColorByCategory(context, schedule.category!!))
     view_number_of_lesson.text = schedule.numberLesson
     view_title_of_lesson.text = if (schedule.nameLesson.isNullOrBlank()) context.getString(R.string.name_of_lesson) else schedule.nameLesson
     view_name_of_teacher.text = if (schedule.teacher?.teacherName.isNullOrBlank()) context.getString(R.string.name_of_teacher) else schedule.teacher?.teacherName
