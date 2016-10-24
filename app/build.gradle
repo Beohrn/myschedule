@@ -66,7 +66,7 @@ android {
             minifyEnabled false
             signingConfig signingConfigs.debug
             applicationIdSuffix ".dev"
-            buildConfigField 'String', 'FIREBASE_URL', '\"develop\"'
+            buildConfigField 'String', 'FIREBASE_URL', '\"production\"'
             buildConfigField 'boolean', 'DEBOUG_ENABLED', 'true'
         }
     }

@@ -38,7 +38,9 @@ class Time : Serializable {
   var hour = 0
   var minute = 0
 
-  constructor(){}
+  constructor() {
+  }
+
   constructor(hour: Int, minute: Int) {
     this.hour = hour
     this.minute = minute
@@ -61,7 +63,9 @@ class Location : Serializable {
   var classroom = ""
   var housing = ""
 
-  constructor() {}
+  constructor() {
+  }
+
   constructor(classroom: String, housing: String) {
     this.classroom = classroom
     this.housing = housing
@@ -74,7 +78,9 @@ class Date : Serializable {
   var monthOfYear = 0
   var year = 0
 
-  constructor() {}
+  constructor() {
+  }
+
   constructor(dayOfMonth: Int, monthOfYear: Int, year: Int) {
     this.dayOfMonth = dayOfMonth
     this.monthOfYear = monthOfYear
@@ -97,9 +103,19 @@ class Teacher {
   }
 }
 
-data class HomeWork(var taskName: String, var status: Boolean) {
+class HomeWork {
   var taskDescription = ""
+  var taskName = ""
+  var status = false
   var deadLine = ""
+
+  constructor() {
+  }
+
+  constructor(taskName: String, status: Boolean) {
+    this.taskName = taskName
+    this.status = status
+  }
 }
 
 class Group {
