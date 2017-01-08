@@ -11,3 +11,8 @@ android:
 
 script:
     - chmod +x ./gradlew
+
+notifications:
+  slack:
+    rooms:
+      - kpi-integration-2016:zvKvQcOYpf5YKTKXeIyl9Tzs#{xunta}
