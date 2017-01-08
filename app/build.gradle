@@ -16,6 +16,7 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url "https://jitpack.io" }
+        jcenter()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -26,6 +27,7 @@ buildscript {
 repositories {
     maven { url "https://jitpack.io" }
     mavenCentral()
+    jcenter()
 }
 
 android {
@@ -85,7 +87,12 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    androidTestCompile 'junit:junit:4.12'
+    androidTestCompile 'org.mockito:mockito-core:1.10.19'
+
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile "com.android.support:design:$supportLibraryVersion"
     provided 'org.glassfish:javax.annotation:10.0-b28'
@@ -134,6 +141,7 @@ dependencies {
     compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.3.0'
     compile 'de.cketti.mailto:email-intent-builder:1.0.0'
     compile 'com.google.firebase:firebase-crash:9.4.0'
+    testCompile 'org.testng:testng:6.9.6'
 }
 
 apply plugin: 'com.google.gms.google-services'
