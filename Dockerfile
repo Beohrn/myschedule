@@ -1,6 +1,6 @@
 FROM java:8
 
-MAINTAINER <ashtanko96@gmail.com>
+MAINTAINER <ashtanko96@gmail.com> fuck this shit
 
 ENV DEBIAN_FRONTEND noninteractive
 
