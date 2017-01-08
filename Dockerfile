@@ -14,7 +14,6 @@ RUN dpkg --add-architecture i386 && \
     locale-gen ja_JP.UTF-8 && \
     localedef --list-archive && locale -a &&  \
     update-locale &&  \
-	update-locale &&  \
     apt-get clean
 
 # Download and untar SDK
