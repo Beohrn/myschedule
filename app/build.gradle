@@ -5,7 +5,6 @@ apply plugin: 'realm-android'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply from: '../config/git_version_code.gradle'
-apply plugin: 'checkstyle'
 
 def versionMajor = 0
 def versionMinor = 1
