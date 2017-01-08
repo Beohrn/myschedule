@@ -1,6 +1,6 @@
 FROM java:8
 
-MAINTAINER Andrew Shtanko <ashtanko96@gmail.com>
+MAINTAINER <ashtanko96@gmail.com>
 
 ENV DEBIAN_FRONTEND noninteractive
 
