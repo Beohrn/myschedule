@@ -41,10 +41,9 @@ before_script:
 
 script:
   - chmod +x ./gradlew
-  - ./gradlew check -PdisablePreDex --continue --stacktrace
   - android-wait-for-emulator
+  - adb devices
   - adb shell input keyevent 82 &
-  - ./gradlew connectedAndroidTest -PdisablePreDex --continue --stacktrace
 
 notifications:
   slack:
