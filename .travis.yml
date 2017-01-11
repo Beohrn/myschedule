@@ -42,6 +42,7 @@ before_script:
 
 script:
   - chmod +x ./gradlew
+  - ./gradlew connectedAndroidTest -PdisablePreDex --continue --stacktrace
 
 notifications:
   slack:
