@@ -1,7 +1,7 @@
 # myschedule
 
 
-#To start the project need the latest version of Android Studio (for examle, Android Studio 2.2.2).
+#To start the project, you need install the latest version of Android Studio.
 
 1. After installation, in the project selection window will point to the opening of projects with source control systems.
 
