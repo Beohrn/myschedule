@@ -1,8 +1,6 @@
 FROM java:8
 
-MAINTAINER <ashtanko96@gmail.com> fuck this shit
-
-ENV DEBIAN_FRONTEND noninteractive
+MAINTAINER Leviz <alexleviz13@gmail.com>
 
 # Install dependencies
 RUN dpkg --add-architecture i386 && \
