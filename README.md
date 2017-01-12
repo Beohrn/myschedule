@@ -27,3 +27,5 @@ To start a container image must enter the command:
 In container project will built and .apk of project will generated.
 
 Docker was run on OS Elementary OS 0.4 Loki
+
+# _Download [Link](https://play.google.com/store/apps/details?id=com.shedule.zyx.myshedule&hl=ru)_
